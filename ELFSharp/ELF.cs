@@ -216,7 +216,7 @@ namespace ELFSharp
                     break;
                 case 2:
                     Class = Class.Bit64;
-                    break;
+					throw new ArgumentException("Given ELF 64-bit. Currently, only 32-bit files can be read");
                 default:
                     throw new ArgumentException(string.Format("Given ELF file is of unknown class {0}.", classByte));
             }
@@ -232,6 +232,11 @@ namespace ELFSharp
                 default:
                     throw new ArgumentException(string.Format("Given ELF file uses unknown endianess {0}.", endianessByte));
             }
+			if((Endianess == Endianess.BigEndian && BitConverter.IsLittleEndian)
+			   || (Endianess == Endianess.LittleEndian && !BitConverter.IsLittleEndian))
+			{
+				throw new ArgumentException("Given ELF is of different endianess than your machine.");
+			}
             reader.ReadBytes(10); // padding bytes of section e_ident
         }
 
