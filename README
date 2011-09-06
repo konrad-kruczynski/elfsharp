@@ -1,0 +1,5 @@
+This is ELFSharp, a C# library by Konrad Kruczyński for manipulating binary
+files in ELF format. This is open source software, for more informations please
+visit http://elfsharp.heliohost.org/
+
+You can find license in the LICENSE file.
