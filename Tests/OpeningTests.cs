@@ -9,23 +9,36 @@ namespace Tests
 	{
 		
 		[Test]
-		public void ShouldOpenHelloWorld()
+		public void ShouldOpenHelloWorld32()
 		{
-			ELFReader.Load("hello32le");
+			ELFReader.Load32("hello32le");			
 		}
 		
 		[Test]
-		public void ShouldProperlyParseClass()
+		public void ShouldOpenHelloWorld64()
+		{			
+			ELFReader.Load64("hello64le");
+		}
+		
+		[Test]
+		public void ShouldProperlyParseClass32()
 		{
-			var elf = ELFReader.Load("hello32le");
-			Assert.AreEqual(Class.Bit32, elf.Class);
+			var elf32 = ELFReader.Load32("hello32le");
+			Assert.AreEqual(Class.Bit32, elf32.Class);			
+		}
+
+		[Test]
+		public void ShouldProperlyParseClass64()
+		{			
+			var elf64 = ELFReader.Load64("hello64le");
+			Assert.AreEqual(Class.Bit64, elf64.Class);
 		}
 		
 		[Test]
 		public void ShouldProperlyParseEndianess()
 		{
-			var elf = ELFReader.Load("hello32le");			
-			Assert.AreEqual(Endianess.LittleEndian, elf.Endianess);			
+			var elf = ELFReader.Load32("hello32le");			
+			Assert.AreEqual(Endianess.LittleEndian, elf.Endianess);
 		}
 		
 	}
