@@ -27,6 +27,14 @@ namespace ELFSharp
 				return unchecked((uint) MachineFlagsLong);
 			}
 		}
+		
+		protected override void CheckClass ()
+		{
+			if(Class != Class.Bit32)
+			{
+				throw new ArgumentException("Given ELF file is not 32 bit as you assumed.");
+			}
+		}
     }
 	
 

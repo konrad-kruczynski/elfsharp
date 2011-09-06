@@ -27,5 +27,13 @@ namespace ELFSharp
 				return MachineFlagsLong;
 			}
 		}
+		
+		protected override void CheckClass ()
+		{
+			if(Class != Class.Bit64)
+			{
+				throw new ArgumentException("Given ELF file is not 64 bit as you assumed.");
+			}
+		}
 	}
 }
