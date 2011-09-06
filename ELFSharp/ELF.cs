@@ -132,6 +132,8 @@ namespace ELFSharp
                 }
             }
         }
+		
+		protected abstract void CheckClass();
 
         private void FindObjectsStringTable()
         {
@@ -173,6 +175,7 @@ namespace ELFSharp
         private void ReadHeader()
         {
             ReadIdentificator();
+			CheckClass();
             ReadFields();
         }
 
