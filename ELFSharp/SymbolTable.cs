@@ -23,7 +23,7 @@ namespace ELFSharp
             using (var reader = ObtainReader())
             {
                 entries = new List<SymbolEntry>();
-                for (var i = 0; i < Header.Size; i += 16) // TODO: convert to const
+                for (var i = 0; i < Header.SizeLong; i += 16) // TODO: convert to const
                 {
                     var nameIdx = reader.ReadUInt32();
                     var value = reader.ReadUInt32();

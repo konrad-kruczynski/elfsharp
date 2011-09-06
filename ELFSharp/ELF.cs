@@ -168,7 +168,9 @@ namespace ELFSharp
             stream.Seek(sectionHeaderOffset + index * sectionHeaderEntrySize, SeekOrigin.Begin);
             // TODO: dispose other binary readers
             var reader = new BinaryReader(stream);
-            return new SectionHeader(reader, SectionsStringTable);
+            return Class == Class.Bit32 ?
+				(SectionHeader) new SectionHeader32(reader, SectionsStringTable) :
+				(SectionHeader) new SectionHeader64(reader, SectionsStringTable);					
         }
 
 

@@ -9,7 +9,7 @@ namespace ELFSharp
     {
         internal StringTable(SectionHeader header, Func<BinaryReader> readerSource) : base(header, readerSource)
         {
-            stringsByIdx = new Dictionary<uint, string>();
+            stringsByIdx = new Dictionary<long, string>();
             ReadStrings();
         }
 
@@ -20,10 +20,10 @@ namespace ELFSharp
                 reader.ReadByte(); // NULL char
                 stringsByIdx.Add(0, string.Empty);
                 // TODO: make buffered reader or sth better
-                var currentIdx = 1u;
-                var lastKey = 1u;
+                var currentIdx = 1L;
+                var lastKey = 1L;
                 var builder = new StringBuilder();
-                while (currentIdx < Header.Size)
+                while (currentIdx < Header.SizeLong)
                 {
                     currentIdx += 1;
                     var character = reader.ReadByte();
@@ -47,7 +47,7 @@ namespace ELFSharp
             }
         }
 
-        internal string this[uint index]
+        internal string this[long index]
         {
             get
             {
@@ -60,9 +60,9 @@ namespace ELFSharp
             }
         }
 
-        private void HandleUnexpectedIndex(uint index)
+        private void HandleUnexpectedIndex(long index)
         {
-            if(index >= Header.Size)
+            if(index >= Header.SizeLong)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
@@ -74,6 +74,6 @@ namespace ELFSharp
             stringsByIdx.Add(index, stringsByIdx[previousIndex].Substring(Convert.ToInt32(index - previousIndex)));
         }
 
-        private readonly Dictionary<uint, string> stringsByIdx;
+        private readonly Dictionary<long, string> stringsByIdx;
     }
 }
