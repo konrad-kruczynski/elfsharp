@@ -33,6 +33,7 @@
     <Compile Include="OpeningTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SectionHeadersParsingTests.cs" />
+    <Compile Include="StringTableTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
