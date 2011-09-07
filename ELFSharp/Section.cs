@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using MiscUtil.IO;
 
 namespace ELFSharp
 {
     public class Section
     {
-        internal Section(SectionHeader header, Func<BinaryReader> readerSourceSourceSource) // + rozne property sekcji wyczytane z naglowka sekcji
+        internal Section(SectionHeader header, Func<EndianBinaryReader> readerSourceSourceSource) // + rozne property sekcji wyczytane z naglowka sekcji
         {
             Header = header;
             this.readerSourceSourceSource = readerSourceSourceSource;
@@ -21,13 +22,13 @@ namespace ELFSharp
             }
         }
 
-        protected BinaryReader ObtainReader()
+        protected EndianBinaryReader ObtainReader()
         {
             var reader = readerSourceSourceSource();
             reader.BaseStream.Seek(Header.Offset, SeekOrigin.Begin);
             return reader;
         }
 
-        private readonly Func<BinaryReader> readerSourceSourceSource;
+        private readonly Func<EndianBinaryReader> readerSourceSourceSource;
     }
 }

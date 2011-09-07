@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using MiscUtil.IO;
 
 namespace ELFSharp
 {
     public class StringTable : Section
     {
-        internal StringTable(SectionHeader header, Func<BinaryReader> readerSource) : base(header, readerSource)
+        internal StringTable(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
             stringsByIdx = new Dictionary<uint, string>();
             ReadStrings();

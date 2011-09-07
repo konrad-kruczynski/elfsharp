@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MiscUtil.IO;
+using MiscUtil.Conversion;
 
 namespace ELFSharp
 {
@@ -11,8 +13,7 @@ namespace ELFSharp
         {
             this.fileName = fileName;
             stream = GetNewStream();
-            ReadHeader();
-            readerSource = () => new BinaryReader(GetNewStream());
+            ReadHeader();			
             ReadStringTable();
             ReadSectionHeaders();
             FindObjectsStringTable();
@@ -163,7 +164,7 @@ namespace ELFSharp
             }
             stream.Seek(sectionHeaderOffset + index * sectionHeaderEntrySize, SeekOrigin.Begin);
             // TODO: dispose other binary readers
-            var reader = new BinaryReader(stream);
+            var reader = localReaderSource();
             return new SectionHeader(reader, SectionsStringTable);
         }
 
@@ -171,13 +172,24 @@ namespace ELFSharp
         private void ReadHeader()
         {
             ReadIdentificator();
+			EndianBitConverter converter;
+			if(Endianess == Endianess.LittleEndian)
+			{
+				converter = new LittleEndianBitConverter();
+			}
+			else
+			{
+				converter = new BigEndianBitConverter();
+			}
+            readerSource = () => new EndianBinaryReader(converter, GetNewStream());
+			localReaderSource = () => new EndianBinaryReader(converter, stream);
             ReadFields();
         }
 
         private void ReadFields()
         {
             // TODO: take care of endianess
-            var reader = new BinaryReader(stream);
+            var reader = localReaderSource();
             Type = (FileType) reader.ReadUInt16();
             Machine = (Machine) reader.ReadUInt16();
             var version = reader.ReadUInt32();
@@ -231,12 +243,7 @@ namespace ELFSharp
                     break;
                 default:
                     throw new ArgumentException(string.Format("Given ELF file uses unknown endianess {0}.", endianessByte));
-            }
-			if((Endianess == Endianess.BigEndian && BitConverter.IsLittleEndian)
-			   || (Endianess == Endianess.LittleEndian && !BitConverter.IsLittleEndian))
-			{
-				throw new ArgumentException("Given ELF is of different endianess than your machine.");
-			}
+            }			
             reader.ReadBytes(10); // padding bytes of section e_ident
         }
 
@@ -252,8 +259,9 @@ namespace ELFSharp
         private List<SectionHeader> sectionHeaders;
         private Dictionary<string, int> sectionsByName;
         private StringTable objectsStringTable;
-        private readonly string fileName;
-        private readonly Func<BinaryReader> readerSource;
+		private Func<EndianBinaryReader> readerSource;
+		private Func<EndianBinaryReader> localReaderSource;
+        private readonly string fileName;        
 
         private static readonly byte[] Magic = new byte[] { 0x7F, 0x45, 0x4C, 0x46 }; // 0x7F 'E' 'L' 'F'
     }

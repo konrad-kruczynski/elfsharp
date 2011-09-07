@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MiscUtil.IO;
 
 namespace ELFSharp
 {
     public class SymbolTable : Section
     {
-        internal SymbolTable(SectionHeader header, Func<BinaryReader> readerSource, StringTable table, ELF elf) : base(header, readerSource)
+        internal SymbolTable(SectionHeader header, Func<EndianBinaryReader> readerSource, StringTable table, ELF elf) : base(header, readerSource)
         {
             this.table = table;
             this.elf = elf;

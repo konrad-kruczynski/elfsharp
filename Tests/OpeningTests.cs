@@ -28,6 +28,12 @@ namespace Tests
 			Assert.AreEqual(Endianess.LittleEndian, elf.Endianess);			
 		}
 		
+		[Test]
+		public void ShouldOpenBigEndian()
+		{
+			ELFReader.Load("vmlinuxOpenRisc");
+		}
+		
 	}
 }
 

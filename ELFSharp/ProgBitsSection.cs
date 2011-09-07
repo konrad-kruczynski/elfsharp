@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using MiscUtil.IO;
 
 namespace ELFSharp
 {
     public class ProgBitsSection : Section
     {
-        internal ProgBitsSection(SectionHeader header, Func<BinaryReader> readerSource) : base(header, readerSource)
+        internal ProgBitsSection(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
         }
         
