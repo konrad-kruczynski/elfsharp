@@ -11,10 +11,19 @@ namespace Tests
 		[Test]
 		public void ShouldFindAllStrings()
 		{
-			var elf32 = ELFReader.Load32("hello32le");
-			Assert.IsTrue(elf32.HasSectionsStringTable, 
+			var elf = ELFReader.Load("hello32le");
+			Assert.IsTrue(elf.HasSectionsStringTable, 
 			              "Sections string table was not found in 32 bit ELF.");
-			Assert.AreEqual(29, elf32.SectionsStringTable.Strings.Count());
+			Assert.AreEqual(29, elf.SectionsStringTable.Strings.Count());
+		}
+		
+		[Test]
+		public void ShouldFindAllStringsBigEndian()
+		{
+			var elf = ELFReader.Load("vmlinuxOpenRisc");
+			Assert.IsTrue(elf.HasSectionsStringTable,
+			              "Sections string table was not found in 32 bit big endian ELF.");
+			Assert.AreEqual(28, elf.SectionsStringTable.Strings.Count());
 		}
 	}
 }
