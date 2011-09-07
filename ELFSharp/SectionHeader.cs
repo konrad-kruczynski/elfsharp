@@ -1,11 +1,12 @@
 ﻿using System.IO;
+using MiscUtil.IO;
 
 namespace ELFSharp
 {
     public class SectionHeader
     {
         // TODO: make elf consts file with things like SHT_LOUSER
-        internal SectionHeader(BinaryReader reader, StringTable table = null)
+        internal SectionHeader(EndianBinaryReader reader, StringTable table = null)
         {
             this.reader = reader;
             this.table = table;
@@ -42,7 +43,7 @@ namespace ELFSharp
             // TODO: pozostale elementy naglowka sekcji
         }
 
-        private readonly BinaryReader reader;
+        private readonly EndianBinaryReader reader;
         private StringTable table;
     }
 }
