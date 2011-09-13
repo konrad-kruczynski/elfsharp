@@ -1,6 +1,6 @@
 This is ELFSharp, a C# library by Konrad Kruczyński for manipulating binary
 files in ELF format. This is open source software, for more informations please
-visit http://elfsharp.heliohost.org/
+visit http://antmicro.com/projects/elfsharp/
 
 This product includes software developed by Jon Skeet
 and Marc Gravell. Contact skeet@pobox.com, or see 
