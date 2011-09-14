@@ -34,6 +34,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SectionHeadersParsingTests.cs" />
     <Compile Include="StringTableTests.cs" />
+    <Compile Include="ProgramHeaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

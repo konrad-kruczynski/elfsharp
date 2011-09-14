@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using MiscUtil.IO;
+using System;
 
 namespace ELFSharp
 {
@@ -46,4 +47,5 @@ namespace ELFSharp
         private readonly EndianBinaryReader reader;
         private StringTable table;
     }
+	
 }
