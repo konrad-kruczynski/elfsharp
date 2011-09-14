@@ -16,6 +16,7 @@ namespace ELFSharp
             ReadHeader();			
             ReadStringTable();
             ReadSectionHeaders();
+			ReadProgramHeaders();
             FindObjectsStringTable();
         }
 
@@ -45,6 +46,11 @@ namespace ELFSharp
         {
             get { return sectionHeaders; }
         }
+		
+		public IEnumerable<ProgramHeader> ProgramHeaders
+		{
+			get { return programHeaders; }
+		}
 
         public StringTable SectionsStringTable { get; private set; }
 
@@ -113,6 +119,16 @@ namespace ELFSharp
         {
             return new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
+		
+		private void ReadProgramHeaders()
+		{
+			programHeaders = new List<ProgramHeader>(programHeaderEntryCount);
+			for(var i = 0u; i < programHeaderEntryCount; i++)
+			{
+				var header = new ProgramHeader(programHeaderOffset + i*programHeaderEntrySize, readerSource);
+				programHeaders.Add(header);
+			}
+		}
 
         private void ReadSectionHeaders()
         {
@@ -257,6 +273,7 @@ namespace ELFSharp
         private UInt16 sectionHeaderEntryCount;
         private UInt16 stringTableIndex;
         private List<SectionHeader> sectionHeaders;
+		private List<ProgramHeader> programHeaders;
         private Dictionary<string, int> sectionsByName;
         private StringTable objectsStringTable;
 		private Func<EndianBinaryReader> readerSource;
