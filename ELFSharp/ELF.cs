@@ -93,7 +93,9 @@ namespace ELFSharp
                 case SectionType.ProgBits:
                     return new ProgBitsSection(header, readerSource);
                 case SectionType.SymbolTable:
-                    return new SymbolTable(header, readerSource, objectsStringTable, this);
+                    return Class == Class.Bit32 ? 
+						(SymbolTable) new SymbolTable32(header, readerSource, objectsStringTable, this) :
+						(SymbolTable) new SymbolTable64(header, readerSource, objectsStringTable, this);
                 case SectionType.StringTable:
                     return new StringTable(header, readerSource);
                 case SectionType.RelocationAddends:
@@ -101,7 +103,7 @@ namespace ELFSharp
                 case SectionType.HashTable:
                     break;
                 case SectionType.Dynamic:
-                    break;
+					break;                    
                 case SectionType.Note:
                     break;
                 case SectionType.NoBits:
@@ -111,7 +113,9 @@ namespace ELFSharp
                 case SectionType.Shlib:
                     break;
                 case SectionType.DynamicSymbolTable:
-                    break;
+                    return Class == Class.Bit32 ? 
+						(SymbolTable) new SymbolTable32(header, readerSource, (StringTable) GetSection(".dynstr"), this) :
+						(SymbolTable) new SymbolTable64(header, readerSource, (StringTable) GetSection(".dynstr"), this);
                 default:
                     return null;
             }
