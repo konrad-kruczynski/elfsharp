@@ -30,11 +30,13 @@ namespace ELFSharp
 		public byte[] GetContents()
 		{
 			// TODO: large segments
-			var reader = ObtainReader(offset);
-			var result = new byte[(int)LongSize];
-			var fileImage = reader.ReadBytesOrThrow((int)fileSize);
-			fileImage.CopyTo(result, 0);
-			return result;
+			using(var reader = ObtainReader(offset))
+			{
+				var result = new byte[(int)LongSize];
+				var fileImage = reader.ReadBytesOrThrow((int)fileSize);
+				fileImage.CopyTo(result, 0);
+				return result;
+			}
 		}
 		
 		public override string ToString ()
