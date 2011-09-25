@@ -14,6 +14,7 @@ namespace ELFSharp
 		{
 			this.fileName = fileName;
             stream = GetNewStream();
+			CheckSize();
             ReadHeader();			
             ReadStringTable();
             ReadSectionHeaders();
@@ -153,6 +154,15 @@ namespace ELFSharp
         }
 		
 		protected abstract void CheckClass();
+		
+		private void CheckSize()
+		{
+			var size = stream.Length < 16;
+			if(size)
+			{
+				throw new ArgumentException(string.Format("Given ELF file is too short, has size {0}", size));
+			}
+		}
 
         private void FindObjectsStringTable()
         {
