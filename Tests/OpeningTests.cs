@@ -7,6 +7,19 @@ namespace Tests
 	[TestFixture]
 	public class OpeningTests
 	{
+		[Test]
+		public void ShouldChooseGoodClass32()
+		{
+			var elf = ELFReader.Load("hello32le");
+			Assert.AreEqual(Class.Bit32, elf.Class);
+		}
+		
+		[Test]
+		public void ShouldChooseGoodClass64()
+		{
+			var elf = ELFReader.Load("hello64le");
+			Assert.AreEqual(Class.Bit64, elf.Class);
+		}
 		
 		[Test]
 		public void ShouldOpenHelloWorld32()

@@ -213,7 +213,6 @@ namespace ELFSharp
 
         private void ReadFields()
         {
-            // TODO: take care of endianess
             var reader = localReaderSource();
             Type = (FileType) reader.ReadUInt16();
             Machine = (Machine) reader.ReadUInt16();
@@ -226,7 +225,6 @@ namespace ELFSharp
 			// TODO: assertions for (u)longs
             programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
             sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-            //MachineFlagsLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
 			MachineFlagsLong = reader.ReadUInt32();
             reader.ReadUInt16(); // elf header size
             programHeaderEntrySize = reader.ReadUInt16();
