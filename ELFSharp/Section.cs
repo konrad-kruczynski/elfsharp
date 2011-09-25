@@ -18,7 +18,7 @@ namespace ELFSharp
         {
             using(var reader = ObtainReader())
             {
-                return reader.ReadBytes(Convert.ToInt32(Header.Size));
+                return reader.ReadBytes(Convert.ToInt32(Header.SizeLong));
             }
         }
 

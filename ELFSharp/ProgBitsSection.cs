@@ -15,9 +15,9 @@ namespace ELFSharp
         {
             using (var reader = ObtainReader())
             {
-                if (length == 0 || length > Header.Size)
+                if (length == 0 || length > Header.SizeLong)
                 {
-                    length = Convert.ToInt32(Header.Size);
+                    length = Convert.ToInt32(Header.SizeLong);
                 }
                 var remaining = length;
                 while (remaining > 0)
