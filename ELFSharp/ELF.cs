@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,11 +7,12 @@ using MiscUtil.Conversion;
 
 namespace ELFSharp
 {
-    public class ELF
-    {
-        internal ELF(string fileName)
-        {
-            this.fileName = fileName;
+	public abstract class ELF
+	{
+		
+		internal ELF(string fileName)
+		{
+			this.fileName = fileName;
             stream = GetNewStream();
             ReadHeader();			
             ReadStringTable();
@@ -24,14 +25,15 @@ namespace ELFSharp
         public Class Class { get; private set; }
         public FileType Type { get; private set; }
         public Machine Machine { get; private set; }
-        public UInt32 EntryPoint { get; private set; }
-        public UInt32 MachineFlags { get; private set; }
-
-        public bool HasProgramHeader
+		
+		protected UInt64 EntryPointLong { get; private set; }
+        protected UInt64 MachineFlagsLong { get; private set; }
+		
+		public bool HasProgramHeader
         {
             get { return programHeaderOffset != 0; }
         }
-
+		
         public bool HasSectionHeader
         {
             get { return sectionHeaderOffset != 0; }
@@ -125,7 +127,9 @@ namespace ELFSharp
 			programHeaders = new List<ProgramHeader>(programHeaderEntryCount);
 			for(var i = 0u; i < programHeaderEntryCount; i++)
 			{
-				var header = new ProgramHeader(programHeaderOffset + i*programHeaderEntrySize, readerSource);
+				var header = Class == Class.Bit32 ?
+					(ProgramHeader) new ProgramHeader32(programHeaderOffset + i*programHeaderEntrySize, readerSource) :
+					(ProgramHeader) new ProgramHeader64(programHeaderOffset + i*programHeaderEntrySize, readerSource);
 				programHeaders.Add(header);
 			}
 		}
@@ -147,6 +151,8 @@ namespace ELFSharp
                 }
             }
         }
+		
+		protected abstract void CheckClass();
 
         private void FindObjectsStringTable()
         {
@@ -161,7 +167,7 @@ namespace ELFSharp
         private void ReadStringTable()
         {
             if (!HasSectionHeader || !HasSectionsStringTable)
-            {
+            {				
                 return;
             }
             var header = ReadSectionHeader(stringTableIndex);
@@ -180,8 +186,10 @@ namespace ELFSharp
             }
             stream.Seek(sectionHeaderOffset + index * sectionHeaderEntrySize, SeekOrigin.Begin);
             // TODO: dispose other binary readers
-            var reader = localReaderSource();
-            return new SectionHeader(reader, SectionsStringTable);
+            var reader = localReaderSource();			
+            return Class == Class.Bit32 ?
+				(SectionHeader) new SectionHeader32(reader, SectionsStringTable) :
+				(SectionHeader) new SectionHeader64(reader, SectionsStringTable);
         }
 
 
@@ -199,6 +207,7 @@ namespace ELFSharp
 			}
             readerSource = () => new EndianBinaryReader(converter, GetNewStream());
 			localReaderSource = () => new EndianBinaryReader(converter, stream);
+			CheckClass();
             ReadFields();
         }
 
@@ -213,11 +222,13 @@ namespace ELFSharp
             {
                 throw new ArgumentException(string.Format("Given ELF file is of unknown version {0}.", version));
             }
-            EntryPoint = reader.ReadUInt32();
-            programHeaderOffset = reader.ReadUInt32();
-            sectionHeaderOffset = reader.ReadUInt32();
-            MachineFlags = reader.ReadUInt32();
-            elfHeaderSize = reader.ReadUInt16();
+            EntryPointLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+			// TODO: assertions for (u)longs
+            programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+            sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+            //MachineFlagsLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+			MachineFlagsLong = reader.ReadUInt32();
+            reader.ReadUInt16(); // elf header size
             programHeaderEntrySize = reader.ReadUInt16();
             programHeaderEntryCount = reader.ReadUInt16();
             sectionHeaderEntrySize = reader.ReadUInt16();
@@ -244,7 +255,7 @@ namespace ELFSharp
                     break;
                 case 2:
                     Class = Class.Bit64;
-					throw new ArgumentException("Given ELF 64-bit. Currently, only 32-bit files can be read");
+					break;
                 default:
                     throw new ArgumentException(string.Format("Given ELF file is of unknown class {0}.", classByte));
             }
@@ -264,9 +275,8 @@ namespace ELFSharp
         }
 
         private readonly FileStream stream;
-        private UInt32 programHeaderOffset;
-        private UInt32 sectionHeaderOffset;
-        private UInt16 elfHeaderSize;
+        private Int64 programHeaderOffset;
+        private Int64 sectionHeaderOffset;
         private UInt16 programHeaderEntrySize;
         private UInt16 programHeaderEntryCount;
         private UInt16 sectionHeaderEntrySize;
@@ -281,5 +291,6 @@ namespace ELFSharp
         private readonly string fileName;        
 
         private static readonly byte[] Magic = new byte[] { 0x7F, 0x45, 0x4C, 0x46 }; // 0x7F 'E' 'L' 'F'
-    }
+	}
 }
+

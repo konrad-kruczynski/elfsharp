@@ -4,23 +4,21 @@ using System.IO;
 
 namespace ELFSharp
 {
-	public sealed class ProgramHeader
+	public abstract class ProgramHeader
 	{
-		internal ProgramHeader(uint headerOffset, Func<EndianBinaryReader> readerSource)
+		internal ProgramHeader(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
         {            
             this.readerSource = readerSource;			
 			this.headerOffset = headerOffset;
+			this.elfClass = elfClass;
 			ReadHeader();
         }
 		
-		public uint Address { get; private set; }
-		public uint PhysicalAddress { get; private set; }
 		public ProgramHeaderType Type { get; private set; }
-		
-		/// <summary>
-		/// Size of the segment image in memory.
-		/// </summary>
-		public uint Size { get; private set; }
+		protected ulong LongAddress { get; private set; }
+		protected ulong LongPhysicalAddress { get; private set; }
+		protected uint Flags { get; private set; }		
+		protected ulong LongSize { get; private set; }
 		
 		/// <summary>
 		/// Gets array containing complete segment image, including
@@ -31,8 +29,9 @@ namespace ELFSharp
 		/// </returns>
 		public byte[] GetContents()
 		{
+			// TODO: large segments
 			var reader = ObtainReader(offset);
-			var result = new byte[Size];
+			var result = new byte[(int)LongSize];
 			var fileImage = reader.ReadBytesOrThrow((int)fileSize);
 			fileImage.CopyTo(result, 0);
 			return result;
@@ -40,31 +39,37 @@ namespace ELFSharp
 		
 		public override string ToString ()
 		{
-			return string.Format ("{2}: size {3}, @ 0x{0:X}", Address, PhysicalAddress, Type, Size);
+			return string.Format ("{2}: size {3}, @ 0x{0:X}", LongAddress, LongPhysicalAddress, Type, LongSize);
 		}
 		
 		private void ReadHeader()
 		{
-			var reader = ObtainReader(headerOffset);
+			var reader = ObtainReader(offset); // TODO: using!
+			
 			Type = (ProgramHeaderType) reader.ReadUInt32();
-			offset = reader.ReadUInt32();
-			Address = reader.ReadUInt32();
-			PhysicalAddress = reader.ReadUInt32();
-			fileSize = reader.ReadUInt32();
-			Size = reader.ReadUInt32();
+			if(elfClass == Class.Bit64)
+			{
+				Flags = reader.ReadUInt32();
+			}
+			offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+			LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+			LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+			fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+			LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
 			// TODO: flags & alignment
-		}	
+		}
 		
-		private EndianBinaryReader ObtainReader(uint givenOffset)
+		protected EndianBinaryReader ObtainReader(long givenOffset)
 		{
 			var reader = readerSource();
 			reader.BaseStream.Seek(givenOffset, SeekOrigin.Begin);
 			return reader;
 		}
 		
-		private uint offset;
-		private uint headerOffset;
-		private uint fileSize;
+		protected long headerOffset;
+		protected Class elfClass;
+		private long offset;		
+		private ulong fileSize;
 		private Func<EndianBinaryReader> readerSource;
 		
 	}
