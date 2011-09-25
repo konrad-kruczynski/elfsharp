@@ -44,19 +44,20 @@ namespace ELFSharp
 		
 		private void ReadHeader()
 		{
-			var reader = ObtainReader(offset); // TODO: using!
-			
-			Type = (ProgramHeaderType) reader.ReadUInt32();
-			if(elfClass == Class.Bit64)
+			using(var reader = ObtainReader(offset)) 
 			{
-				Flags = reader.ReadUInt32();
+				Type = (ProgramHeaderType) reader.ReadUInt32();
+				if(elfClass == Class.Bit64)
+				{
+					Flags = reader.ReadUInt32();
+				}
+				offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+				LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				// TODO: flags & alignment
 			}
-			offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-			LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-			LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-			fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-			LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-			// TODO: flags & alignment
 		}
 		
 		protected EndianBinaryReader ObtainReader(long givenOffset)
