@@ -29,13 +29,21 @@ namespace ELFSharp
 		/// <summary>
 		/// Size of the segment image in memory.
 		/// </summary>
-		protected ulong Size 
-		{ 
-			get
-			{
-				return LongSize;
-			}			
-		}
+		public ulong Size
+        { 
+            get
+            {
+                return LongSize;
+            }			
+        }
+
+        public ulong Alignment
+        {
+            get
+            {
+                return LongAlignment;
+            }
+        }
 	}
 }
 

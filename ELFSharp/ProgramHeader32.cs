@@ -14,7 +14,7 @@ namespace ELFSharp
 		{ 
 			get
 			{
-				return (uint) LongAddress;
+				return (uint)LongAddress;
 			}
 		}
 		
@@ -22,20 +22,28 @@ namespace ELFSharp
 		{ 
 			get
 			{
-				return (uint) LongPhysicalAddress;
+				return (uint)LongPhysicalAddress;
 			}
 		}
 		
 		/// <summary>
 		/// Size of the segment image in memory.
 		/// </summary>
-		public uint Size 
-		{ 
-			get
-			{
-				return (uint) LongSize;
-			}			
-		}
+		public uint Size
+        { 
+            get
+            {
+                return (uint)LongSize;
+            }			
+        }
+
+        public uint Alignment
+        {
+            get
+            {
+                return (uint)LongAlignment;
+            }
+        }
 	}
 }
 

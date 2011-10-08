@@ -15,10 +15,11 @@ namespace ELFSharp
         }
 		
 		public ProgramHeaderType Type { get; private set; }
+        public ProgramHeaderFlags Flags { get; private set; }
 		protected ulong LongAddress { get; private set; }
 		protected ulong LongPhysicalAddress { get; private set; }
-		protected uint Flags { get; private set; }		
 		protected ulong LongSize { get; private set; }
+        protected ulong LongAlignment { get; private set; }
 		
 		/// <summary>
 		/// Gets array containing complete segment image, including
@@ -45,22 +46,26 @@ namespace ELFSharp
 		}
 		
 		private void ReadHeader()
-		{
-			using(var reader = ObtainReader(offset)) 
-			{
-				Type = (ProgramHeaderType) reader.ReadUInt32();
-				if(elfClass == Class.Bit64)
-				{
-					Flags = reader.ReadUInt32();
-				}
-				offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-				LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-				LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-				fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-				LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-				// TODO: flags & alignment
-			}
-		}
+        {
+            using(var reader = ObtainReader(headerOffset))
+            {
+                Type = (ProgramHeaderType)reader.ReadUInt32();
+                if(elfClass == Class.Bit64)
+                {
+                    Flags = (ProgramHeaderFlags)reader.ReadUInt32();
+                }
+                offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+                LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                if(elfClass == Class.Bit32)
+                {
+                    Flags = (ProgramHeaderFlags)reader.ReadUInt32();
+                }
+                LongAlignment = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+            }
+        }
 		
 		protected EndianBinaryReader ObtainReader(long givenOffset)
 		{

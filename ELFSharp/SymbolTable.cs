@@ -25,8 +25,8 @@ namespace ELFSharp
             {
                 entries32 = new List<SymbolEntry32>();
 				entries64 = new List<SymbolEntry64>();
-				var adder = elf.Class == Class.Bit32 ? 16 : 24;
-                for (var i = 0; i < Header.SizeLong; i += adder) // TODO: convert to const
+				var adder = elf.Class == Class.Bit32 ? Consts.SymbolEntrySize32 : Consts.SymbolEntrySize64;
+                for (var i = 0; i < Header.SizeLong; i += adder)
                 {
 					var value = 0UL;
 					var size = 0UL;
