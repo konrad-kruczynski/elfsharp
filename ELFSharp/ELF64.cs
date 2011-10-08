@@ -9,8 +9,13 @@ namespace ELFSharp
 	{
 		internal ELF64(string fileName) : base(fileName)
 		{
-			
-		}
+			sectionHeaders = base.SectionHeaders.Cast<SectionHeader64>().ToList();
+        }
+
+        public new IEnumerable<SectionHeader64> SectionHeaders
+        {
+            get { return sectionHeaders; }
+        }
 		
 		public UInt64 EntryPoint
 		{
@@ -28,12 +33,14 @@ namespace ELFSharp
 			}
 		}
 		
-		protected override void CheckClass ()
-		{
-			if(Class != Class.Bit64)
-			{
-				throw new ArgumentException("Given ELF file is not 64 bit as you assumed.");
-			}
-		}
+		protected override void CheckClass()
+        {
+            if(Class != Class.Bit64)
+            {
+                throw new ArgumentException("Given ELF file is not 64 bit as you assumed.");
+            }
+        }
+
+        private List<SectionHeader64> sectionHeaders;
 	}
 }

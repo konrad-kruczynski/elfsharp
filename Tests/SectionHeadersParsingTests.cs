@@ -17,10 +17,42 @@ namespace Tests
 		
 		[Test]
 		public void ShouldFind29Sections64()
-		{
-			var elf = ELFReader.Load64("hello64le");
-			Assert.AreEqual(27, elf.SectionHeaders.Count());
-		}
+        {
+            var elf = ELFReader.Load64("hello64le");
+            Assert.AreEqual(27, elf.SectionHeaders.Count());
+        }
+
+        [Test]
+        public void ShouldFindProperAlignment32()
+        {
+            var elf = ELFReader.Load32("hello32le");
+            var header = elf.SectionHeaders.First(x => x.Name == ".init");
+            Assert.AreEqual(4, header.Alignment);
+        }
+
+        [Test]
+        public void ShouldFindProperAlignment64()
+        {
+            var elf = ELFReader.Load64("hello64le");
+            var header = elf.SectionHeaders.First(x => x.Name == ".text");
+            Assert.AreEqual(16, header.Alignment);
+        }
+
+        [Test]
+        public void ShouldFindProperEntrySize32()
+        {
+            var elf = ELFReader.Load32("hello32le");
+            var header = elf.SectionHeaders.First(x => x.Name == ".dynsym");
+            Assert.AreEqual(0x10, header.EntrySize);
+        }
+
+        [Test]
+        public void ShouldFindProperEntrySize64()
+        {
+            var elf = ELFReader.Load64("hello64le");
+            var header = elf.SectionHeaders.First(x => x.Name == ".dynsym");
+            Assert.AreEqual(0x18, header.EntrySize);
+        }
 	}
 }
 

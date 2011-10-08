@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Linq;
+using System.IO;
 using MiscUtil.IO;
 using System;
 
@@ -17,12 +18,18 @@ namespace ELFSharp
 
         public string Name { get; private set; }
         public uint NameIndex { get; private set; }
-        public SectionType Type { get; private set; }        
-		
+        public SectionType Type { get; private set; }
+        public SectionFlags Flags { get; private set; }
+
 		internal long Offset { get; private set; }
+        internal uint Link { get; private set; }
+        internal uint Info { get; private set; }
 		
 		protected ulong FlagsLong { get; private set; }
         protected ulong LoadAddressLong { get; private set; }
+        protected ulong AlignmentLong { get; private set; }
+        protected ulong EntrySizeLong { get; private set; }
+        
 		internal long SizeLong { get; private set; }
 		
 		public override string ToString()
@@ -37,12 +44,26 @@ namespace ELFSharp
             {
                 Name = table[NameIndex];
             }
-            Type = (SectionType) reader.ReadUInt32();
-            FlagsLong = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-            LoadAddressLong = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-            Offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-            SizeLong = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-            // TODO: remaining section header items
+            Type = (SectionType)reader.ReadUInt32();
+            FlagsLong = ReadAddress();
+            Flags = unchecked((SectionFlags)FlagsLong);
+            LoadAddressLong = ReadAddress();
+            Offset = ReadOffset();
+            SizeLong = ReadOffset();
+            Link = reader.ReadUInt32();
+            Info = reader.ReadUInt32();
+            AlignmentLong = ReadAddress();
+            EntrySizeLong = ReadAddress();
+        }
+
+        private ulong ReadAddress()
+        {
+            return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+        }
+
+        private long ReadOffset()
+        {
+            return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
         }
 
         private readonly EndianBinaryReader reader;
