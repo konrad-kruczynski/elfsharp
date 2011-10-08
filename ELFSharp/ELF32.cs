@@ -9,7 +9,12 @@ namespace ELFSharp
     {
         internal ELF32(string fileName) : base(fileName)
         {
-            
+            sectionHeaders = base.SectionHeaders.Cast<SectionHeader32>().ToList();
+        }
+
+        public new IEnumerable<SectionHeader32> SectionHeaders
+        {
+            get { return sectionHeaders; }
         }
 		
         public UInt32 EntryPoint 
@@ -28,13 +33,15 @@ namespace ELFSharp
 			}
 		}
 		
-		protected override void CheckClass ()
-		{
-			if(Class != Class.Bit32)
-			{
-				throw new ArgumentException("Given ELF file is not 32 bit as you assumed.");
-			}
-		}
+		protected override void CheckClass()
+        {
+            if(Class != Class.Bit32)
+            {
+                throw new ArgumentException("Given ELF file is not 32 bit as you assumed.");
+            }
+        }
+
+        private List<SectionHeader32> sectionHeaders;
     }
 	
 

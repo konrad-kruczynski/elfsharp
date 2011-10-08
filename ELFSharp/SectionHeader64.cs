@@ -11,7 +11,7 @@ namespace ELFSharp
             
         }
 		
-		public ulong Flags
+		public ulong RawFlags
 		{
 			get
 			{
@@ -20,12 +20,28 @@ namespace ELFSharp
 		}
 		
 		public ulong LoadAddress
-		{
-			get
-			{
-				return LoadAddressLong;
-			}
-		}
+        {
+            get
+            {
+                return LoadAddressLong;
+            }
+        }
+
+        public ulong Alignment
+        {
+            get
+            {
+                return AlignmentLong;
+            }
+        }
+
+        public ulong EntrySize
+        {
+            get
+            {
+                return EntrySizeLong;
+            }
+        }
 		
 		public long Size
 		{

@@ -11,7 +11,7 @@ namespace ELFSharp
             
         }
 		
-		public uint Flags
+		public uint RawFlags
 		{
 			get
 			{
@@ -28,12 +28,28 @@ namespace ELFSharp
 		}
 		
 		public uint Size
-		{
-			get
-			{
-				return unchecked((uint) SizeLong);
-			}
-		}
+        {
+            get
+            {
+                return unchecked((uint)SizeLong);
+            }
+        }
+
+        public uint Alignment
+        {
+            get
+            {
+                return unchecked((uint)AlignmentLong);
+            }
+        }
+
+        public uint EntrySize
+        {
+            get
+            {
+                return unchecked((uint)EntrySizeLong);
+            }
+        }
 		
 	}
 }
