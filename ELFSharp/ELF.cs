@@ -166,12 +166,11 @@ namespace ELFSharp
 			{
 				throw new ArgumentException(string.Format("Given ELF file is too short, has size {0}", size));
 			}
-		}
 
+		}
         private void FindObjectsStringTable()
         {
-            // TODO: const it
-            var header = sectionHeaders.FirstOrDefault(x => x.Name == ".strtab");
+            var header = sectionHeaders.FirstOrDefault(x => x.Name == Consts.ObjectsStringTableName);
             if(header != null)
             {
                 objectsStringTable = new StringTable(header, readerSource);
@@ -193,59 +192,62 @@ namespace ELFSharp
         }
 
         private SectionHeader ReadSectionHeader(int index)
-        {
-            if (index < 0 || index >= sectionHeaderEntryCount)
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
-            stream.Seek(sectionHeaderOffset + index * sectionHeaderEntrySize, SeekOrigin.Begin);
-            // TODO: dispose other binary readers
-            var reader = localReaderSource();			
-            return Class == Class.Bit32 ?
-				(SectionHeader) new SectionHeader32(reader, SectionsStringTable) :
-				(SectionHeader) new SectionHeader64(reader, SectionsStringTable);
+		{
+			if(index < 0 || index >= sectionHeaderEntryCount)
+			{
+				throw new ArgumentOutOfRangeException("index");
+			}
+			stream.Seek(sectionHeaderOffset + index*sectionHeaderEntrySize, SeekOrigin.Begin);
+			using(var reader = localReaderSource())
+			{
+				return Class == Class.Bit32 ?
+				(SectionHeader)new SectionHeader32(reader, SectionsStringTable) :
+				(SectionHeader)new SectionHeader64(reader, SectionsStringTable);
+			}
         }
 
 
         private void ReadHeader()
-        {
-            ReadIdentificator();
+		{
+			ReadIdentificator();
 			EndianBitConverter converter;
-			if(Endianess == Endianess.LittleEndian)
+			if (Endianess == Endianess.LittleEndian)
 			{
 				converter = new LittleEndianBitConverter();
-			}
-			else
+			} else
 			{
 				converter = new BigEndianBitConverter();
 			}
-            readerSource = () => new EndianBinaryReader(converter, GetNewStream());
-			localReaderSource = () => new EndianBinaryReader(converter, stream);
-			CheckClass();
-            ReadFields();
-        }
+			readerSource = () => new EndianBinaryReader (converter, GetNewStream ());
+			localReaderSource = () => new EndianBinaryReader(converter, 
+				new NonClosingStreamWrapper(stream));
+			CheckClass ();
+			ReadFields ();
+		}
 
         private void ReadFields()
-        {
-            var reader = localReaderSource();
-            Type = (FileType) reader.ReadUInt16();
-            Machine = (Machine) reader.ReadUInt16();
-            var version = reader.ReadUInt32();
-            if(version != 1)
-            {
-                throw new ArgumentException(string.Format("Given ELF file is of unknown version {0}.", version));
-            }
-            EntryPointLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-			// TODO: assertions for (u)longs
-            programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-            sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-			MachineFlagsLong = reader.ReadUInt32();
-            reader.ReadUInt16(); // elf header size
-            programHeaderEntrySize = reader.ReadUInt16();
-            programHeaderEntryCount = reader.ReadUInt16();
-            sectionHeaderEntrySize = reader.ReadUInt16();
-            sectionHeaderEntryCount = reader.ReadUInt16();
-            stringTableIndex = reader.ReadUInt16();
+		{
+			using(var reader = localReaderSource())
+			{
+				Type = (FileType)reader.ReadUInt16();
+				Machine = (Machine)reader.ReadUInt16();
+				var version = reader.ReadUInt32();
+				if(version != 1)
+				{
+					throw new ArgumentException(string.Format("Given ELF file is of unknown version {0}.", version));
+				}
+				EntryPointLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				// TODO: assertions for (u)longs
+				programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+				sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+				MachineFlagsLong = reader.ReadUInt32();
+				reader.ReadUInt16(); // elf header size
+				programHeaderEntrySize = reader.ReadUInt16();
+				programHeaderEntryCount = reader.ReadUInt16();
+				sectionHeaderEntrySize = reader.ReadUInt16();
+				sectionHeaderEntryCount = reader.ReadUInt16();
+				stringTableIndex = reader.ReadUInt16();
+			}
         }
 
         private void ReadIdentificator()
