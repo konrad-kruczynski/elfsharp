@@ -8,13 +8,19 @@ namespace ELFSharp
 	public class ELF64 : ELF
 	{
 		internal ELF64(string fileName) : base(fileName)
-		{
-			sectionHeaders = base.SectionHeaders.Cast<SectionHeader64>().ToList();
+        {
+            sectionHeaders = base.SectionHeaders.Cast<SectionHeader64>().ToList();
+            programHeaders = base.ProgramHeaders.Cast<ProgramHeader64>().ToList();
         }
 
         public new IEnumerable<SectionHeader64> SectionHeaders
         {
             get { return sectionHeaders; }
+        }
+
+        public new IEnumerable<ProgramHeader64> ProgramHeaders
+        {
+            get { return programHeaders; }
         }
 		
 		public UInt64 EntryPoint
@@ -42,5 +48,6 @@ namespace ELFSharp
         }
 
         private List<SectionHeader64> sectionHeaders;
+        private List<ProgramHeader64> programHeaders;
 	}
 }
