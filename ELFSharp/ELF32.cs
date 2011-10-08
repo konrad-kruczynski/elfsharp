@@ -10,11 +10,17 @@ namespace ELFSharp
         internal ELF32(string fileName) : base(fileName)
         {
             sectionHeaders = base.SectionHeaders.Cast<SectionHeader32>().ToList();
+            programHeaders = base.ProgramHeaders.Cast<ProgramHeader32>().ToList();
         }
 
         public new IEnumerable<SectionHeader32> SectionHeaders
         {
             get { return sectionHeaders; }
+        }
+
+        public new IEnumerable<ProgramHeader32> ProgramHeaders
+        {
+            get { return programHeaders; }
         }
 		
         public UInt32 EntryPoint 
@@ -42,6 +48,7 @@ namespace ELFSharp
         }
 
         private List<SectionHeader32> sectionHeaders;
+        private List<ProgramHeader32> programHeaders;
     }
 	
 
