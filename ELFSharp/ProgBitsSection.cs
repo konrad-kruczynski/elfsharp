@@ -4,7 +4,7 @@ using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public class ProgBitsSection : Section
+    public abstract class ProgBitsSection : Section
     {
         internal ProgBitsSection(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
@@ -29,6 +29,6 @@ namespace ELFSharp
             }
         }
 
-        private const int BufferSize = 1024;
+        private const int BufferSize = 10 * 1024;
     }
 }

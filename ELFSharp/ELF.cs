@@ -108,7 +108,9 @@ namespace ELFSharp
                 case SectionType.Null:
                     break;
                 case SectionType.ProgBits:
-                    returned = new ProgBitsSection(header, readerSource);
+                    returned = Class == Class.Bit32 ?
+					 (ProgBitsSection) new ProgBitsSection32((SectionHeader32)header, readerSource) :
+					 (ProgBitsSection) new ProgBitsSection64((SectionHeader64)header, readerSource);
                     break;
                 case SectionType.SymbolTable:
                     returned = Class == Class.Bit32 ?
