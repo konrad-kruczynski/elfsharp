@@ -30,7 +30,7 @@ namespace ELFSharp
 				// return any, cause file is corrupted
 				return Class.Bit32;
 			}
-			using(var stream = new FileStream(fileName,FileMode.Open))
+			using(var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
 				stream.Seek(4, SeekOrigin.Begin);
 				var value = stream.ReadByte();
