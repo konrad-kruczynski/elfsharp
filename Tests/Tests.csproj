@@ -36,6 +36,7 @@
     <Compile Include="StringTableTests.cs" />
     <Compile Include="ProgramHeaderTests.cs" />
     <Compile Include="SymbolTableTests.cs" />
+    <Compile Include="ProgBitsSectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
