@@ -37,6 +37,7 @@
     <Compile Include="ProgramHeaderTests.cs" />
     <Compile Include="SymbolTableTests.cs" />
     <Compile Include="ProgBitsSectionTests.cs" />
+    <Compile Include="NoteSectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
