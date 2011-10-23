@@ -25,6 +25,14 @@ namespace ELFSharp
         internal uint Link { get; private set; }
         internal uint Info { get; private set; }
 		
+		internal Class ElfClass 
+		{
+			get
+			{
+				return elfClass;
+			}
+		}
+		
 		protected ulong FlagsLong { get; private set; }
         protected ulong LoadAddressLong { get; private set; }
         protected ulong AlignmentLong { get; private set; }
