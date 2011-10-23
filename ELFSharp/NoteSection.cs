@@ -16,15 +16,20 @@ namespace ELFSharp
 			}
 		}
 		
-		public string Description
+		public byte[] Description
 		{
 			get
 			{
 				return data.Description;
 			}
 		}
+
+        public override string ToString()
+        {
+            return string.Format("[{0}: {1}, Type={2}]", Name, Description, LongType);
+        }
 		
-		internal long LongType
+		internal ulong LongType
 		{
 			get
 			{
