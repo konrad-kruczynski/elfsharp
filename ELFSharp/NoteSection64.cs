@@ -21,7 +21,7 @@ namespace ELFSharp
 			}
 		}
 		
-		public long Type
+		public ulong Type
 		{
 			get
 			{

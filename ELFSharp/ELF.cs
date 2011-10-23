@@ -109,13 +109,13 @@ namespace ELFSharp
                     break;
                 case SectionType.ProgBits:
                     returned = Class == Class.Bit32 ?
-					 (ProgBitsSection) new ProgBitsSection32((SectionHeader32)header, readerSource) :
-					 (ProgBitsSection) new ProgBitsSection64((SectionHeader64)header, readerSource);
+					    (ProgBitsSection) new ProgBitsSection32((SectionHeader32)header, readerSource) :
+					    (ProgBitsSection) new ProgBitsSection64((SectionHeader64)header, readerSource);
                     break;
                 case SectionType.SymbolTable:
                     returned = Class == Class.Bit32 ?
-                     (SymbolTable)new SymbolTable32(header, readerSource, objectsStringTable, this) :
-                     (SymbolTable)new SymbolTable64(header, readerSource, objectsStringTable, this);
+                        (SymbolTable)new SymbolTable32(header, readerSource, objectsStringTable, this) :
+                        (SymbolTable)new SymbolTable64(header, readerSource, objectsStringTable, this);
                     break;
                 case SectionType.StringTable:
                     returned = new StringTable(header, readerSource);
@@ -127,6 +127,9 @@ namespace ELFSharp
                 case SectionType.Dynamic:
                     break;                    
                 case SectionType.Note:
+                    returned = Class == Class.Bit32 ?
+                        (NoteSection)new NoteSection32((SectionHeader32)header, readerSource) :
+                        (NoteSection)new NoteSection64((SectionHeader64)header, readerSource);
                     break;
                 case SectionType.NoBits:
                     break;
@@ -136,8 +139,8 @@ namespace ELFSharp
                     break;
                 case SectionType.DynamicSymbolTable:
                     returned = Class == Class.Bit32 ?
-                     (SymbolTable)new SymbolTable32(header, readerSource, (StringTable)GetSection(".dynstr"), this) :
-                     (SymbolTable)new SymbolTable64(header, readerSource, (StringTable)GetSection(".dynstr"), this);
+                        (SymbolTable)new SymbolTable32(header, readerSource, (StringTable)GetSection(".dynstr"), this) :
+                        (SymbolTable)new SymbolTable64(header, readerSource, (StringTable)GetSection(".dynstr"), this);
                     break;
                 default:
                     returned = null;
