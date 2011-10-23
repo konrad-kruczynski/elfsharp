@@ -53,6 +53,22 @@ namespace Tests
             var header = elf.SectionHeaders.First(x => x.Name == ".dynsym");
             Assert.AreEqual(0x18, header.EntrySize);
         }
+
+        [Test]
+        public void ShouldFindAllNotes32()
+        {
+            var elf = ELFReader.Load32("hello32le");
+            var notes = elf.GetSections<NoteSection32>();
+            Assert.AreEqual(2, notes.Count());
+        }
+
+        [Test]
+        public void ShouldFindAllNotes64()
+        {
+            var elf = ELFReader.Load64("hello64le");
+            var notes = elf.GetSections<NoteSection64>();
+            Assert.AreEqual(1, notes.Count());
+        }
 	}
 }
 
