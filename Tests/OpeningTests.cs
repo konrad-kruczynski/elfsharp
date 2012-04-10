@@ -61,6 +61,12 @@ namespace Tests
 		{
 			ELFReader.Load32("vmlinuxOpenRisc");
 		}
+
+        [Test]
+        public void GithubIssueNo2()
+        {
+            ELFReader.Load("mpuG890.axf");
+        }
 		
 	}
 }
