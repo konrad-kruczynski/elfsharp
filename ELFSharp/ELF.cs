@@ -84,7 +84,12 @@ namespace ELFSharp
                 throw new InvalidOperationException(
                     "Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
             }
-            return GetSection(sectionsByName[name]);
+            var sectionNo = sectionsByName[name];
+            if(sectionNo != -1)
+            {
+                return GetSection(sectionNo);
+            }
+            throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
         }
 
         public Section GetSection(int index)
@@ -180,7 +185,14 @@ namespace ELFSharp
                 sectionHeaders.Add(header);
                 if(HasSectionsStringTable)
                 {
-                    sectionsByName.Add(header.Name, i);
+                    if(!sectionsByName.ContainsKey(header.Name))
+                    {
+                        sectionsByName.Add(header.Name, i);
+                    }
+                    else
+                    {
+                        sectionsByName[header.Name] = -1;
+                    }
                 }
             }
         }
