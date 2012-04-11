@@ -1,24 +1,23 @@
-﻿using System;
+using System;
 using System.IO;
 using MiscUtil.IO;
 
+
 namespace ELFSharp
 {
-    public class Section
+    public class Section<T> where T : struct
     {
-        internal Section(SectionHeader header, Func<EndianBinaryReader> readerSourceSourceSource) // + rozne property sekcji wyczytane z naglowka sekcji
+        internal Section(SectionHeader header, Func<EndianBinaryReader> readerSourceSourceSource)
         {
             Header = header;
             this.readerSourceSourceSource = readerSourceSourceSource;
         }
 
-        public SectionHeader Header { get; private set; }
-
         public virtual byte[] GetContents()
         {
             using(var reader = ObtainReader())
             {
-                return reader.ReadBytes(Convert.ToInt32(Header.SizeLong));
+                return reader.ReadBytes(Convert.ToInt32(Header.Size));
             }
         }
 
@@ -29,6 +28,50 @@ namespace ELFSharp
             return reader;
         }
 
+        public T RawFlags
+        {
+            get
+            {
+                return Header.RawFlags.To<T>();
+            }
+        }
+        
+        public T LoadAddress
+        {
+            get
+            {
+                return Header.LoadAddress.To<T>();
+            }
+        }
+
+        public T Alignment
+        {
+            get
+            {
+                return Header.Alignment.To<T>();
+            }
+        }
+
+        public T EntrySize
+        {
+            get
+            {
+                return Header.EntrySize.To<T>();
+            }
+        }
+        
+        public T Size
+        {
+            get
+            {
+                return Header.Size.To<T>();
+            }
+        }
+
+        // TODO: should be protected
+        public SectionHeader Header { get; private set; }
+
         private readonly Func<EndianBinaryReader> readerSourceSourceSource;
     }
 }
+

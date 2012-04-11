@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using MiscUtil.IO;
 using ELFSharp;
@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ELFSharp
 {
-    public abstract class NoteSection : Section
+    public sealed class NoteSection<T> : Section<T> where T : struct
     {
 		public string Name
 		{
@@ -26,14 +26,14 @@ namespace ELFSharp
 
         public override string ToString()
         {
-            return string.Format("[{0}: {1}, Type={2}]", Name, Description, LongType);
+            return string.Format("[{0}: {1}, Type={2}]", Name, Description, Type);
         }
 		
-		internal ulong LongType
+		public T Type
 		{
 			get
 			{
-				return data.Type;
+				return data.Type.To<T>();
 			}
 		}
 		

@@ -5,10 +5,10 @@ using System;
 
 namespace ELFSharp
 {
-    public abstract class SectionHeader
+    public class SectionHeader
     {
         // TODO: make elf consts file with things like SHT_LOUSER
-        internal SectionHeader(EndianBinaryReader reader, Class elfClass, StringTable table = null)
+        internal SectionHeader(EndianBinaryReader reader, Class elfClass, IStringTable table = null)
         {
             this.reader = reader;
             this.table = table;
@@ -33,16 +33,18 @@ namespace ELFSharp
 			}
 		}
 		
-		protected ulong FlagsLong { get; private set; }
-        protected ulong LoadAddressLong { get; private set; }
-        protected ulong AlignmentLong { get; private set; }
-        protected ulong EntrySizeLong { get; private set; }
+
+        // TODO:
+		public ulong RawFlags { get; private set; }
+        public ulong LoadAddress { get; private set; }
+        public ulong Alignment { get; private set; }
+        public ulong EntrySize { get; private set; }
         
-		internal long SizeLong { get; private set; }
+		internal long Size { get; private set; }
 		
 		public override string ToString()
 		{
-			return string.Format("{0}: {2}, load @0x{4:X}, {5} bytes long", Name, NameIndex, Type, FlagsLong, LoadAddressLong, SizeLong);
+			return string.Format("{0}: {2}, load @0x{4:X}, {5} bytes long", Name, NameIndex, Type, RawFlags, LoadAddress, Size);
 		}
 
         private void ReadSectionHeader()
@@ -53,15 +55,15 @@ namespace ELFSharp
                 Name = table[NameIndex];
             }
             Type = (SectionType)reader.ReadUInt32();
-            FlagsLong = ReadAddress();
-            Flags = unchecked((SectionFlags)FlagsLong);
-            LoadAddressLong = ReadAddress();
+            RawFlags = ReadAddress();
+            Flags = unchecked((SectionFlags)RawFlags);
+            LoadAddress = ReadAddress();
             Offset = ReadOffset();
-            SizeLong = ReadOffset();
+            Size = ReadOffset();
             Link = reader.ReadUInt32();
             Info = reader.ReadUInt32();
-            AlignmentLong = ReadAddress();
-            EntrySizeLong = ReadAddress();
+            Alignment = ReadAddress();
+            EntrySize = ReadAddress();
         }
 
         private ulong ReadAddress()
@@ -75,7 +77,7 @@ namespace ELFSharp
         }
 
         private readonly EndianBinaryReader reader;
-        private StringTable table;
+        private IStringTable table;
 		private readonly Class elfClass;
     }
 	

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,7 +6,7 @@ using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public class StringTable : Section
+    public class StringTable<T> : Section<T>, IStringTable where T : struct
     {
         internal StringTable(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
@@ -24,7 +24,7 @@ namespace ELFSharp
                 var currentIdx = 1L;
                 var lastKey = 1L;
                 var builder = new StringBuilder();
-                while (currentIdx < Header.SizeLong)
+                while (currentIdx < Header.Size)
                 {
                     currentIdx += 1;
                     var character = reader.ReadByte();
@@ -48,7 +48,7 @@ namespace ELFSharp
             }
         }
 
-        internal string this[long index]
+        public string this[long index]
         {
             get
             {
@@ -63,7 +63,7 @@ namespace ELFSharp
 
         private void HandleUnexpectedIndex(long index)
         {			
-            if(index >= Header.SizeLong)
+            if(index >= Header.Size)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
