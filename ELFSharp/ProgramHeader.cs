@@ -68,15 +68,15 @@ namespace ELFSharp
             }
         }
 		
-		protected EndianBinaryReader ObtainReader(long givenOffset)
+		private EndianBinaryReader ObtainReader(long givenOffset)
 		{
 			var reader = readerSource();
 			reader.BaseStream.Seek(givenOffset, SeekOrigin.Begin);
 			return reader;
 		}
 		
-		protected long headerOffset;
-		protected Class elfClass;
+		private long headerOffset;
+        private Class elfClass;
 		private long offset;		
 		private ulong fileSize;
 		private Func<EndianBinaryReader> readerSource;

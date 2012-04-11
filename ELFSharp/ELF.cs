@@ -31,9 +31,9 @@ namespace ELFSharp
 
         public Machine Machine { get; private set; }
      
-        protected UInt64 EntryPointLong { get; private set; }
+        public T EntryPoint { get; private set; }
 
-        protected UInt64 MachineFlagsLong { get; private set; }
+        public T MachineFlags { get; private set; }
      
         public bool HasProgramHeader
         {
@@ -136,7 +136,6 @@ namespace ELFSharp
                 case SectionType.DynamicSymbolTable:
                     returned = new SymbolTable<T>(header, readerSource, (IStringTable)GetSection(".dynstr"), this);
                     break;
-                    // TODO:
                 default:
                     returned = new Section<T>(header, readerSource);
                     break;
@@ -271,11 +270,11 @@ namespace ELFSharp
                 {
                     throw new ArgumentException(string.Format("Given ELF file is of unknown version {0}.", version));
                 }
-                EntryPointLong = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 // TODO: assertions for (u)longs
                 programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
                 sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-                MachineFlagsLong = reader.ReadUInt32();
+                MachineFlags = reader.ReadUInt32().To<T>(); // TODO: always 32bit?
                 reader.ReadUInt16(); // elf header size
                 programHeaderEntrySize = reader.ReadUInt16();
                 programHeaderEntryCount = reader.ReadUInt16();

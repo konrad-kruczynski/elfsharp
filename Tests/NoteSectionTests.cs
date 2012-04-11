@@ -13,7 +13,7 @@ namespace Tests
         {
             var elf = ELFReader.Load<uint>("hello32le");
             var noteSection = (NoteSection<uint>)elf.GetSection(".note.ABI-tag");
-            Assert.AreEqual("GNU", noteSection.Name);
+            Assert.AreEqual("GNU", noteSection.NoteName);
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace Tests
         {
             var elf = ELFReader.Load<long>("hello64le");
             var noteSection = (NoteSection<long>)elf.GetSection(".note.ABI-tag");
-            Assert.AreEqual("GNU", noteSection.Name);
+            Assert.AreEqual("GNU", noteSection.NoteName);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Tests
         {
             var elf = ELFReader.Load<uint>("hello32le");
             var noteSection = (NoteSection<uint>)elf.GetSection(".note.ABI-tag");
-            Assert.AreEqual(1, noteSection.Type);
+            Assert.AreEqual(1, noteSection.NoteType);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Tests
         {
             var elf = ELFReader.Load<long>("hello64le");
             var noteSection = (NoteSection<long>)elf.GetSection(".note.ABI-tag");
-            Assert.AreEqual(1, noteSection.Type);
+            Assert.AreEqual(1, noteSection.NoteType);
         }
 	}
 }
