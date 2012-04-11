@@ -4,7 +4,8 @@ namespace ELFSharp
 {
     public static class ELFReader
     {
-        public static ELF32 Load32(string fileName)
+        // TODO: replace with sth
+        /*public static ELF32 Load32(string fileName)
         {
             return new ELF32(fileName);
         }
@@ -12,15 +13,17 @@ namespace ELFSharp
 		public static ELF64 Load64(string fileName)
 		{
 			return new ELF64(fileName);
-		}
+		}*/
 		
-		public static ELF Load(string fileName)
+		public static ELF<T> Load<T>(string fileName) where T : struct
 		{
-			if(CheckClass(fileName) == Class.Bit32)
+            return new ELF<T>(fileName);
+            // TODO
+			/*if(CheckClass(fileName) == Class.Bit32)
 			{
-				return Load32(fileName);
+				return new ELF32<uint>(fileName);
 			}
-			return Load64(fileName);
+			return new ELF64<long>(fileName);*/
 		}
 		
 		private static Class CheckClass(string fileName)

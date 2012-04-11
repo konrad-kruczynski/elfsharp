@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public abstract class ProgBitsSection : Section
+    public sealed class ProgBitsSection<T> : Section<T> where T : struct
     {
         internal ProgBitsSection(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
@@ -15,9 +15,9 @@ namespace ELFSharp
         {
             using (var reader = ObtainReader())
             {
-                if (length == 0 || length > Header.SizeLong)
+                if (length == 0 || length > Header.Size)
                 {
-                    length = Convert.ToInt32(Header.SizeLong);
+                    length = Convert.ToInt32(Header.Size);
                 }
                 var remaining = length;
                 while (remaining > 0)

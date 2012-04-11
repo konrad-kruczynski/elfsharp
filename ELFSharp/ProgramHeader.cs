@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ELFSharp
 {
-	public abstract class ProgramHeader
+	public sealed class ProgramHeader<T>
 	{
 		internal ProgramHeader(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
         {            
@@ -16,10 +16,10 @@ namespace ELFSharp
 		
 		public ProgramHeaderType Type { get; private set; }
         public ProgramHeaderFlags Flags { get; private set; }
-		protected ulong LongAddress { get; private set; }
-		protected ulong LongPhysicalAddress { get; private set; }
-		protected ulong LongSize { get; private set; }
-        protected ulong LongAlignment { get; private set; }
+		public T Address { get; private set; }
+		public T PhysicalAddress { get; private set; }
+		public T Size { get; private set; }
+        public T Alignment { get; private set; }
 		
 		/// <summary>
 		/// Gets array containing complete segment image, including
@@ -33,7 +33,7 @@ namespace ELFSharp
 			// TODO: large segments
 			using(var reader = ObtainReader(offset))
 			{
-				var result = new byte[(int)LongSize];
+				var result = new byte[Size.To<int>()];
 				var fileImage = reader.ReadBytesOrThrow((int)fileSize);
 				fileImage.CopyTo(result, 0);
 				return result;
@@ -42,7 +42,7 @@ namespace ELFSharp
 		
 		public override string ToString ()
 		{
-			return string.Format ("{2}: size {3}, @ 0x{0:X}", LongAddress, LongPhysicalAddress, Type, LongSize);
+			return string.Format ("{2}: size {3}, @ 0x{0:X}", Address, PhysicalAddress, Type, Size);
 		}
 		
 		private void ReadHeader()
@@ -54,16 +54,17 @@ namespace ELFSharp
                 {
                     Flags = (ProgramHeaderFlags)reader.ReadUInt32();
                 }
+                // TODO: some functions?s
                 offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-                LongAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-                LongPhysicalAddress = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                Address = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
+                PhysicalAddress = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
-                LongSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                Size = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 if(elfClass == Class.Bit32)
                 {
                     Flags = (ProgramHeaderFlags)reader.ReadUInt32();
                 }
-                LongAlignment = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+                Alignment = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
             }
         }
 		

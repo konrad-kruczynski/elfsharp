@@ -1,32 +1,31 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public abstract class SymbolTable : Section
+    public sealed class SymbolTable<T> : Section<T> where T : struct
     {
-        internal SymbolTable(SectionHeader header, Func<EndianBinaryReader> readerSource, StringTable table, ELF elf) : base(header, readerSource)
+        internal SymbolTable(SectionHeader header, Func<EndianBinaryReader> readerSource, IStringTable table, ELF<T> elf) : base(header, readerSource)
         {
             this.table = table;
             this.elf = elf;
             ReadSymbols();
         }
 		
-		public IEnumerable<SymbolEntry> Entries
+		public IEnumerable<SymbolEntry<T>> Entries
         {
-            get { return entries32.Count == 0 ? (IEnumerable<SymbolEntry>) entries64 : (IEnumerable<SymbolEntry>) entries32; }
+            get { return entries; }
         }
 
         private void ReadSymbols()
         {
             using (var reader = ObtainReader())
             {
-                entries32 = new List<SymbolEntry32>();
-				entries64 = new List<SymbolEntry64>();
+                entries = new List<SymbolEntry<T>>();
 				var adder = elf.Class == Class.Bit32 ? Consts.SymbolEntrySize32 : Consts.SymbolEntrySize64;
-                for (var i = 0; i < Header.SizeLong; i += adder)
+                for (var i = 0; i < Header.Size; i += adder)
                 {
 					var value = 0UL;
 					var size = 0UL;
@@ -47,21 +46,13 @@ namespace ELFSharp
                     var name = table[nameIdx];
                     var binding = (SymbolBinding) (info >> 4);
                     var type = (SymbolType) (info & 0x0F);
-					if(elf.Class == Class.Bit32)
-					{
-						entries32.Add(new SymbolEntry32(name, value, size, binding, type, elf, sectionIdx));
-					}
-					else
-					{
-						entries64.Add(new SymbolEntry64(name, value, size, binding, type, elf, sectionIdx));
-					}
+                    entries.Add(new SymbolEntry<T>(name, value.To<T>(), size.To<T>(), binding, type, elf, sectionIdx));
                 }
             }
         }
 
-        protected List<SymbolEntry32> entries32;
-		protected List<SymbolEntry64> entries64;
-        private readonly StringTable table;
-        private readonly ELF elf;
+        private List<SymbolEntry<T>> entries;
+        private readonly IStringTable table;
+        private readonly ELF<T> elf;
     }
 }

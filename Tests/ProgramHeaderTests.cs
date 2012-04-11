@@ -11,21 +11,21 @@ namespace Tests
 		[Test]
 		public void ShouldFindAllHeadersH32LE()
 		{
-			var elf = ELFReader.Load32("hello32le");
+			var elf = ELFReader.Load<uint>("hello32le");
 			Assert.AreEqual(8, elf.ProgramHeaders.Count());
 		}
 		
 		[Test]
 		public void ShouldFindAllHeadersOR32BE()
         {
-            var elf = ELFReader.Load32("vmlinuxOpenRisc");
+            var elf = ELFReader.Load<uint>("vmlinuxOpenRisc");
             Assert.AreEqual(2, elf.ProgramHeaders.Count());
         }
 
         [Test]
         public void ShouldFindProperFlags32()
         {
-            var elf = ELFReader.Load32("hello32le");
+            var elf = ELFReader.Load<uint>("hello32le");
             var header = elf.ProgramHeaders.First(x => x.Address == 0x08048034);
             Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Execute));
             Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Read));
@@ -35,7 +35,7 @@ namespace Tests
         [Test]
         public void ShouldFindProperFlags64()
         {
-            var elf = ELFReader.Load64("hello64le");
+            var elf = ELFReader.Load<long>("hello64le");
             var header = elf.ProgramHeaders.First(x => x.Address == 0x400000);
             Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Execute));
             Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Read));
@@ -45,7 +45,7 @@ namespace Tests
         [Test]
         public void ShouldFindProperAlignment32()
         {
-            var elf = ELFReader.Load32("hello32le");
+            var elf = ELFReader.Load<uint>("hello32le");
             var header = elf.ProgramHeaders.First(x => x.Address == 0x08048000);
             Assert.AreEqual(0x1000, header.Alignment);
         }
@@ -53,7 +53,7 @@ namespace Tests
         [Test]
         public void ShouldFindProperAlignment64()
         {
-            var elf = ELFReader.Load64("hello64le");
+            var elf = ELFReader.Load<long>("hello64le");
             var header = elf.ProgramHeaders.First(x => x.Address == 0x62b178);
             Assert.AreEqual(8, header.Alignment);
         }

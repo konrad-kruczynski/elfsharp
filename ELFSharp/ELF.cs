@@ -7,7 +7,7 @@ using MiscUtil.Conversion;
 
 namespace ELFSharp
 {
-    public abstract class ELF
+    public sealed class ELF<T> where T : struct
     {
      
         internal ELF(string fileName)
@@ -55,14 +55,16 @@ namespace ELFSharp
             get { return sectionHeaders; }
         }
      
-        public IEnumerable<ProgramHeader> ProgramHeaders
+        public IEnumerable<ProgramHeader<T>> ProgramHeaders
         {
             get { return programHeaders; }
         }
 
-        public StringTable SectionsStringTable { get; private set; }
+        // TODO: iface
+        public StringTable<T> SectionsStringTable { get; private set; }
 
-        public IEnumerable<Section> GetSections()
+        // TODO: iface
+        public IEnumerable<Section<T>> GetSections()
         {
             var i = 0;
             while(i < sectionHeaders.Count)
@@ -72,12 +74,12 @@ namespace ELFSharp
             }
         }
 
-        public IEnumerable<T> GetSections<T>() where T : Section
+        public IEnumerable<S> GetSections<S>() where S : Section<T>
         {
-            return GetSections().Where(x => x != null && x is T).Cast<T>();
+            return GetSections().Where(x => x != null && x is S).Cast<S>();
         }
 
-        public Section GetSection(string name)
+        public Section<T> GetSection(string name)
         {
             if(!HasSectionsStringTable)
             {
@@ -92,11 +94,11 @@ namespace ELFSharp
             throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
         }
 
-        public Section GetSection(int index)
+        public Section<T> GetSection(int index)
         {
             if(sectionCache.ContainsKey(index))
             {
-                var section = (Section)sectionCache[index].Target;
+                var section = (Section<T>)sectionCache[index].Target;
                 if(section != null)
                 {
                     return section;
@@ -106,24 +108,20 @@ namespace ELFSharp
                     sectionCache.Remove(index);
                 }
             }
-            Section returned = null;
+            Section<T> returned = null;
             var header = sectionHeaders[index];
             switch(header.Type)
             {
                 case SectionType.Null:
                     break;
                 case SectionType.ProgBits:
-                    returned = Class == Class.Bit32 ?
-					    (ProgBitsSection) new ProgBitsSection32((SectionHeader32)header, readerSource) :
-					    (ProgBitsSection) new ProgBitsSection64((SectionHeader64)header, readerSource);
+                    returned = new ProgBitsSection<T>(header, readerSource);
                     break;
                 case SectionType.SymbolTable:
-                    returned = Class == Class.Bit32 ?
-                        (SymbolTable)new SymbolTable32(header, readerSource, objectsStringTable, this) :
-                        (SymbolTable)new SymbolTable64(header, readerSource, objectsStringTable, this);
+                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
                     break;
                 case SectionType.StringTable:
-                    returned = new StringTable(header, readerSource);
+                    returned = new StringTable<T>(header, readerSource);
                     break;
                 case SectionType.RelocationAddends:
                     break;
@@ -132,9 +130,7 @@ namespace ELFSharp
                 case SectionType.Dynamic:
                     break;                    
                 case SectionType.Note:
-                    returned = Class == Class.Bit32 ?
-                        (NoteSection)new NoteSection32((SectionHeader32)header, readerSource) :
-                        (NoteSection)new NoteSection64((SectionHeader64)header, readerSource);
+                    returned = new NoteSection<T>(header, readerSource);
                     break;
                 case SectionType.NoBits:
                     break;
@@ -143,9 +139,7 @@ namespace ELFSharp
                 case SectionType.Shlib:
                     break;
                 case SectionType.DynamicSymbolTable:
-                    returned = Class == Class.Bit32 ?
-                        (SymbolTable)new SymbolTable32(header, readerSource, (StringTable)GetSection(".dynstr"), this) :
-                        (SymbolTable)new SymbolTable64(header, readerSource, (StringTable)GetSection(".dynstr"), this);
+                    returned = new SymbolTable<T>(header, readerSource, (IStringTable)GetSection(".dynstr"), this);
                     break;
                 default:
                     returned = null;
@@ -162,12 +156,10 @@ namespace ELFSharp
      
         private void ReadProgramHeaders()
         {
-            programHeaders = new List<ProgramHeader>(programHeaderEntryCount);
+            programHeaders = new List<ProgramHeader<T>>(programHeaderEntryCount);
             for(var i = 0u; i < programHeaderEntryCount; i++)
             {
-                var header = Class == Class.Bit32 ?
-                 (ProgramHeader)new ProgramHeader32(programHeaderOffset + i*programHeaderEntrySize, readerSource) :
-                 (ProgramHeader)new ProgramHeader64(programHeaderOffset + i*programHeaderEntrySize, readerSource);
+                var header = new ProgramHeader<T>(programHeaderOffset + i*programHeaderEntrySize, Class, readerSource);
                 programHeaders.Add(header);
             }
         }
@@ -197,8 +189,16 @@ namespace ELFSharp
             }
         }
      
-        protected abstract void CheckClass();
-     
+        private void CheckClass()
+        {
+            // TODO
+            if((typeof(T) != typeof(uint) && Class == Class.Bit32)
+                || (typeof(T) != typeof(long) && Class == Class.Bit64))
+            {
+                throw new InvalidOperationException("Bad class.");
+            }
+        }
+
         private void CheckSize()
         {
             var size = stream.Length < 16;
@@ -214,7 +214,7 @@ namespace ELFSharp
             var header = sectionHeaders.FirstOrDefault(x => x.Name == Consts.ObjectsStringTableName);
             if(header != null)
             {
-                objectsStringTable = new StringTable(header, readerSource);
+                objectsStringTable = new StringTable<T>(header, readerSource);
             }
         }
 
@@ -229,7 +229,7 @@ namespace ELFSharp
             {
                 throw new InvalidOperationException("Given index of section header does not point at string table which was expected.");
             }
-            SectionsStringTable = new StringTable(header, readerSource);
+            SectionsStringTable = new StringTable<T>(header, readerSource);
         }
 
         private SectionHeader ReadSectionHeader(int index)
@@ -241,9 +241,7 @@ namespace ELFSharp
             stream.Seek(sectionHeaderOffset + index*sectionHeaderEntrySize, SeekOrigin.Begin);
             using(var reader = localReaderSource())
             {
-                return Class == Class.Bit32 ?
-             (SectionHeader)new SectionHeader32(reader, SectionsStringTable) :
-             (SectionHeader)new SectionHeader64(reader, SectionsStringTable);
+                return new SectionHeader(reader, Class, SectionsStringTable);
             }
         }
 
@@ -338,9 +336,9 @@ namespace ELFSharp
         private UInt16 sectionHeaderEntryCount;
         private UInt16 stringTableIndex;
         private List<SectionHeader> sectionHeaders;
-        private List<ProgramHeader> programHeaders;
+        private List<ProgramHeader<T>> programHeaders;
         private Dictionary<string, int> sectionsByName;
-        private StringTable objectsStringTable;
+        private StringTable<T> objectsStringTable;
         private Func<EndianBinaryReader> readerSource;
         private Func<EndianBinaryReader> localReaderSource;
         private Dictionary<int, WeakReference> sectionCache;
