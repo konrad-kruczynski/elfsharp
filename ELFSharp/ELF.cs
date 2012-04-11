@@ -55,8 +55,7 @@ namespace ELFSharp
             get { return programHeaders; }
         }
 
-        // TODO: iface
-        public StringTable<T> SectionsStringTable { get; private set; }
+        public IStringTable SectionsStringTable { get; private set; }
 
         // TODO: iface
         public IEnumerable<Section<T>> GetSections()
