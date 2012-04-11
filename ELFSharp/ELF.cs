@@ -49,11 +49,6 @@ namespace ELFSharp
         {
             get { return stringTableIndex != 0; }
         }
-
-        public IEnumerable<SectionHeader> SectionHeaders
-        {
-            get { return sectionHeaders; }
-        }
      
         public IEnumerable<ProgramHeader<T>> ProgramHeaders
         {
@@ -108,12 +103,12 @@ namespace ELFSharp
                     sectionCache.Remove(index);
                 }
             }
-            Section<T> returned = null;
             var header = sectionHeaders[index];
+            Section<T> returned;
             switch(header.Type)
             {
                 case SectionType.Null:
-                    break;
+                    goto default;
                 case SectionType.ProgBits:
                     returned = new ProgBitsSection<T>(header, readerSource);
                     break;
@@ -124,25 +119,26 @@ namespace ELFSharp
                     returned = new StringTable<T>(header, readerSource);
                     break;
                 case SectionType.RelocationAddends:
-                    break;
+                    goto default;
                 case SectionType.HashTable:
-                    break;
+                    goto default;
                 case SectionType.Dynamic:
-                    break;                    
+                    goto default;                    
                 case SectionType.Note:
-                    returned = new NoteSection<T>(header, readerSource);
+                    returned = new NoteSection<T>(header, Class, readerSource);
                     break;
                 case SectionType.NoBits:
-                    break;
+                    goto default;
                 case SectionType.Relocation:
-                    break;
+                    goto default;
                 case SectionType.Shlib:
-                    break;
+                    goto default;
                 case SectionType.DynamicSymbolTable:
                     returned = new SymbolTable<T>(header, readerSource, (IStringTable)GetSection(".dynstr"), this);
                     break;
+                    // TODO:
                 default:
-                    returned = null;
+                    returned = new Section<T>(header, readerSource);
                     break;
             }
             sectionCache.Add(index, new WeakReference(returned));

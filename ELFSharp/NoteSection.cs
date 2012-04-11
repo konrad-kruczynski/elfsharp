@@ -36,10 +36,10 @@ namespace ELFSharp
 				return data.Type.To<T>();
 			}
 		}
-		
-        internal NoteSection(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
+		 
+        internal NoteSection(SectionHeader header, Class elfClass, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
-			data = new NoteData(header.ElfClass, header.Offset, readerSource);
+			data = new NoteData(elfClass, header.Offset, readerSource);
         }
 		
 		private readonly NoteData data;
