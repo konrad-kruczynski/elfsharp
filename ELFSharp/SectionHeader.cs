@@ -5,7 +5,7 @@ using System;
 
 namespace ELFSharp
 {
-    internal class SectionHeader
+    internal sealed class SectionHeader
     {
         // TODO: make elf consts file with things like SHT_LOUSER
         internal SectionHeader(EndianBinaryReader reader, Class elfClass, IStringTable table = null)
@@ -28,15 +28,6 @@ namespace ELFSharp
 		internal long Offset { get; private set; }
         internal uint Link { get; private set; }
         internal uint Info { get; private set; }
-		
-        // TODO:
-		/*internal Class ElfClass 
-		{
-			get
-			{
-				return elfClass;
-			}
-		}*/
 		
 		public override string ToString()
 		{

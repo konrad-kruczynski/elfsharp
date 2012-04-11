@@ -8,7 +8,7 @@ namespace ELFSharp
 {
     public sealed class NoteSection<T> : Section<T> where T : struct
     {
-		public string Name
+		public string NoteName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace ELFSharp
             return string.Format("[{0}: {1}, Type={2}]", Name, Description, Type);
         }
 		
-		public T Type
+		public T NoteType
 		{
 			get
 			{
