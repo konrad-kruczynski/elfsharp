@@ -28,6 +28,38 @@ namespace ELFSharp
             return reader;
         }
 
+        public string Name
+        {
+            get
+            {
+                return Header.Name;
+            }
+        }
+
+        public uint NameIndex
+        {
+            get
+            {
+                return Header.NameIndex;
+            }
+        }
+
+        public SectionType Type
+        {
+            get
+            {
+                return Header.Type;
+            }
+        }
+
+        public SectionFlags Flags
+        {
+            get
+            {
+                return Header.Flags;
+            }
+        }
+
         public T RawFlags
         {
             get
@@ -68,8 +100,7 @@ namespace ELFSharp
             }
         }
 
-        // TODO: should be protected
-        public SectionHeader Header { get; private set; }
+        internal SectionHeader Header { get; private set; }
 
         private readonly Func<EndianBinaryReader> readerSourceSourceSource;
     }

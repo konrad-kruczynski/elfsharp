@@ -12,21 +12,21 @@ namespace Tests
 		public void ShouldFind29Sections32()
 		{
 			var elf = ELFReader.Load<uint>("hello32le");
-			Assert.AreEqual(29, elf.SectionHeaders.Count());
+			Assert.AreEqual(29, elf.GetSections().Count());
 		}
 		
 		[Test]
 		public void ShouldFind29Sections64()
         {
             var elf = ELFReader.Load<long>("hello64le");
-            Assert.AreEqual(27, elf.SectionHeaders.Count());
+            Assert.AreEqual(27, elf.GetSections().Count());
         }
 
         [Test]
         public void ShouldFindProperAlignment32()
         {
             var elf = ELFReader.Load<uint>("hello32le");
-            var header = elf.SectionHeaders.First(x => x.Name == ".init");
+            var header = elf.GetSections().First(x => x.Name == ".init");
             Assert.AreEqual(4, header.Alignment);
         }
 
@@ -34,7 +34,7 @@ namespace Tests
         public void ShouldFindProperAlignment64()
         {
             var elf = ELFReader.Load<long>("hello64le");
-            var header = elf.SectionHeaders.First(x => x.Name == ".text");
+            var header = elf.GetSections().First(x => x.Name == ".text");
             Assert.AreEqual(16, header.Alignment);
         }
 
@@ -42,7 +42,7 @@ namespace Tests
         public void ShouldFindProperEntrySize32()
         {
             var elf = ELFReader.Load<uint>("hello32le");
-            var header = elf.SectionHeaders.First(x => x.Name == ".dynsym");
+            var header = elf.GetSections().First(x => x.Name == ".dynsym");
             Assert.AreEqual(0x10, header.EntrySize);
         }
 
@@ -50,7 +50,7 @@ namespace Tests
         public void ShouldFindProperEntrySize64()
         {
             var elf = ELFReader.Load<long>("hello64le");
-            var header = elf.SectionHeaders.First(x => x.Name == ".dynsym");
+            var header = elf.GetSections().First(x => x.Name == ".dynsym");
             Assert.AreEqual(0x18, header.EntrySize);
         }
 
