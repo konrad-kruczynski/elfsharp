@@ -7,7 +7,7 @@ using MiscUtil.Conversion;
 
 namespace ELFSharp
 {
-    public sealed class ELF<T> where T : struct
+    public sealed class ELF<T> : IELF where T : struct
     {
      
         internal ELF(string fileName)
@@ -24,15 +24,10 @@ namespace ELFSharp
         }
 
         public Endianess Endianess { get; private set; }
-
         public Class Class { get; private set; }
-
         public FileType Type { get; private set; }
-
         public Machine Machine { get; private set; }
-     
         public T EntryPoint { get; private set; }
-
         public T MachineFlags { get; private set; }
      
         public bool HasProgramHeader
