@@ -7,6 +7,7 @@ namespace ELFSharp
     {
         public static IELF Load(string fileName)
         {
+            // TODO
             throw new NotImplementedException();
         }
 		
