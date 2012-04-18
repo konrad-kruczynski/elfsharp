@@ -2,7 +2,7 @@
 
 namespace ELFSharp
 {
-    public class SymbolEntry<T> where T : struct
+    public class SymbolEntry<T> : ISymbolEntry where T : struct
     {
         public string Name { get; private set; }        
         public SymbolBinding Binding { get; private set; }
@@ -18,6 +18,11 @@ namespace ELFSharp
         public Section<T> PointedSection
         {
             get { return IsSpecialSection ? null : elf.GetSection(sectionIdx); }
+        }
+
+        ISection ISymbolEntry.PointedSection
+        {
+            get { return PointedSection; }
         }
 
         public ushort PointedSectionIndex 

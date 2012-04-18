@@ -5,7 +5,7 @@ using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public sealed class SymbolTable<T> : Section<T> where T : struct
+    public sealed class SymbolTable<T> : Section<T>, ISymbolTable where T : struct
     {
         internal SymbolTable(SectionHeader header, Func<EndianBinaryReader> readerSource, IStringTable table, ELF<T> elf) : base(header, readerSource)
         {
@@ -17,6 +17,11 @@ namespace ELFSharp
 		public IEnumerable<SymbolEntry<T>> Entries
         {
             get { return entries; }
+        }
+
+        IEnumerable<ISymbolEntry> ISymbolTable.Entries
+        {
+            get { return Entries; }
         }
 
         private void ReadSymbols()
