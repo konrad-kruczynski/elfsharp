@@ -15,6 +15,7 @@ namespace ELFSharp
         IEnumerable<IProgramHeader> ProgramHeaders { get; }
         IStringTable SectionsStringTable { get; }
         IEnumerable<ISection> Sections { get; }
+        IEnumerable<T> GetSections<T>() where T : ISection;
         ISection GetSection(string name);
         ISection GetSection(int index);
     }
