@@ -7,8 +7,14 @@ namespace ELFSharp
     {
         public static IELF Load(string fileName)
         {
-            // TODO
-            throw new NotImplementedException();
+            switch(CheckClass(fileName))
+            {
+                case Class.Bit32:
+                    return new ELF<uint>(fileName);
+                case Class.Bit64:
+                    return new ELF<long>(fileName);
+            }
+            throw new InvalidOperationException("Should not reach here.");
         }
 		
 		public static ELF<T> Load<T>(string fileName) where T : struct
