@@ -11,14 +11,14 @@ namespace Tests
 		[Test]
 		public void ShouldFind29Sections32()
 		{
-			var elf = ELFReader.Load<uint>("hello32le");
+			var elf = ELFReader.Load("hello32le");
 			Assert.AreEqual(29, elf.Sections.Count());
 		}
 		
 		[Test]
 		public void ShouldFind29Sections64()
         {
-            var elf = ELFReader.Load<long>("hello64le");
+            var elf = ELFReader.Load("hello64le");
             Assert.AreEqual(27, elf.Sections.Count());
         }
 
@@ -57,16 +57,16 @@ namespace Tests
         [Test]
         public void ShouldFindAllNotes32()
         {
-            var elf = ELFReader.Load<uint>("hello32le");
-            var notes = elf.GetSections<NoteSection<uint>>();
+            var elf = ELFReader.Load("hello32le");
+            var notes = elf.GetSections<INoteSection>();
             Assert.AreEqual(2, notes.Count());
         }
 
         [Test]
         public void ShouldFindAllNotes64()
         {
-            var elf = ELFReader.Load<long>("hello64le");
-            var notes = elf.GetSections<NoteSection<long>>();
+            var elf = ELFReader.Load("hello64le");
+            var notes = elf.GetSections<INoteSection>();
             Assert.AreEqual(1, notes.Count());
         }
 	}
