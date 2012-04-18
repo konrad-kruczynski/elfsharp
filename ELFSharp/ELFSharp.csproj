@@ -43,7 +43,6 @@
     <Compile Include="NoteSection.cs" />
     <Compile Include="ProgBitsSection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReservedSection.cs" />
     <Compile Include="SectionHeader.cs" />
     <Compile Include="SectionType.cs" />
     <Compile Include="SpecialSection.cs" />
