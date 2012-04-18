@@ -229,9 +229,9 @@ namespace ELFSharp
      
         private void CheckClass()
         {
-            // TODO
-            if((typeof(T) != typeof(uint) && Class == Class.Bit32)
-                || (typeof(T) != typeof(long) && Class == Class.Bit64))
+            var size = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+            if((size != 4 && Class == Class.Bit32)
+                || (size != 8 && Class == Class.Bit64))
             {
                 throw new InvalidOperationException("Bad class.");
             }
