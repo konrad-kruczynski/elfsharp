@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 namespace ELFSharp
 {
-    // PROMPT
     public interface ISymbolTable
     {
+        IEnumerable<ISymbolEntry> Entries { get; }
     }
 }
 

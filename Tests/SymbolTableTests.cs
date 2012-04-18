@@ -11,16 +11,16 @@ namespace Tests
 		[Test]
 		public void ShouldFindAllSymbols32()
 		{
-			var elf = ELFReader.Load<uint>("hello32le");
-			var symtab = (SymbolTable<uint>) elf.GetSection(".symtab");
+			var elf = ELFReader.Load("hello32le");
+			var symtab = (ISymbolTable) elf.GetSection(".symtab");
 			Assert.AreEqual(64, symtab.Entries.Count());			
 		}
 		
 		[Test]
 		public void ShouldFindAllSymbols64()
 		{
-			var elf = ELFReader.Load<long>("hello64le");			
-			var symtab = (SymbolTable<long>) elf.GetSection(".dynsym");			
+			var elf = ELFReader.Load("hello64le");			
+			var symtab = (ISymbolTable) elf.GetSection(".dynsym");			
 			Assert.AreEqual(171, symtab.Entries.Count());			
 		}
 	}
