@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ELFSharp
 {
@@ -11,10 +12,9 @@ namespace ELFSharp
         bool HasProgramHeader { get; }
         bool HasSectionHeader { get; }
         bool HasSectionsStringTable { get; }
-        // TODO: programheaders
+        IEnumerable<IProgramHeader> ProgramHeaders { get; }
         IStringTable SectionsStringTable { get; }
-        // TODO: sections
-
+        IEnumerable<ISection> Sections { get; }
     }
 }
 

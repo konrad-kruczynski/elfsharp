@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ELFSharp
 {
-	public sealed class ProgramHeader<T>
+	public sealed class ProgramHeader<T> : IProgramHeader
 	{
 		internal ProgramHeader(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
         {            

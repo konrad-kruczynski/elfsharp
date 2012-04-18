@@ -5,7 +5,7 @@ using MiscUtil.IO;
 
 namespace ELFSharp
 {
-    public class Section<T> where T : struct
+    public class Section<T> : ISection where T : struct
     {
         internal Section(SectionHeader header, Func<EndianBinaryReader> readerSourceSourceSource)
         {

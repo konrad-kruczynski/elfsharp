@@ -42,7 +42,7 @@ namespace ELFSharp
 					{
 						value = reader.ReadUInt64();
 	                    size = reader.ReadUInt64();
-					}					
+					}
                     var name = table[nameIdx];
                     var binding = (SymbolBinding) (info >> 4);
                     var type = (SymbolType) (info & 0x0F);
