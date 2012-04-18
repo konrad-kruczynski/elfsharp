@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ELFSharp
 {
-    public sealed class NoteSection<T> : Section<T> where T : struct
+    public sealed class NoteSection<T> : Section<T>, INoteSection where T : struct
     {
 		public string NoteName
 		{

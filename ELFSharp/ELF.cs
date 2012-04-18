@@ -91,6 +91,11 @@ namespace ELFSharp
             throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
         }
 
+        ISection IELF.GetSection(string name)
+        {
+            return GetSection(name);
+        }
+
         public Section<T> GetSection(int index)
         {
             if(sections[index] != null)
@@ -104,6 +109,11 @@ namespace ELFSharp
             }
             TouchSection(index);
             return sections[index];
+        }
+
+        ISection IELF.GetSection(int index)
+        {
+            return GetSection(index);
         }
 
         private Section<T> GetSectionFromSectionHeader(SectionHeader header)
