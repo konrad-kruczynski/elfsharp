@@ -1,7 +1,6 @@
 ﻿namespace ELFSharp
 {
-    // TODO: this is not section - counterintuitive
-    public enum SpecialSection : ushort
+    public enum SpecialSectionIndex : ushort
     {
         Absolute = 0,
         Common = 0xFFF1,

@@ -10,14 +10,14 @@ namespace ELFSharp
 		public T Value { get; private set; }
         public T Size { get; private set; }
 
-        public bool IsSpecialSection
+        public bool IsPointedIndexSpecial
         {
-            get { return Enum.IsDefined(typeof (SpecialSection), sectionIdx); } // TODO: test this
+            get { return Enum.IsDefined(typeof (SpecialSectionIndex), sectionIdx); }
         }
 
         public Section<T> PointedSection
         {
-            get { return IsSpecialSection ? null : elf.GetSection(sectionIdx); }
+            get { return IsPointedIndexSpecial ? null : elf.GetSection(sectionIdx); }
         }
 
         ISection ISymbolEntry.PointedSection
@@ -27,7 +27,19 @@ namespace ELFSharp
 
         public ushort PointedSectionIndex 
         { 
-            get { return IsSpecialSection ? (ushort)0 : sectionIdx; }
+            get { return sectionIdx; }
+        }
+
+        public SpecialSectionIndex SpecialPointedSectionIndex
+        {
+            get
+            {
+                if(IsPointedIndexSpecial)
+                {
+                    return (SpecialSectionIndex)sectionIdx;
+                }
+                throw new InvalidOperationException("Given pointed section index does not have special meaning.");
+            }
         }
 
         internal SymbolEntry(string name, T value, T size, SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
@@ -43,8 +55,8 @@ namespace ELFSharp
 
         public override string ToString()
         {
-            return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section: {5}]",
-                                 Name, Value, Size, Binding, Type, (SpecialSection)sectionIdx);
+            return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section idx: {5}]",
+                                 Name, Value, Size, Binding, Type, (SpecialSectionIndex)sectionIdx);
         }
 
         private readonly ELF<T> elf;

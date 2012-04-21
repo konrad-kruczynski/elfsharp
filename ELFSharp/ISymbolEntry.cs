@@ -7,7 +7,7 @@ namespace ELFSharp
         string Name { get; }
         SymbolBinding Binding { get; }
         SymbolType Type { get; }
-        bool IsSpecialSection { get; }
+        bool IsPointedIndexSpecial { get; }
         ISection PointedSection { get; }
         ushort PointedSectionIndex { get; }
     }
