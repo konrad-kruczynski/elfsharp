@@ -65,14 +65,12 @@ namespace ELFSharp
 
         IEnumerable<S> IELF.GetSections<S>()
         {
-            // TODO: is the null check still needed?
-            return Sections.Where(x => x != null && x is S).Cast<S>();
+            return Sections.Where(x => x is S).Cast<S>();
         }
 
         public IEnumerable<S> GetSections<S>() where S : Section<T>
         {
-            // TODO: is the null check still needed?
-            return Sections.Where(x => x != null && x is S).Cast<S>();
+            return Sections.Where(x => x is S).Cast<S>();
         }
 
         IEnumerable<ISection> IELF.Sections
