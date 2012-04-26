@@ -237,8 +237,8 @@ namespace ELFSharp
 
         private void CheckSize()
         {
-            var size = stream.Length < 16;
-            if(size)
+            var size = stream.Length;
+            if(size < Consts.MinimalELFSize)
             {
                 throw new ArgumentException(string.Format("Given ELF file is too short, has size {0}", size));
             }
