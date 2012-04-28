@@ -9,14 +9,14 @@ namespace Tests
 	public class SegmentTests
 	{
 		[Test]
-		public void ShouldFindAllHeadersH32LE()
+		public void ShouldFindAllSegmentsH32LE()
 		{
 			var elf = ELFReader.Load("hello32le");
 			Assert.AreEqual(8, elf.Segments.Count());
 		}
 		
 		[Test]
-		public void ShouldFindAllHeadersOR32BE()
+		public void ShouldFindAllSegmentsOR32BE()
         {
             var elf = ELFReader.Load("vmlinuxOpenRisc");
             Assert.AreEqual(2, elf.Segments.Count());
