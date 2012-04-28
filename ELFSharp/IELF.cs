@@ -9,7 +9,7 @@ namespace ELFSharp
         Class Class { get; }
         FileType Type { get; }
         Machine Machine { get; }
-        bool HasProgramHeader { get; }
+        bool HasSegmentHeader { get; }
         bool HasSectionHeader { get; }
         bool HasSectionsStringTable { get; }
         IEnumerable<ISegment> Segments { get; }

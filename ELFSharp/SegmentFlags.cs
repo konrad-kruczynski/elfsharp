@@ -3,7 +3,7 @@ using System;
 namespace ELFSharp
 {
     [Flags]
-    public enum ProgramHeaderFlags : uint
+    public enum SegmentFlags : uint
     {
         Execute = 1,
         Write = 2,

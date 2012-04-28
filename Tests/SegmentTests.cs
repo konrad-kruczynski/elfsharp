@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Tests
 {
 	[TestFixture]
-	public class ProgramHeaderTests
+	public class SegmentTests
 	{
 		[Test]
 		public void ShouldFindAllHeadersH32LE()
@@ -27,9 +27,9 @@ namespace Tests
         {
             var elf = ELFReader.Load<uint>("hello32le");
             var header = elf.Segments.First(x => x.Address == 0x08048034);
-            Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Execute));
-            Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Read));
-            Assert.IsFalse(header.Flags.HasFlag(ProgramHeaderFlags.Write));
+            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Execute));
+            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Read));
+            Assert.IsFalse(header.Flags.HasFlag(SegmentFlags.Write));
         }
 
         [Test]
@@ -37,9 +37,9 @@ namespace Tests
         {
             var elf = ELFReader.Load<long>("hello64le");
             var header = elf.Segments.First(x => x.Address == 0x400000);
-            Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Execute));
-            Assert.IsTrue(header.Flags.HasFlag(ProgramHeaderFlags.Read));
-            Assert.IsFalse(header.Flags.HasFlag(ProgramHeaderFlags.Write));
+            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Execute));
+            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Read));
+            Assert.IsFalse(header.Flags.HasFlag(SegmentFlags.Write));
         }
 
         [Test]

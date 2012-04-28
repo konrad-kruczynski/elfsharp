@@ -18,7 +18,7 @@ namespace ELFSharp
             ReadHeader();            
             ReadStringTable();
             ReadSections();
-            ReadProgramHeaders();
+            ReadSegmentHeaders();
         }
 
         public Endianess Endianess { get; private set; }
@@ -28,9 +28,9 @@ namespace ELFSharp
         public T EntryPoint { get; private set; }
         public T MachineFlags { get; private set; }
      
-        public bool HasProgramHeader
+        public bool HasSegmentHeader
         {
-            get { return programHeaderOffset != 0; }
+            get { return segmentHeaderOffset != 0; }
         }
      
         public bool HasSectionHeader
@@ -167,12 +167,12 @@ namespace ELFSharp
             return new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
      
-        private void ReadProgramHeaders()
+        private void ReadSegmentHeaders()
         {
-            segments = new List<Segment<T>>(programHeaderEntryCount);
-            for(var i = 0u; i < programHeaderEntryCount; i++)
+            segments = new List<Segment<T>>(segmentHeaderEntryCount);
+            for(var i = 0u; i < segmentHeaderEntryCount; i++)
             {
-                var header = new Segment<T>(programHeaderOffset + i*programHeaderEntrySize, Class, readerSource);
+                var header = new Segment<T>(segmentHeaderOffset + i*segmentHeaderEntrySize, Class, readerSource);
                 segments.Add(header);
             }
         }
@@ -315,12 +315,12 @@ namespace ELFSharp
                 }
                 EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 // TODO: assertions for (u)longs
-                programHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+                segmentHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
                 sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
                 MachineFlags = reader.ReadUInt32().To<T>(); // TODO: always 32bit?
                 reader.ReadUInt16(); // elf header size
-                programHeaderEntrySize = reader.ReadUInt16();
-                programHeaderEntryCount = reader.ReadUInt16();
+                segmentHeaderEntrySize = reader.ReadUInt16();
+                segmentHeaderEntryCount = reader.ReadUInt16();
                 sectionHeaderEntrySize = reader.ReadUInt16();
                 sectionHeaderEntryCount = reader.ReadUInt16();
                 stringTableIndex = reader.ReadUInt16();
@@ -366,10 +366,10 @@ namespace ELFSharp
         }
 
         private readonly FileStream stream;
-        private Int64 programHeaderOffset;
+        private Int64 segmentHeaderOffset;
         private Int64 sectionHeaderOffset;
-        private UInt16 programHeaderEntrySize;
-        private UInt16 programHeaderEntryCount;
+        private UInt16 segmentHeaderEntrySize;
+        private UInt16 segmentHeaderEntryCount;
         private UInt16 sectionHeaderEntrySize;
         private UInt16 sectionHeaderEntryCount;
         private UInt16 stringTableIndex;
