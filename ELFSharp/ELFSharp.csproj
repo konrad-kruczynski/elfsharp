@@ -57,24 +57,24 @@
     <Compile Include="MiscUtil\EndianBitConverter.cs" />
     <Compile Include="MiscUtil\Endianness.cs" />
     <Compile Include="MiscUtil\LittleEndianBitConverter.cs" />
-    <Compile Include="ProgramHeaderType.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="MiscUtil\NonClosingStreamWrapper.cs" />
     <Compile Include="SectionFlags.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="ProgramHeaderFlags.cs" />
     <Compile Include="NoteData.cs" />
     <Compile Include="Section.cs" />
     <Compile Include="IStringTable.cs" />
     <Compile Include="IELF.cs" />
     <Compile Include="ISection.cs" />
-    <Compile Include="IProgramHeader.cs" />
     <Compile Include="INoteSection.cs" />
     <Compile Include="ISymbolTable.cs" />
     <Compile Include="ISymbolEntry.cs" />
     <Compile Include="IProgBitsSection.cs" />
     <Compile Include="SpecialSectionIndex.cs" />
     <Compile Include="Segment.cs" />
+    <Compile Include="ISegment.cs" />
+    <Compile Include="SegmentFlags.cs" />
+    <Compile Include="SegmentType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

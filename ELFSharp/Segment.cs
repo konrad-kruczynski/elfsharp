@@ -14,8 +14,8 @@ namespace ELFSharp
 			ReadHeader();
         }
 		
-		public ProgramHeaderType Type { get; private set; }
-        public ProgramHeaderFlags Flags { get; private set; }
+		public SegmentType Type { get; private set; }
+        public SegmentFlags Flags { get; private set; }
 		public T Address { get; private set; }
 		public T PhysicalAddress { get; private set; }
 		public T Size { get; private set; }
@@ -49,10 +49,10 @@ namespace ELFSharp
         {
             using(var reader = ObtainReader(headerOffset))
             {
-                Type = (ProgramHeaderType)reader.ReadUInt32();
+                Type = (SegmentType)reader.ReadUInt32();
                 if(elfClass == Class.Bit64)
                 {
-                    Flags = (ProgramHeaderFlags)reader.ReadUInt32();
+                    Flags = (SegmentFlags)reader.ReadUInt32();
                 }
                 // TODO: some functions?s
                 offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
@@ -62,7 +62,7 @@ namespace ELFSharp
                 Size = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 if(elfClass == Class.Bit32)
                 {
-                    Flags = (ProgramHeaderFlags)reader.ReadUInt32();
+                    Flags = (SegmentFlags)reader.ReadUInt32();
                 }
                 Alignment = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
             }

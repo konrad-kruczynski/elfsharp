@@ -4,8 +4,8 @@ namespace ELFSharp
 {
     public interface ISegment
     {
-        ProgramHeaderType Type { get; }
-        ProgramHeaderFlags Flags { get; }
+        SegmentType Type { get; }
+        SegmentFlags Flags { get; }
         byte[] GetContents();
     }
 }

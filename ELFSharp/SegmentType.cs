@@ -1,7 +1,7 @@
 using System;
 namespace ELFSharp
 {
-	public enum ProgramHeaderType : uint
+	public enum SegmentType : uint
 	{
 		Null = 0,
 		Load,
