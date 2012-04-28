@@ -2,7 +2,7 @@ using System;
 
 namespace ELFSharp
 {
-    public interface IProgramHeader
+    public interface ISegment
     {
         ProgramHeaderType Type { get; }
         ProgramHeaderFlags Flags { get; }

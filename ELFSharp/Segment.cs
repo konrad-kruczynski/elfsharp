@@ -4,9 +4,9 @@ using System.IO;
 
 namespace ELFSharp
 {
-	public sealed class ProgramHeader<T> : IProgramHeader
+	public sealed class Segment<T> : ISegment
 	{
-		internal ProgramHeader(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
+		internal Segment(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
         {            
             this.readerSource = readerSource;			
 			this.headerOffset = headerOffset;
