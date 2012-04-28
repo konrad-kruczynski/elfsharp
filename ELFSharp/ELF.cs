@@ -43,14 +43,14 @@ namespace ELFSharp
             get { return stringTableIndex != 0; }
         }
      
-        public IEnumerable<ProgramHeader<T>> ProgramHeaders
+        public IEnumerable<Segment<T>> Segments
         {
-            get { return programHeaders; }
+            get { return segments; }
         }
 
-        IEnumerable<IProgramHeader> IELF.ProgramHeaders
+        IEnumerable<ISegment> IELF.Segments
         {
-            get { return ProgramHeaders; }
+            get { return Segments; }
         }
 
         public IStringTable SectionsStringTable { get; private set; }
@@ -169,11 +169,11 @@ namespace ELFSharp
      
         private void ReadProgramHeaders()
         {
-            programHeaders = new List<ProgramHeader<T>>(programHeaderEntryCount);
+            segments = new List<Segment<T>>(programHeaderEntryCount);
             for(var i = 0u; i < programHeaderEntryCount; i++)
             {
-                var header = new ProgramHeader<T>(programHeaderOffset + i*programHeaderEntrySize, Class, readerSource);
-                programHeaders.Add(header);
+                var header = new Segment<T>(programHeaderOffset + i*programHeaderEntrySize, Class, readerSource);
+                segments.Add(header);
             }
         }
 
@@ -373,7 +373,7 @@ namespace ELFSharp
         private UInt16 sectionHeaderEntrySize;
         private UInt16 sectionHeaderEntryCount;
         private UInt16 stringTableIndex;
-        private List<ProgramHeader<T>> programHeaders;
+        private List<Segment<T>> segments;
         private List<Section<T>> sections;
         private Dictionary<string, int> sectionIndicesByName;
         private List<SectionHeader> sectionHeaders;

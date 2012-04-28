@@ -12,7 +12,7 @@ namespace ELFSharp
         bool HasProgramHeader { get; }
         bool HasSectionHeader { get; }
         bool HasSectionsStringTable { get; }
-        IEnumerable<IProgramHeader> ProgramHeaders { get; }
+        IEnumerable<ISegment> Segments { get; }
         IStringTable SectionsStringTable { get; }
         IEnumerable<ISection> Sections { get; }
         IEnumerable<T> GetSections<T>() where T : ISection;
