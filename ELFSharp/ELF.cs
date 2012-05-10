@@ -10,10 +10,21 @@ namespace ELFSharp
 {
     public sealed class ELF<T> : IELF where T : struct
     {
-        internal ELF(string fileName)
+        internal ELF(string fileName) : this()
         {
+            inMemory = false;
             this.fileName = fileName;
             stream = GetNewStream();
+        }
+
+        internal ELF(Stream stream) : this()
+        {
+            inMemory = true;
+
+        }
+
+        private ELF()
+        {
             CheckSize();
             ReadHeader();            
             ReadStringTable();
@@ -365,7 +376,7 @@ namespace ELFSharp
             reader.ReadBytes(10); // padding bytes of section e_ident
         }
 
-        private readonly FileStream stream;
+        private readonly Stream stream;
         private Int64 segmentHeaderOffset;
         private Int64 sectionHeaderOffset;
         private UInt16 segmentHeaderEntrySize;
@@ -382,6 +393,8 @@ namespace ELFSharp
         private Func<EndianBinaryReader> localReaderSource;
         private Stage currentStage;
         private readonly string fileName;
+        private readonly bool inMemory;
+        private readonly byte[] contents;
         private static readonly byte[] Magic = new byte[] { 0x7F, 0x45, 0x4C, 0x46 }; // 0x7F 'E' 'L' 'F'
 
         private enum Stage
