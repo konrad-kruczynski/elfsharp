@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.IO;
-using MiscUtil.IO;
-using System;
+﻿using MiscUtil.IO;
 
 namespace ELFSharp
 {

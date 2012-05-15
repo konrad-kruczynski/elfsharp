@@ -22,10 +22,15 @@ namespace ELFSharp
         }
 
         public Endianess Endianess { get; private set; }
+
         public Class Class { get; private set; }
+
         public FileType Type { get; private set; }
+
         public Machine Machine { get; private set; }
+
         public T EntryPoint { get; private set; }
+
         public T MachineFlags { get; private set; }
      
         public bool HasSegmentHeader
@@ -59,7 +64,7 @@ namespace ELFSharp
         {
             get
             {
-               return new ReadOnlyCollection<Section<T>>(sections);
+                return new ReadOnlyCollection<Section<T>>(sections);
             }
         }
 
@@ -132,7 +137,12 @@ namespace ELFSharp
                     returned = new ProgBitsSection<T>(header, readerSource);
                     break;
                 case SectionType.SymbolTable:
-                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
+                    returned = new SymbolTable<T>(
+                        header,
+                        readerSource,
+                        objectsStringTable,
+                        this
+                    );
                     break;
                 case SectionType.StringTable:
                     returned = new StringTable<T>(header, readerSource);
@@ -153,7 +163,12 @@ namespace ELFSharp
                 case SectionType.Shlib:
                     goto default;
                 case SectionType.DynamicSymbolTable:
-                    returned = new SymbolTable<T>(header, readerSource, (IStringTable)GetSection(".dynstr"), this);
+                    returned = new SymbolTable<T>(
+                        header,
+                        readerSource,
+                        (IStringTable)GetSection(".dynstr"),
+                        this
+                    );
                     break;
                 default:
                     returned = new Section<T>(header, readerSource);
@@ -164,7 +179,12 @@ namespace ELFSharp
 
         private FileStream GetNewStream()
         {
-            return new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return new FileStream(
+                fileName,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read
+            );
         }
      
         private void ReadSegmentHeaders()
@@ -172,7 +192,11 @@ namespace ELFSharp
             segments = new List<Segment<T>>(segmentHeaderEntryCount);
             for(var i = 0u; i < segmentHeaderEntryCount; i++)
             {
-                var header = new Segment<T>(segmentHeaderOffset + i*segmentHeaderEntrySize, Class, readerSource);
+                var header = new Segment<T>(
+                    segmentHeaderOffset + i*segmentHeaderEntrySize,
+                    Class,
+                    readerSource
+                );
                 segments.Add(header);
             }
         }
@@ -194,14 +218,16 @@ namespace ELFSharp
                     if(!sectionIndicesByName.ContainsKey(name))
                     {
                         sectionIndicesByName.Add(name, i);
-                    }
-                    else
+                    } else
                     {
                         sectionIndicesByName[name] = -1;
                     }
                 }
             }
-            sections = new List<Section<T>>(Enumerable.Repeat<Section<T>>(null, sectionHeaders.Count));
+            sections = new List<Section<T>>(Enumerable.Repeat<Section<T>>(
+                null,
+                sectionHeaders.Count
+            ));
             FindObjectsStringTable();
             for(var i = 0; i < sectionHeaders.Count; i++)
             {
@@ -240,7 +266,10 @@ namespace ELFSharp
             var size = stream.Length;
             if(size < Consts.MinimalELFSize)
             {
-                throw new ArgumentException(string.Format("Given ELF file is too short, has size {0}", size));
+                throw new ArgumentException(string.Format(
+                    "Given ELF file is too short, has size {0}",
+                    size
+                ));
             }
 
         }
@@ -276,7 +305,10 @@ namespace ELFSharp
             {
                 throw new ArgumentOutOfRangeException("index");
             }
-            stream.Seek(sectionHeaderOffset + index*sectionHeaderEntrySize, SeekOrigin.Begin);
+            stream.Seek(
+                sectionHeaderOffset + index*sectionHeaderEntrySize,
+                SeekOrigin.Begin
+            );
             using(var reader = localReaderSource())
             {
                 return new SectionHeader(reader, Class, SectionsStringTable);
@@ -290,12 +322,14 @@ namespace ELFSharp
             if(Endianess == Endianess.LittleEndian)
             {
                 converter = new LittleEndianBitConverter();
-            }
-            else
+            } else
             {
                 converter = new BigEndianBitConverter();
             }
-            readerSource = () => new EndianBinaryReader(converter, GetNewStream());
+            readerSource = () => new EndianBinaryReader(
+                converter,
+                GetNewStream()
+            );
             localReaderSource = () => new EndianBinaryReader(converter, 
              new NonClosingStreamWrapper(stream));
             CheckClass();
@@ -311,7 +345,10 @@ namespace ELFSharp
                 var version = reader.ReadUInt32();
                 if(version != 1)
                 {
-                    throw new ArgumentException(string.Format("Given ELF file is of unknown version {0}.", version));
+                    throw new ArgumentException(string.Format(
+                        "Given ELF file is of unknown version {0}.",
+                        version
+                    ));
                 }
                 EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
                 // TODO: assertions for (u)longs
@@ -348,7 +385,10 @@ namespace ELFSharp
                     Class = Class.Bit64;
                     break;
                 default:
-                    throw new ArgumentException(string.Format("Given ELF file is of unknown class {0}.", classByte));
+                    throw new ArgumentException(string.Format(
+                        "Given ELF file is of unknown class {0}.",
+                        classByte
+                    ));
             }
             var endianessByte = reader.ReadByte();
             switch(endianessByte)
@@ -360,7 +400,10 @@ namespace ELFSharp
                     Endianess = Endianess.BigEndian;
                     break;
                 default:
-                    throw new ArgumentException(string.Format("Given ELF file uses unknown endianess {0}.", endianessByte));
+                    throw new ArgumentException(string.Format(
+                        "Given ELF file uses unknown endianess {0}.",
+                        endianessByte
+                    ));
             }            
             reader.ReadBytes(10); // padding bytes of section e_ident
         }
@@ -382,7 +425,12 @@ namespace ELFSharp
         private Func<EndianBinaryReader> localReaderSource;
         private Stage currentStage;
         private readonly string fileName;
-        private static readonly byte[] Magic = new byte[] { 0x7F, 0x45, 0x4C, 0x46 }; // 0x7F 'E' 'L' 'F'
+        private static readonly byte[] Magic = new byte[] {
+                0x7F,
+                0x45,
+                0x4C,
+                0x46
+            }; // 0x7F 'E' 'L' 'F'
 
         private enum Stage
         {

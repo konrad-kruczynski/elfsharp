@@ -6,29 +6,31 @@ using System.Text;
 
 namespace ELFSharp
 {
-	internal class NoteData
-	{
-		internal string Name { get; private set; }
-		internal byte[] Description { get; private set; }
-		internal ulong Type { get; private set; }
-		
-		internal NoteData(Class elfClass, long sectionOffset, Func<EndianBinaryReader> readerSource)
-		{
-			reader = readerSource();
-			reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
-			var nameSize = ReadSize();
-			var descriptionSize = ReadSize();
-			Type = ReadField();
-			int remainder;
-			var fields = Math.DivRem(nameSize, FieldSize, out remainder);
+    internal class NoteData
+    {
+        internal string Name { get; private set; }
+
+        internal byte[] Description { get; private set; }
+
+        internal ulong Type { get; private set; }
+        
+        internal NoteData(Class elfClass, long sectionOffset, Func<EndianBinaryReader> readerSource)
+        {
+            reader = readerSource();
+            reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
+            var nameSize = ReadSize();
+            var descriptionSize = ReadSize();
+            Type = ReadField();
+            int remainder;
+            var fields = Math.DivRem(nameSize, FieldSize, out remainder);
             var alignedNameSize = FieldSize*(remainder > 0 ? fields + 1 : fields);
-			var name = reader.ReadBytesOrThrow(alignedNameSize);
-			Name = Encoding.ASCII.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
-			Description = reader.ReadBytesOrThrow((int) descriptionSize - 1);
-		}
-		
-		private int ReadSize()
-		{
+            var name = reader.ReadBytesOrThrow(alignedNameSize);
+            Name = Encoding.ASCII.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
+            Description = reader.ReadBytesOrThrow((int)descriptionSize - 1);
+        }
+        
+        private int ReadSize()
+        {
             /*
              * According to some versions of ELF64 specfication, in 64-bit ELF files words, of which
              * such section consists, should have 8 byte length. However, this is not the case in
@@ -40,23 +42,23 @@ namespace ELFSharp
              * Nevertheless I leave here the whole machinery as it is already written and may be useful
              * some day.
              */
-			return reader.ReadInt32();
-		}
+            return reader.ReadInt32();
+        }
 
         private ulong ReadField()
         {
             // see comment above
             return reader.ReadUInt32();
         }
-				
-		private int FieldSize
-		{
-			get
-			{
-				return 4;
-			}
-		}
+                
+        private int FieldSize
+        {
+            get
+            {
+                return 4;
+            }
+        }
 
-		private readonly EndianBinaryReader reader;
-	}
+        private readonly EndianBinaryReader reader;
+    }
 }

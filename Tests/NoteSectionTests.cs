@@ -1,14 +1,12 @@
-using System;
-using System.Linq;
 using NUnit.Framework;
 using ELFSharp;
 
 namespace Tests
 {
-	[TestFixture]
-	public class NoteSectionTests
-	{
-		[Test]
+    [TestFixture]
+    public class NoteSectionTests
+    {
+        [Test]
         public void ShouldReadNoteName32()
         {
             var elf = ELFReader.Load("hello32le");
@@ -39,6 +37,6 @@ namespace Tests
             var noteSection = (NoteSection<long>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
-	}
+    }
 }
 

@@ -1,22 +1,21 @@
-using System;
 using System.Linq;
 using NUnit.Framework;
 using ELFSharp;
 
 namespace Tests
 {
-	[TestFixture]
-	public class SectionHeadersParsingTests
-	{
-		[Test]
-		public void ShouldFind29Sections32()
-		{
-			var elf = ELFReader.Load("hello32le");
-			Assert.AreEqual(29, elf.Sections.Count());
-		}
-		
-		[Test]
-		public void ShouldFind29Sections64()
+    [TestFixture]
+    public class SectionHeadersParsingTests
+    {
+        [Test]
+        public void ShouldFind29Sections32()
+        {
+            var elf = ELFReader.Load("hello32le");
+            Assert.AreEqual(29, elf.Sections.Count());
+        }
+        
+        [Test]
+        public void ShouldFind29Sections64()
         {
             var elf = ELFReader.Load("hello64le");
             Assert.AreEqual(27, elf.Sections.Count());
@@ -69,6 +68,6 @@ namespace Tests
             var notes = elf.GetSections<INoteSection>();
             Assert.AreEqual(1, notes.Count());
         }
-	}
+    }
 }
 

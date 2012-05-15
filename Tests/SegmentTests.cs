@@ -1,22 +1,21 @@
-using System;
 using System.Linq;
 using ELFSharp;
 using NUnit.Framework;
 
 namespace Tests
 {
-	[TestFixture]
-	public class SegmentTests
-	{
-		[Test]
-		public void ShouldFindAllSegmentsH32LE()
-		{
-			var elf = ELFReader.Load("hello32le");
-			Assert.AreEqual(8, elf.Segments.Count());
-		}
-		
-		[Test]
-		public void ShouldFindAllSegmentsOR32BE()
+    [TestFixture]
+    public class SegmentTests
+    {
+        [Test]
+        public void ShouldFindAllSegmentsH32LE()
+        {
+            var elf = ELFReader.Load("hello32le");
+            Assert.AreEqual(8, elf.Segments.Count());
+        }
+        
+        [Test]
+        public void ShouldFindAllSegmentsOR32BE()
         {
             var elf = ELFReader.Load("vmlinuxOpenRisc");
             Assert.AreEqual(2, elf.Segments.Count());
@@ -58,6 +57,6 @@ namespace Tests
             Assert.AreEqual(8, header.Alignment);
         }
 
-	}
+    }
 }
 

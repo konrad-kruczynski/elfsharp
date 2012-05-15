@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using MiscUtil.IO;
 
-
 namespace ELFSharp
 {
     public class Section<T> : ISection where T : struct
