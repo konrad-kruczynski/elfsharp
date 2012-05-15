@@ -1,5 +1,3 @@
-using System;
-
 namespace ELFSharp
 {
 	public static class Consts

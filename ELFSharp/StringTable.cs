@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using MiscUtil.IO;
 
@@ -12,32 +11,6 @@ namespace ELFSharp
         {
             stringsByIdx = new Dictionary<long, string>();
             ReadStrings();
-        }
-
-        private void ReadStrings()
-        {
-            using (var reader = ObtainReader())
-            {
-                reader.ReadByte(); // NULL char
-                stringsByIdx.Add(0, string.Empty);
-                // TODO: make buffered reader or sth better
-                var currentIdx = 1L;
-                var lastKey = 1L;
-                var builder = new StringBuilder();
-                while (currentIdx < Header.Size)
-                {
-                    currentIdx += 1;
-                    var character = reader.ReadByte();
-                    if (character == 0)
-                    {
-                        stringsByIdx.Add(lastKey, builder.ToString());
-                        builder = new StringBuilder();
-                        lastKey = currentIdx;
-                        continue;
-                    }
-                    builder.Append((char) character);
-                }
-            }
         }
 
         public IEnumerable<string> Strings
@@ -73,6 +46,32 @@ namespace ELFSharp
                 previousIndex--;
             }
             stringsByIdx.Add(index, stringsByIdx[previousIndex].Substring(Convert.ToInt32(index - previousIndex)));
+        }
+
+        private void ReadStrings()
+        {
+            using (var reader = ObtainReader())
+            {
+                reader.ReadByte(); // NULL char
+                stringsByIdx.Add(0, string.Empty);
+                // TODO: make buffered reader or sth better
+                var currentIdx = 1L;
+                var lastKey = 1L;
+                var builder = new StringBuilder();
+                while (currentIdx < Header.Size)
+                {
+                    currentIdx += 1;
+                    var character = reader.ReadByte();
+                    if (character == 0)
+                    {
+                        stringsByIdx.Add(lastKey, builder.ToString());
+                        builder = new StringBuilder();
+                        lastKey = currentIdx;
+                        continue;
+                    }
+                    builder.Append((char) character);
+                }
+            }
         }
 
         private readonly Dictionary<long, string> stringsByIdx;
