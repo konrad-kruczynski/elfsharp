@@ -9,7 +9,7 @@ namespace MiscUtil.IO
 	/// merely flush the stream and prevent further operations from being
 	/// carried out using this wrapper.
 	/// </summary>
-	public sealed class NonClosingStreamWrapper : Stream
+	internal sealed class NonClosingStreamWrapper : Stream
 	{
 		#region Members specific to this wrapper class
 		/// <summary>
