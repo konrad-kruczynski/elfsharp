@@ -5,6 +5,8 @@ using System.Linq;
 using MiscUtil.IO;
 using MiscUtil.Conversion;
 using System.Collections.ObjectModel;
+using ELFSharp.Sections;
+using ELFSharp.Segments;
 
 namespace ELFSharp
 {

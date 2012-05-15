@@ -1,4 +1,4 @@
-﻿namespace ELFSharp
+﻿namespace ELFSharp.Sections
 {
     public enum SymbolType
     {

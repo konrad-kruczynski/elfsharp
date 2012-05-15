@@ -36,7 +36,7 @@
     <Compile Include="SymbolTableTests.cs" />
     <Compile Include="ProgBitsSectionTests.cs" />
     <Compile Include="NoteSectionTests.cs" />
-    <Compile Include="SegmentTests.cs" />
+    <Compile Include="SegmentsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -1,6 +1,6 @@
 ﻿using MiscUtil.IO;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     internal sealed class SectionHeader
     {

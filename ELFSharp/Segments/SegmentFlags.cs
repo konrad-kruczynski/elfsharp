@@ -1,6 +1,6 @@
 using System;
 
-namespace ELFSharp
+namespace ELFSharp.Segments
 {
     [Flags]
     public enum SegmentFlags : uint

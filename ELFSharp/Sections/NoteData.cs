@@ -4,7 +4,7 @@ using MiscUtil.IO;
 using ELFSharp;
 using System.Text;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     internal class NoteData
     {

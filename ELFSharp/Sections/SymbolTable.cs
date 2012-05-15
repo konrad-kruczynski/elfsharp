@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MiscUtil.IO;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public sealed class SymbolTable<T> : Section<T>, ISymbolTable where T : struct
     {

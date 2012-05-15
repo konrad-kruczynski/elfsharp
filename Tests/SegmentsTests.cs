@@ -1,11 +1,12 @@
 using System.Linq;
-using ELFSharp;
 using NUnit.Framework;
+using ELFSharp;
+using ELFSharp.Segments;
 
 namespace Tests
 {
     [TestFixture]
-    public class SegmentTests
+    public class SegmentsTests
     {
         [Test]
         public void ShouldFindAllSegmentsH32LE()

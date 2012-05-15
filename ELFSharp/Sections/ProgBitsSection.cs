@@ -1,7 +1,7 @@
 using System;
 using MiscUtil.IO;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public sealed class ProgBitsSection<T> : Section<T>, IProgBitsSection where T : struct
     {
