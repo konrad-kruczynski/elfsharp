@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MiscUtil.IO;
+using System.Collections.ObjectModel;
 
 namespace ELFSharp.Sections
 {
@@ -15,7 +16,7 @@ namespace ELFSharp.Sections
 		
 		public IEnumerable<SymbolEntry<T>> Entries
         {
-            get { return entries; }
+            get { return new ReadOnlyCollection<SymbolEntry<T>>(entries); }
         }
 
         IEnumerable<ISymbolEntry> ISymbolTable.Entries

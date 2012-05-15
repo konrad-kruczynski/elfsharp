@@ -52,7 +52,7 @@ namespace ELFSharp
      
         public IEnumerable<Segment<T>> Segments
         {
-            get { return segments; }
+            get { return new ReadOnlyCollection<Segment<T>>(segments); }
         }
 
         IEnumerable<ISegment> IELF.Segments
