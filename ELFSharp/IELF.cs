@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ELFSharp.Sections;
+using ELFSharp.Segments;
 
 namespace ELFSharp
 {

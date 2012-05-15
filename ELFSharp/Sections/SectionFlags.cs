@@ -1,6 +1,6 @@
 using System;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     [Flags]
     public enum SectionFlags

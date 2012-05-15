@@ -1,4 +1,4 @@
-namespace ELFSharp
+namespace ELFSharp.Segments
 {
     public interface ISegment
     {

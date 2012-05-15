@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public class SymbolEntry<T> : ISymbolEntry where T : struct
     {

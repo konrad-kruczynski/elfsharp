@@ -2,7 +2,7 @@ using System;
 using MiscUtil.IO;
 using ELFSharp;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public sealed class NoteSection<T> : Section<T>, INoteSection where T : struct
     {

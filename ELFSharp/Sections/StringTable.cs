@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MiscUtil.IO;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public class StringTable<T> : Section<T>, IStringTable where T : struct
     {

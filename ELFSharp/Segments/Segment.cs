@@ -2,7 +2,7 @@ using System;
 using MiscUtil.IO;
 using System.IO;
 
-namespace ELFSharp
+namespace ELFSharp.Segments
 {
 	public sealed class Segment<T> : ISegment
 	{

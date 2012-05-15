@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ELFSharp
+namespace ELFSharp.Sections
 {
     public interface IStringTable : ISection
     {
