@@ -42,6 +42,12 @@ namespace ELFSharp.Sections
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section idx: {5}]",
+                                 Name, Value, Size, Binding, Type, (SpecialSectionIndex)sectionIdx);
+        }
+
         internal SymbolEntry(string name, T value, T size, SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
         {
             Name = name;
@@ -51,12 +57,6 @@ namespace ELFSharp.Sections
             Type = type;
             this.elf = elf;
             this.sectionIdx = sectionIdx;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section idx: {5}]",
-                                 Name, Value, Size, Binding, Type, (SpecialSectionIndex)sectionIdx);
         }
 
         private readonly ELF<T> elf;

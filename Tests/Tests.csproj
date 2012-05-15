@@ -30,7 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="OpeningTests.cs" />
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="SectionHeadersParsingTests.cs" />
     <Compile Include="StringTableTests.cs" />
     <Compile Include="SymbolTableTests.cs" />
