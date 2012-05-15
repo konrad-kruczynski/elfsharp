@@ -54,7 +54,7 @@ namespace MiscUtil.Conversion
 	/// Implementation of EndianBitConverter which converts to/from big-endian
 	/// byte arrays.
 	/// </summary>
-	public sealed class BigEndianBitConverter : EndianBitConverter
+	internal sealed class BigEndianBitConverter : EndianBitConverter
 	{
 		/// <summary>
 		/// Indicates the byte order ("endianess") in which data is converted using this class.

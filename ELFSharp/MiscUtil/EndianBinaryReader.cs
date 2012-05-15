@@ -92,7 +92,7 @@ namespace MiscUtil.IO
 		/// </summary>
 		/// <param name="bitConverter">Converter to use when reading data</param>
 		/// <param name="stream">Stream to read data from</param>
-		public EndianBinaryReader (EndianBitConverter bitConverter,
+		internal EndianBinaryReader (EndianBitConverter bitConverter,
 								   Stream stream) : this (bitConverter, stream, Encoding.UTF8)
 		{
 		}
@@ -104,7 +104,7 @@ namespace MiscUtil.IO
 		/// <param name="bitConverter">Converter to use when reading data</param>
 		/// <param name="stream">Stream to read data from</param>
 		/// <param name="encoding">Encoding to use when reading character data</param>
-		public EndianBinaryReader (EndianBitConverter bitConverter,	Stream stream, Encoding encoding)
+		internal EndianBinaryReader (EndianBitConverter bitConverter,	Stream stream, Encoding encoding)
 		{
 			if (bitConverter==null)
 			{
@@ -140,7 +140,7 @@ namespace MiscUtil.IO
 		/// <summary>
 		/// The bit converter used to read values from the stream
 		/// </summary>
-		public EndianBitConverter BitConverter
+		internal EndianBitConverter BitConverter
 		{
 			get { return bitConverter; }
 		}

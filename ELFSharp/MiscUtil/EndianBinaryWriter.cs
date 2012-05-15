@@ -83,7 +83,7 @@ namespace MiscUtil.IO
 		/// </summary>
 		/// <param name="bitConverter">Converter to use when writing data</param>
 		/// <param name="stream">Stream to write data to</param>
-		public EndianBinaryWriter (EndianBitConverter bitConverter,
+		internal EndianBinaryWriter (EndianBitConverter bitConverter,
 			Stream stream) : this (bitConverter, stream, Encoding.UTF8)
 		{
 		}
@@ -95,7 +95,7 @@ namespace MiscUtil.IO
 		/// <param name="bitConverter">Converter to use when writing data</param>
 		/// <param name="stream">Stream to write data to</param>
 		/// <param name="encoding">Encoding to use when writing character data</param>
-		public EndianBinaryWriter (EndianBitConverter bitConverter,	Stream stream, Encoding encoding)
+		internal EndianBinaryWriter (EndianBitConverter bitConverter,	Stream stream, Encoding encoding)
 		{
 			if (bitConverter==null)
 			{
@@ -124,7 +124,7 @@ namespace MiscUtil.IO
 		/// <summary>
 		/// The bit converter used to write values to the stream
 		/// </summary>
-		public EndianBitConverter BitConverter
+		internal EndianBitConverter BitConverter
 		{
 			get { return bitConverter; }
 		}

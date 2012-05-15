@@ -56,7 +56,7 @@ namespace MiscUtil.Conversion
 	/// <summary>
 	/// Equivalent of System.BitConverter, but with either endianness.
 	/// </summary>
-	public abstract class EndianBitConverter
+	internal abstract class EndianBitConverter
 	{
 		#region Endianness of this converter
 		/// <summary>
