@@ -5,7 +5,7 @@ using MiscUtil.IO;
 
 namespace ELFSharp.Sections
 {
-    public class StringTable<T> : Section<T>, IStringTable where T : struct
+    public sealed class StringTable<T> : Section<T>, IStringTable where T : struct
     {
         internal StringTable(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
