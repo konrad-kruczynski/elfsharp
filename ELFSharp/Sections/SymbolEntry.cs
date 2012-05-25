@@ -48,7 +48,7 @@ namespace ELFSharp.Sections
                                  Name, Value, Size, Binding, Type, (SpecialSectionIndex)sectionIdx);
         }
 
-        internal SymbolEntry(string name, T value, T size, SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
+        public SymbolEntry(string name, T value, T size, SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
         {
             Name = name;
             Value = value;
