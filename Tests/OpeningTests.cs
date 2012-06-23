@@ -66,6 +66,12 @@ namespace Tests
         {
             ELFReader.Load("mpuG890.axf");
         }
+
+		[Test]
+		public void GithubIssueNo3()
+		{
+			ELFReader.Load("issue3");
+		}
     }
 }
 
