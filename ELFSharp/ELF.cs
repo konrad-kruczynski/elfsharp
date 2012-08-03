@@ -165,12 +165,7 @@ namespace ELFSharp
                 case SectionType.Shlib:
                     goto default;
                 case SectionType.DynamicSymbolTable:
-                    returned = new SymbolTable<T>(
-                        header,
-                        readerSource,
-                        (IStringTable)GetSection(".dynstr"),
-                        this
-                    );
+                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
                     break;
                 default:
                     returned = new Section<T>(header, readerSource);
