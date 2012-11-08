@@ -9,6 +9,15 @@
         M68K,
         M88K,
         Intel80860 = 7,
-        MIPS
+        MIPS,
+        S370,
+        MIPS_RS3000,
+        PARISC = 15,
+        VPP500 = 17,
+        SPARC32Plus,
+        Intel80960,
+        PowerPC,
+        PowerPC64,
+        ARM = 0x28
     }
 }
