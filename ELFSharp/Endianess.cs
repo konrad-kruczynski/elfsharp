@@ -1,8 +1,8 @@
 ﻿namespace ELFSharp
 {
-    public enum Endianess
-    {
-        LittleEndian,
-        BigEndian
-    }
+	public enum Endianess
+	{
+		LittleEndian,
+		BigEndian
+	}
 }

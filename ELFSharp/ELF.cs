@@ -70,9 +70,9 @@ namespace ELFSharp
             }
         }
 
-        IEnumerable<S> IELF.GetSections<S>()
+        IEnumerable<TSectionType> IELF.GetSections<TSectionType>()
         {
-            return Sections.Where(x => x is S).Cast<S>();
+            return Sections.Where(x => x is TSectionType).Cast<TSectionType>();
         }
 
         public IEnumerable<S> GetSections<S>() where S : Section<T>
