@@ -123,6 +123,12 @@ namespace ELFSharp
             return sections[index];
         }
 
+		public override string ToString()
+		{
+			return string.Format("[ELF: Endianess={0}, Class={1}, Type={2}, Machine={3}, EntryPoint=0x{4:X}, " +
+			                     "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine, EntryPoint, sections.Count, segments.Count);
+		}
+
         ISection IELF.GetSection(int index)
         {
             return GetSection(index);
