@@ -99,6 +99,11 @@ namespace ELFSharp.Sections
             }
         }
 
+		public override string ToString()
+		{
+			return Header.ToString();
+		}
+
         internal SectionHeader Header { get; private set; }
 
         private readonly Func<EndianBinaryReader> readerSourceSourceSource;
