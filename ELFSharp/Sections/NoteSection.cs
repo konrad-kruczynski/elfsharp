@@ -24,7 +24,7 @@ namespace ELFSharp.Sections
 
         public override string ToString()
         {
-            return string.Format("[{0}: {1}, Type={2}]", Name, Description, Type);
+			return string.Format("{0}: {2}, Type={1}", Name, NoteType, Type);
         }
         
         public T NoteType
