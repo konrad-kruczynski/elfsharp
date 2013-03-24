@@ -9,27 +9,27 @@ namespace Tests
         [Test]
         public void ShouldChooseGoodClass32()
         {
-            var elf = ELFReader.Load("hello32le");
+            var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello32le"));
             Assert.AreEqual(Class.Bit32, elf.Class);
         }
         
         [Test]
         public void ShouldChooseGoodClass64()
         {
-            var elf = ELFReader.Load("hello64le");
+            var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
             Assert.AreEqual(Class.Bit64, elf.Class);
         }
         
         [Test]
         public void ShouldOpenHelloWorld32()
         {
-            ELFReader.Load("hello32le");            
+			ELFReader.Load(Utilities.GetBinaryLocation("hello32le"));
         }
         
         [Test]
         public void ShouldOpenHelloWorld64()
         {           
-            ELFReader.Load("hello64le");
+            ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
         }
         
         [Test]
@@ -42,35 +42,35 @@ namespace Tests
         [Test]
         public void ShouldProperlyParseClass64()
         {           
-            var elf64 = ELFReader.Load<long>("hello64le");
+            var elf64 = ELFReader.Load<long>(Utilities.GetBinaryLocation("hello64le"));
             Assert.AreEqual(Class.Bit64, elf64.Class);
         }
         
         [Test]
         public void ShouldProperlyParseEndianess()
         {
-            var elf = ELFReader.Load("hello32le");          
+			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello32le"));
             Assert.AreEqual(Endianess.LittleEndian, elf.Endianess);
-            elf = ELFReader.Load("vmlinuxOpenRisc");
+			elf = ELFReader.Load(Utilities.GetBinaryLocation("vmlinuxOpenRisc"));
             Assert.AreEqual(Endianess.BigEndian, elf.Endianess);
         }
         
         [Test]
         public void ShouldOpenBigEndian()
         {
-            ELFReader.Load("vmlinuxOpenRisc");
+            ELFReader.Load(Utilities.GetBinaryLocation("vmlinuxOpenRisc"));
         }
 
         [Test]
         public void GithubIssueNo2()
         {
-            ELFReader.Load("mpuG890.axf");
+            ELFReader.Load(Utilities.GetBinaryLocation("mpuG890.axf"));
         }
 
 		[Test]
 		public void GithubIssueNo3()
 		{
-			ELFReader.Load("issue3");
+			ELFReader.Load(Utilities.GetBinaryLocation("issue3"));
 		}
     }
 }

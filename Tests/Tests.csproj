@@ -36,6 +36,7 @@
     <Compile Include="ProgBitsSectionTests.cs" />
     <Compile Include="NoteSectionTests.cs" />
     <Compile Include="SegmentsTests.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

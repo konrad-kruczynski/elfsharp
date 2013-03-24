@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ELFSharp;
 using ELFSharp.Sections;
+using System.IO;
 
 namespace Tests
 {
@@ -10,7 +11,7 @@ namespace Tests
         [Test]
         public void ShouldReadNoteName32()
         {
-            var elf = ELFReader.Load("hello32le");
+            var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello32le"));
             var noteSection = (INoteSection)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual("GNU", noteSection.NoteName);
         }
@@ -18,7 +19,7 @@ namespace Tests
         [Test]
         public void ShouldReadNoteName64()
         {
-            var elf = ELFReader.Load("hello64le");
+            var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
             var noteSection = (INoteSection)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual("GNU", noteSection.NoteName);
         }
@@ -26,7 +27,7 @@ namespace Tests
         [Test]
         public void ShouldReadNoteType32()
         {
-            var elf = ELFReader.Load<uint>("hello32le");
+            var elf = ELFReader.Load<uint>(Utilities.GetBinaryLocation("hello32le"));
             var noteSection = (NoteSection<uint>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
@@ -34,7 +35,7 @@ namespace Tests
         [Test]
         public void ShouldReadNoteType64()
         {
-            var elf = ELFReader.Load<long>("hello64le");
+            var elf = ELFReader.Load<long>(Utilities.GetBinaryLocation("hello64le"));
             var noteSection = (NoteSection<long>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
