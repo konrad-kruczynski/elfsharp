@@ -21,7 +21,7 @@ namespace Tests
         {
             var elf = ELFReader.Load<long>(Utilities.GetBinaryLocation("hello64le"));
             var sectionsToLoad = elf.GetSections<ProgBitsSection<long>>().Where(x => x.LoadAddress != 0);
-            Assert.AreEqual(14, sectionsToLoad.Count());
+            Assert.AreEqual(12, sectionsToLoad.Count());
         }
     }
 }

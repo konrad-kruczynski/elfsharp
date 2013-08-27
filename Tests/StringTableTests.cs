@@ -22,7 +22,7 @@ namespace Tests
             var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
             Assert.IsTrue(elf.HasSectionsStringTable, 
                           "Sections string table was not found in 64 bit ELF.");
-            Assert.AreEqual(27, elf.SectionsStringTable.Strings.Count());
+            Assert.AreEqual(30, elf.SectionsStringTable.Strings.Count());
         }
         
         [Test]

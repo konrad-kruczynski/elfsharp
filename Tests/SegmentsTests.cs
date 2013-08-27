@@ -54,7 +54,7 @@ namespace Tests
         public void ShouldFindProperAlignment64()
         {
             var elf = ELFReader.Load<long>(Utilities.GetBinaryLocation("hello64le"));
-            var header = elf.Segments.First(x => x.Address == 0x62b178);
+			var header = elf.Segments.First(x => x.Address == 0x6006c8);
             Assert.AreEqual(8, header.Alignment);
         }
 

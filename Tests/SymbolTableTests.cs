@@ -20,8 +20,8 @@ namespace Tests
         public void ShouldFindAllSymbols64()
         {
 			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
-            var symtab = (ISymbolTable)elf.GetSection(".dynsym");           
-            Assert.AreEqual(171, symtab.Entries.Count());           
+			var symtab = (ISymbolTable)elf.GetSection(".symtab");           
+            Assert.AreEqual(64, symtab.Entries.Count());           
         }
     }
 }
