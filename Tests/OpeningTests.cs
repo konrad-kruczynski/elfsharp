@@ -35,7 +35,7 @@ namespace Tests
         [Test]
         public void ShouldProperlyParseClass32()
         {
-            var elf32 = ELFReader.Load<uint>("hello32le");
+            var elf32 = ELFReader.Load<uint>(Utilities.GetBinaryLocation("hello32le"));
             Assert.AreEqual(Class.Bit32, elf32.Class);          
         }
 
