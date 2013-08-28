@@ -7,3 +7,6 @@ and Marc Gravell. Contact skeet@pobox.com, or see
 http://www.pobox.com/~skeet/
 
 You can find license in the LICENSE file.
+
+This software uses ELF machine constants from the LLVM projects, whose license
+can be found in the LICENSE file as well.
