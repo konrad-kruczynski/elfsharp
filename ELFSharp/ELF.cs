@@ -15,8 +15,11 @@ namespace ELFSharp
         internal ELF(string fileName)
         {
             this.fileName = fileName;
+			if(ELFReader.CheckELFType(fileName) == Class.NotELF)
+			{
+				throw new ArgumentException("Given file is not proper ELF file.");
+			}
             stream = GetNewStream();
-            CheckSize();
             ReadHeader();            
             ReadStringTable();
             ReadSections();
@@ -264,6 +267,7 @@ namespace ELFSharp
             }
         }
 
+		// PROMPT
         private void CheckSize()
         {
             var size = stream.Length;
@@ -370,14 +374,7 @@ namespace ELFSharp
         private void ReadIdentificator()
         {
             var reader = new BinaryReader(stream);
-            var magic = reader.ReadBytes(4);
-            for(var i = 0; i < 4; i++)
-            {
-                if(magic[i] != Magic[i])
-                {
-                    throw new ArgumentException("Given file is not proper ELF binary.");
-                }
-            }
+			reader.ReadBytes(4); // ELF magic
             var classByte = reader.ReadByte();
             switch(classByte)
             {
@@ -428,12 +425,6 @@ namespace ELFSharp
         private Func<EndianBinaryReader> localReaderSource;
         private Stage currentStage;
         private readonly string fileName;
-        private static readonly byte[] Magic = new byte[] {
-                0x7F,
-                0x45,
-                0x4C,
-                0x46
-            }; // 0x7F 'E' 'L' 'F'
 
         private enum Stage
         {

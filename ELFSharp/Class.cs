@@ -3,6 +3,7 @@
     public enum Class
     {
         Bit32,
-        Bit64
+        Bit64,
+		NotELF
     }
 }

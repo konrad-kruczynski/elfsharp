@@ -72,6 +72,13 @@ namespace Tests
 		{
 			ELFReader.Load(Utilities.GetBinaryLocation("issue3"));
 		}
+
+		[Test]
+		public void ShouldNotOpenNonELFFile()
+		{
+			IELF elf;
+			Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinaryLocation("notelf"), out elf));
+		}
     }
 }
 
