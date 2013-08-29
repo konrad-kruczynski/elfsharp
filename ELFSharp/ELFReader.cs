@@ -60,17 +60,12 @@ namespace ELFSharp
 
 		public static bool TryLoad<T>(string fileName, out ELF<T> elf) where T : struct
 		{
-			bool result;
 			switch(CheckELFType(fileName))
 			{
 			case Class.Bit32:
-				result = typeof(T) == typeof(uint);
-				elf = result ? (ELF<T>)(object)new ELF<uint>(fileName) : null;
-				return result;
 			case Class.Bit64:
-				result = typeof(T) == typeof(long);
-				elf = result ? (ELF<T>)(object)new ELF<long>(fileName) : null;
-				return result;
+				elf = new ELF<T>(fileName);
+				return true;
 			default:
 				elf = null;
 				return false;

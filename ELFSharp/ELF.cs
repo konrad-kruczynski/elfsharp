@@ -256,30 +256,6 @@ namespace ELFSharp
             var section = GetSectionFromSectionHeader(sectionHeaders[index]);
             sections[index] = section;
         }
-     
-        private void CheckClass()
-        {
-            var size = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-            if((size != 4 && Class == Class.Bit32)
-                || (size != 8 && Class == Class.Bit64))
-            {
-                throw new InvalidOperationException("Bad class.");
-            }
-        }
-
-		// PROMPT
-        private void CheckSize()
-        {
-            var size = stream.Length;
-            if(size < Consts.MinimalELFSize)
-            {
-                throw new ArgumentException(string.Format(
-                    "Given ELF file is too short, has size {0}",
-                    size
-                ));
-            }
-
-        }
 
         private void FindObjectsStringTable()
         {
@@ -339,7 +315,6 @@ namespace ELFSharp
             );
             localReaderSource = () => new EndianBinaryReader(converter, 
              new NonClosingStreamWrapper(stream));
-            CheckClass();
             ReadFields();
         }
 
