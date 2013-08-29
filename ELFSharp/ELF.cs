@@ -313,8 +313,7 @@ namespace ELFSharp
                 converter,
                 GetNewStream()
             );
-            localReaderSource = () => new EndianBinaryReader(converter, 
-             new NonClosingStreamWrapper(stream));
+            localReaderSource = () => new EndianBinaryReader(converter, new NonClosingStreamWrapper(stream));
             ReadFields();
         }
 
