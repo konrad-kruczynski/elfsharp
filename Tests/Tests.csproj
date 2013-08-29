@@ -37,6 +37,7 @@
     <Compile Include="NoteSectionTests.cs" />
     <Compile Include="SegmentsTests.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="WebTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
