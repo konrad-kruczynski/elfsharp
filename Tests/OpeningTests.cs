@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using ELFSharp;
+using ELFSharp.ELF;
 
 namespace Tests
 {

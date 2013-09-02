@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using ELFSharp;
-using ELFSharp.Sections;
+using ELFSharp.ELF.Sections;
 using System.IO;
+using ELFSharp.ELF;
 
 namespace Tests
 {

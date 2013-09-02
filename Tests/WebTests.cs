@@ -1,10 +1,9 @@
 using System;
 using NUnit.Framework;
-using ELFSharp;
-using System.Text;
 using System.Collections.Generic;
-using ELFSharp.Sections;
+using ELFSharp.ELF.Sections;
 using System.Linq;
+using ELFSharp.ELF;
 
 namespace Tests
 {
