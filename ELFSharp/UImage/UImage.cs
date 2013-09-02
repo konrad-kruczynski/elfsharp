@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Text;
+using System.Linq;
 
 namespace ELFSharp.UImage
 {
@@ -10,6 +12,17 @@ namespace ELFSharp.UImage
 			using(var reader = new BinaryReader(File.OpenRead(fileName)))
 			{
 				reader.ReadBytes(8); // magic and CRC
+				reader.ReadBytes(4); // timestamp
+				Size = reader.ReadUInt32BigEndian();
+				LoadAddress = reader.ReadUInt32BigEndian();
+				EntryPoint = reader.ReadUInt32BigEndian();
+				CRC = reader.ReadUInt32BigEndian();
+				reader.ReadByte(); // OS
+				reader.ReadByte(); // architecture
+				reader.ReadByte(); // image type
+				reader.ReadByte(); // compression type
+				var nameAsBytes = reader.ReadBytes(32);
+				Name = Encoding.ASCII.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
 			}
 		}
 
