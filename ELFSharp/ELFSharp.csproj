@@ -77,6 +77,8 @@
     <Compile Include="ELF\Segments\SegmentType.cs" />
     <Compile Include="UImage\UImage.cs" />
     <Compile Include="UImage\CompressionType.cs" />
+    <Compile Include="UImage\UImageReader.cs" />
+    <Compile Include="UImage\UImageResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
