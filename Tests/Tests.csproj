@@ -36,8 +36,8 @@
     <Compile Include="ELF\SegmentsTests.cs" />
     <Compile Include="ELF\StringTableTests.cs" />
     <Compile Include="ELF\SymbolTableTests.cs" />
-    <Compile Include="ELF\Utilities.cs" />
     <Compile Include="ELF\WebTests.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
