@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 
 namespace ELFSharp.UImage
 {
@@ -21,12 +22,12 @@ namespace ELFSharp.UImage
 			}
 		}
 
-		private static UImageResult TryLoad(string fileName, out UImage uImage)
+		public static UImageResult TryLoad(string fileName, out UImage uImage)
 		{
 			using(var reader = new BinaryReader(File.OpenRead(fileName)))
 			{
 				uImage = null;
-				var magic = reader.ReadUInt32();
+				var magic = reader.ReadUInt32BigEndian();
 				if(magic != Magic)
 				{
 					return UImageResult.BadMagic;
@@ -35,6 +36,11 @@ namespace ELFSharp.UImage
 				uImage = new UImage(fileName);
 				return UImageResult.OK;
 			}
+		}
+
+		internal static uint ReadUInt32BigEndian(this BinaryReader reader)
+		{
+			return (uint)IPAddress.HostToNetworkOrder(reader.ReadInt32());
 		}
 
 		private const uint Magic = 0x27051956;
