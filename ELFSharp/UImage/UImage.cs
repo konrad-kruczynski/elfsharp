@@ -10,6 +10,7 @@ namespace ELFSharp.UImage
 		}
 
 		public uint CRC { get; private set; }
+		public bool IsChecksumOK { get; private set; }
 		public uint Size { get; private set; }
 		public uint LoadAddress { get; private set; }
 		public uint EntryPoint { get; private set; }
@@ -21,7 +22,6 @@ namespace ELFSharp.UImage
 			throw new NotImplementedException();
 		}
 
-		private const uint Magic = 0x27051956;
 		private const int MaximumNameLength = 32;
 	}
 }
