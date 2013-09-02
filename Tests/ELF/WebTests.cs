@@ -5,7 +5,7 @@ using ELFSharp.ELF.Sections;
 using System.Linq;
 using ELFSharp.ELF;
 
-namespace Tests
+namespace Tests.ELF
 {
 	[TestFixture]
 	public class WebTests

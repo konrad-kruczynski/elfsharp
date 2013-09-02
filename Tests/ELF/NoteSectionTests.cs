@@ -3,7 +3,7 @@ using ELFSharp.ELF.Sections;
 using System.IO;
 using ELFSharp.ELF;
 
-namespace Tests
+namespace Tests.ELF
 {
     [TestFixture]
     public class NoteSectionTests

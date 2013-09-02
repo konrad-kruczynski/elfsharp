@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF;
 
-namespace Tests
+namespace Tests.ELF
 {
     [TestFixture]
     public class ProgBitsSectionTests

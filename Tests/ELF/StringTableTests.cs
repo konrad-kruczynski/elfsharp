@@ -1,9 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
-using ELFSharp;
 using ELFSharp.ELF;
 
-namespace Tests
+namespace Tests.ELF
 {
     [TestFixture]
     public class StringTableTests
