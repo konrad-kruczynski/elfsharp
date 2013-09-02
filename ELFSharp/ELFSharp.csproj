@@ -75,9 +75,12 @@
     <Compile Include="ELF\Segments\Segment.cs" />
     <Compile Include="ELF\Segments\SegmentFlags.cs" />
     <Compile Include="ELF\Segments\SegmentType.cs" />
+    <Compile Include="UImage\UImage.cs" />
+    <Compile Include="UImage\CompressionType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="ELF\" />
+    <Folder Include="UImage\" />
   </ItemGroup>
 </Project>
