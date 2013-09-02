@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace ELFSharp.UImage
 {
@@ -6,7 +7,10 @@ namespace ELFSharp.UImage
 	{
 		internal UImage(string fileName)
 		{
-			throw new NotImplementedException();
+			using(var reader = new BinaryReader(File.OpenRead(fileName)))
+			{
+				reader.ReadBytes(8); // magic and CRC
+			}
 		}
 
 		public uint CRC { get; private set; }

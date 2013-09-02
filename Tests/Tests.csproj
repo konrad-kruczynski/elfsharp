@@ -38,6 +38,7 @@
     <Compile Include="ELF\SymbolTableTests.cs" />
     <Compile Include="ELF\WebTests.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="UImage\SimpleTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,5 +56,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="ELF\" />
+    <Folder Include="UImage\" />
   </ItemGroup>
 </Project>
