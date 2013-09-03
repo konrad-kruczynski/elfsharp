@@ -19,7 +19,7 @@ namespace ELFSharp.UImage
 				CRC = reader.ReadUInt32BigEndian();
 				reader.ReadByte(); // OS
 				reader.ReadByte(); // architecture
-				reader.ReadByte(); // image type
+				Type = (ImageType)reader.ReadByte();
 				reader.ReadByte(); // compression type
 				var nameAsBytes = reader.ReadBytes(32);
 				Name = Encoding.ASCII.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
@@ -35,6 +35,7 @@ namespace ELFSharp.UImage
 		public string Name { get; private set; }
 		public DateTime Timestamp { get; private set; }
 		public CompressionType Compression { get; private set; }
+		public ImageType Type { get; private set; }
 
 		public byte[] GetImageData()
 		{

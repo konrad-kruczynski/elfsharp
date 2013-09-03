@@ -47,6 +47,13 @@ namespace Tests.UImage
 			ELFSharp.UImage.UImage image;
 			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinaryLocation("uImage-panda-wrng-cksm"), out image));
 		}
+
+		[Test]
+		public void ShouldFindCorrectImageType()
+		{
+			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
+			Assert.AreEqual(ImageType.Kernel, uImage.Type);
+		}
 	}
 }
 
