@@ -43,6 +43,11 @@ namespace ELFSharp.UImage
 			return (uint)IPAddress.HostToNetworkOrder(reader.ReadInt32());
 		}
 
+		internal static int ReadInt32BigEndian(this BinaryReader reader)
+		{
+			return IPAddress.HostToNetworkOrder(reader.ReadInt32());
+		}
+
 		private const uint Magic = 0x27051956;
 	}
 }

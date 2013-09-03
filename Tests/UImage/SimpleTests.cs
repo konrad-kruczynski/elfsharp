@@ -33,6 +33,13 @@ namespace Tests.UImage
 			Assert.AreEqual(0x6C77B32E, uImage.CRC);
 			Assert.AreEqual("Linux-3.2.0", uImage.Name);
 		}
+
+		[Test]
+		public void ShouldProperlyReadTimestamp()
+		{
+			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
+			Assert.AreEqual(new DateTime(2012, 4, 10, 21, 11, 06), uImage.Timestamp);
+		}
 	}
 }
 
