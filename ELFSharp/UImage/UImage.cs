@@ -23,6 +23,7 @@ namespace ELFSharp.UImage
 				reader.ReadByte(); // compression type
 				var nameAsBytes = reader.ReadBytes(32);
 				Name = Encoding.ASCII.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
+				image = reader.ReadBytes((int)Size);
 			}
 		}
 
@@ -37,10 +38,13 @@ namespace ELFSharp.UImage
 
 		public byte[] GetImageData()
 		{
-			throw new NotImplementedException();
+			var result = new byte[image.Length];
+			Array.Copy(image, result, result.Length);
+			return result;
 		}
 
 		private const int MaximumNameLength = 32;
+		private readonly byte[] image;
 	}
 }
 
