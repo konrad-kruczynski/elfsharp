@@ -20,7 +20,7 @@ namespace ELFSharp.UImage
 				reader.ReadByte(); // OS
 				reader.ReadByte(); // architecture
 				Type = (ImageType)reader.ReadByte();
-				reader.ReadByte(); // compression type
+				Compression = (CompressionType)reader.ReadByte();
 				var nameAsBytes = reader.ReadBytes(32);
 				Name = Encoding.ASCII.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
 				image = reader.ReadBytes((int)Size);
