@@ -5,7 +5,7 @@ namespace ELFSharp.UImage
 	public enum UImageResult
 	{
 		OK,
-		BadMagic,
+		NotUImage,
 		BadChecksum,
 		NotSupportedImageType
 	}

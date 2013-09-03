@@ -20,7 +20,7 @@ namespace Tests.UImage
 		{
 			var fileName = Utilities.GetBinaryLocation("notelf"); // not elf, nor uImage
 			ELFSharp.UImage.UImage image;
-			Assert.AreEqual(UImageResult.BadMagic, UImageReader.TryLoad(fileName, out image));
+			Assert.AreEqual(UImageResult.NotUImage, UImageReader.TryLoad(fileName, out image));
 		}
 
 		[Test]
