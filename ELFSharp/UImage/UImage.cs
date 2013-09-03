@@ -12,7 +12,7 @@ namespace ELFSharp.UImage
 			using(var reader = new BinaryReader(File.OpenRead(fileName)))
 			{
 				reader.ReadBytes(8); // magic and CRC
-				reader.ReadBytes(4); // timestamp
+				Timestamp = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(reader.ReadInt32BigEndian())).ToLocalTime();
 				Size = reader.ReadUInt32BigEndian();
 				LoadAddress = reader.ReadUInt32BigEndian();
 				EntryPoint = reader.ReadUInt32BigEndian();
@@ -32,6 +32,7 @@ namespace ELFSharp.UImage
 		public uint LoadAddress { get; private set; }
 		public uint EntryPoint { get; private set; }
 		public string Name { get; private set; }
+		public DateTime Timestamp { get; private set; }
 		public CompressionType Compression { get; private set; }
 
 		public byte[] GetImageData()
