@@ -62,6 +62,13 @@ namespace Tests.UImage
 			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinaryLocation("vexpress-image-extracted")),
 			                UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress")).GetImageData());
 		}
+
+		[Test]
+		public void ShouldGetProperOSValue()
+		{
+			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress"));
+			Assert.AreEqual(OS.Linux, uImage.OperatingSystem);
+		}
 	}
 }
 

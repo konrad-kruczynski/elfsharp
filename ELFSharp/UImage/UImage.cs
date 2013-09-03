@@ -17,7 +17,7 @@ namespace ELFSharp.UImage
 				LoadAddress = reader.ReadUInt32BigEndian();
 				EntryPoint = reader.ReadUInt32BigEndian();
 				CRC = reader.ReadUInt32BigEndian();
-				reader.ReadByte(); // OS
+				OperatingSystem = (OS)reader.ReadByte();
 				reader.ReadByte(); // architecture
 				Type = (ImageType)reader.ReadByte();
 				Compression = (CompressionType)reader.ReadByte();
@@ -36,6 +36,7 @@ namespace ELFSharp.UImage
 		public DateTime Timestamp { get; private set; }
 		public CompressionType Compression { get; private set; }
 		public ImageType Type { get; private set; }
+		public OS OperatingSystem { get; private set; }
 
 		public ImageDataResult TryGetImageData(out byte[] result)
 		{
