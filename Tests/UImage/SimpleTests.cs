@@ -40,6 +40,13 @@ namespace Tests.UImage
 			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
 			Assert.AreEqual(new DateTime(2012, 4, 10, 21, 11, 06), uImage.Timestamp);
 		}
+
+		[Test]
+		public void ShouldFailOnImageWithWrongChecksum()
+		{
+			ELFSharp.UImage.UImage image;
+			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinaryLocation("uImage-panda-wrng-cksm"), out image));
+		}
 	}
 }
 
