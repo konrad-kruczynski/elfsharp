@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using ELFSharp.UImage;
+using System.IO;
 
 namespace Tests.UImage
 {
@@ -53,6 +54,13 @@ namespace Tests.UImage
 		{
 			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
 			Assert.AreEqual(ImageType.Kernel, uImage.Type);
+		}
+
+		[Test]
+		public void ShouldExtractCorrectImage()
+		{
+			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinaryLocation("vexpress-image-extracted")),
+			                UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress")).GetImageData());
 		}
 	}
 }

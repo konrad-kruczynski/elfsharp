@@ -37,7 +37,39 @@ namespace ELFSharp.UImage
 		public CompressionType Compression { get; private set; }
 		public ImageType Type { get; private set; }
 
+		public ImageDataResult TryGetImageData(out byte[] result)
+		{
+			result = null;
+			if(Compression != CompressionType.None)
+			{
+				return ImageDataResult.UnsupportedCompressionFormat;
+			}
+			if(CRC != UImageReader.GzipCrc32(image))
+			{
+				return ImageDataResult.BadChecksum;
+			}
+			result = new byte[image.Length];
+			Array.Copy(image, result, result.Length);
+			return ImageDataResult.OK;
+		}
+
 		public byte[] GetImageData()
+		{
+			byte[] result;
+			switch(TryGetImageData(out result))
+			{
+			case ImageDataResult.OK:
+				return result;
+			case ImageDataResult.BadChecksum:
+				throw new InvalidOperationException("Bad checksum of the image, probably corrupted image.");
+			case ImageDataResult.UnsupportedCompressionFormat:
+				throw new InvalidOperationException(string.Format("Unsupported compression format '{0}'.", Compression));
+			default:
+				throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public byte[] GetRawImageData()
 		{
 			var result = new byte[image.Length];
 			Array.Copy(image, result, result.Length);
