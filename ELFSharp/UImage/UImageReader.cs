@@ -17,6 +17,8 @@ namespace ELFSharp.UImage
 				throw new InvalidOperationException("Bad MAGIC value of the UImage file, i.e. this is not an UBoot image.");
 			case UImageResult.BadChecksum:
 				throw new InvalidOperationException("Wrong header checksum of the given UImage file.");
+			case UImageResult.NotSupportedImageType:
+				throw new InvalidOperationException("Given image type is not supported.");
 			default:
 				throw new ArgumentOutOfRangeException();
 			}
@@ -31,6 +33,13 @@ namespace ELFSharp.UImage
 				if(magic != Magic)
 				{
 					return UImageResult.BadMagic;
+				}
+				reader.ReadBytes(4); // CRC
+				reader.ReadBytes(22);
+				var imageType = (ImageType)reader.ReadByte();
+				if(!Enum.IsDefined(typeof(ImageType), imageType))
+				{
+					return UImageResult.NotSupportedImageType;
 				}
 				// TODO: check CRC of the header
 				uImage = new UImage(fileName);

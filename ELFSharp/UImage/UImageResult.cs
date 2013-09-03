@@ -6,7 +6,8 @@ namespace ELFSharp.UImage
 	{
 		OK,
 		BadMagic,
-		BadChecksum
+		BadChecksum,
+		NotSupportedImageType
 	}
 }
 
