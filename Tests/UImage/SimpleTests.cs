@@ -69,6 +69,13 @@ namespace Tests.UImage
 			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress"));
 			Assert.AreEqual(OS.Linux, uImage.OperatingSystem);
 		}
+
+		[Test]
+		public void ShouldGetProperArchitecture()
+		{
+			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress"));
+			Assert.AreEqual(Architecture.ARM, uImage.Architecture);
+		}
 	}
 }
 

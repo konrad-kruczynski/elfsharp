@@ -11,14 +11,14 @@ namespace ELFSharp.UImage
 		{
 			using(var reader = new BinaryReader(File.OpenRead(fileName)))
 			{
-				reader.ReadBytes(8); // magic and CRC
+				reader.ReadBytes(8); // magic and CRC, already checked
 				Timestamp = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(reader.ReadInt32BigEndian())).ToLocalTime();
 				Size = reader.ReadUInt32BigEndian();
 				LoadAddress = reader.ReadUInt32BigEndian();
 				EntryPoint = reader.ReadUInt32BigEndian();
 				CRC = reader.ReadUInt32BigEndian();
 				OperatingSystem = (OS)reader.ReadByte();
-				reader.ReadByte(); // architecture
+				Architecture = (Architecture)reader.ReadByte();
 				Type = (ImageType)reader.ReadByte();
 				Compression = (CompressionType)reader.ReadByte();
 				var nameAsBytes = reader.ReadBytes(32);
@@ -37,6 +37,7 @@ namespace ELFSharp.UImage
 		public CompressionType Compression { get; private set; }
 		public ImageType Type { get; private set; }
 		public OS OperatingSystem { get; private set; }
+		public Architecture Architecture { get; private set; }
 
 		public ImageDataResult TryGetImageData(out byte[] result)
 		{
