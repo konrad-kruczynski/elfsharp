@@ -80,6 +80,7 @@
     <Compile Include="UImage\UImageReader.cs" />
     <Compile Include="UImage\UImageResult.cs" />
     <Compile Include="UImage\ImageType.cs" />
+    <Compile Include="UImage\ImageDataResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
