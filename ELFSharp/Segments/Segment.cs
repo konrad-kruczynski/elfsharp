@@ -25,6 +25,8 @@ namespace ELFSharp.Segments
 		public T Size { get; private set; }
 
 		public T Alignment { get; private set; }
+
+        public long FileSize { get; private set; }
 		
 		/// <summary>
 		/// Gets array containing complete segment image, including
@@ -39,7 +41,7 @@ namespace ELFSharp.Segments
 			using(var reader = ObtainReader(offset))
 			{
 				var result = new byte[Size.To<int>()];
-				var fileImage = reader.ReadBytesOrThrow((int)fileSize);
+				var fileImage = reader.ReadBytesOrThrow(checked((int)FileSize));
 				fileImage.CopyTo(result, 0);
 				return result;
 			}
@@ -63,7 +65,7 @@ namespace ELFSharp.Segments
 				offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
 				Address = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
 				PhysicalAddress = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
-				fileSize = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
+				FileSize = elfClass == Class.Bit32 ? reader.ReadInt32() : reader.ReadInt64();
 				Size = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
 				if(elfClass == Class.Bit32)
 				{
@@ -83,7 +85,6 @@ namespace ELFSharp.Segments
 		private long headerOffset;
 		private Class elfClass;
 		private long offset;
-		private ulong fileSize;
 		private Func<EndianBinaryReader> readerSource;
 		
 	}
