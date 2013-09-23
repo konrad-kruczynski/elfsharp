@@ -38,8 +38,9 @@ namespace ELFSharp
 			{
 				return Class.NotELF;
 			}
-			using(var reader = new BinaryReader(File.OpenRead(fileName)))
+			using(var stream = File.OpenRead(fileName))
 			{
+				var reader = new BinaryReader(stream);
 				var magic = reader.ReadBytes(4);
 				for(var i = 0; i < 4; i++)
 				{
