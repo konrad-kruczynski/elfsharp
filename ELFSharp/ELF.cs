@@ -19,11 +19,13 @@ namespace ELFSharp
 			{
 				throw new ArgumentException("Given file is not proper ELF file.");
 			}
-            stream = GetNewStream();
-            ReadHeader();            
-            ReadStringTable();
-            ReadSections();
-            ReadSegmentHeaders();
+            using (stream = File.OpenRead(fileName))
+            {
+                ReadHeader();
+                ReadStringTable();
+                ReadSections();
+                ReadSegmentHeaders();
+            }
         }
 
         public Endianess Endianess { get; private set; }
@@ -187,16 +189,6 @@ namespace ELFSharp
             }
             return returned;
         }
-
-        private FileStream GetNewStream()
-        {
-            return new FileStream(
-                fileName,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read
-            );
-        }
      
         private void ReadSegmentHeaders()
         {
@@ -316,7 +308,7 @@ namespace ELFSharp
             }
             readerSource = () => new EndianBinaryReader(
                 converter,
-                GetNewStream()
+                File.OpenRead(fileName)
             );
             localReaderSource = () => new EndianBinaryReader(converter, new NonClosingStreamWrapper(stream));
             ReadFields();
