@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using ELFSharp.Sections;
 using ELFSharp.Segments;
+using System;
 
 namespace ELFSharp
 {
-    public interface IELF
+    public interface IELF : IDisposable
     {
         Endianess Endianess { get; }
         Class Class { get; }
