@@ -132,6 +132,11 @@ namespace ELFSharp
 			                     "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine, EntryPoint, sections.Count, segments.Count);
 		}
 
+        public void Dispose()
+        {
+            stream.Close();
+        }
+
         ISection IELF.GetSection(int index)
         {
             return GetSection(index);
