@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
+using System.IO.Compression;
 
 namespace ELFSharp.UImage
 {
@@ -42,7 +43,7 @@ namespace ELFSharp.UImage
 		public ImageDataResult TryGetImageData(out byte[] result)
 		{
 			result = null;
-			if(Compression != CompressionType.None)
+			if(Compression != CompressionType.None && Compression != CompressionType.Gzip)
 			{
 				return ImageDataResult.UnsupportedCompressionFormat;
 			}
@@ -52,6 +53,17 @@ namespace ELFSharp.UImage
 			}
 			result = new byte[image.Length];
 			Array.Copy(image, result, result.Length);
+			if(Compression == CompressionType.Gzip)
+			{
+				using(var stream = new GZipStream(new MemoryStream(result), CompressionMode.Decompress))
+				{
+					using(var decompressed = new MemoryStream())
+					{
+						stream.CopyTo(decompressed);
+						result = decompressed.ToArray();
+					}
+				}
+			}
 			return ImageDataResult.OK;
 		}
 
