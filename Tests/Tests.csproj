@@ -39,6 +39,7 @@
     <Compile Include="ELF\WebTests.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="UImage\SimpleTests.cs" />
+    <Compile Include="UImage\GzipTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
