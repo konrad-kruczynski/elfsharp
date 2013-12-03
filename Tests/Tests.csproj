@@ -29,15 +29,17 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="OpeningTests.cs" />
-    <Compile Include="SectionHeadersParsingTests.cs" />
-    <Compile Include="StringTableTests.cs" />
-    <Compile Include="SymbolTableTests.cs" />
-    <Compile Include="ProgBitsSectionTests.cs" />
-    <Compile Include="NoteSectionTests.cs" />
-    <Compile Include="SegmentsTests.cs" />
+    <Compile Include="ELF\NoteSectionTests.cs" />
+    <Compile Include="ELF\OpeningTests.cs" />
+    <Compile Include="ELF\ProgBitsSectionTests.cs" />
+    <Compile Include="ELF\SectionHeadersParsingTests.cs" />
+    <Compile Include="ELF\SegmentsTests.cs" />
+    <Compile Include="ELF\StringTableTests.cs" />
+    <Compile Include="ELF\SymbolTableTests.cs" />
+    <Compile Include="ELF\WebTests.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="WebTests.cs" />
+    <Compile Include="UImage\SimpleTests.cs" />
+    <Compile Include="UImage\GzipTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -65,4 +67,8 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="ELF\" />
+    <Folder Include="UImage\" />
+  </ItemGroup>
 </Project>
