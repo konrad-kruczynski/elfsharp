@@ -16,17 +16,20 @@ namespace ELFSharp.Sections
         
         internal NoteData(Class elfClass, long sectionOffset, Func<EndianBinaryReader> readerSource)
         {
-            reader = readerSource();
-            reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
-            var nameSize = ReadSize();
-            var descriptionSize = ReadSize();
-            Type = ReadField();
-            int remainder;
-            var fields = Math.DivRem(nameSize, FieldSize, out remainder);
-            var alignedNameSize = FieldSize*(remainder > 0 ? fields + 1 : fields);
-            var name = reader.ReadBytesOrThrow(alignedNameSize);
-            Name = Encoding.ASCII.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
-            Description = reader.ReadBytesOrThrow((int)descriptionSize - 1);
+            using(reader = readerSource())
+            {
+                reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
+                var nameSize = ReadSize();
+                var descriptionSize = ReadSize();
+                Type = ReadField();
+                int remainder;
+                var fields = Math.DivRem(nameSize, FieldSize, out remainder);
+                var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
+                var name = reader.ReadBytesOrThrow(alignedNameSize);
+                Name = Encoding.ASCII.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
+                Description = reader.ReadBytesOrThrow((int)descriptionSize - 1);
+            }
+            reader = null;
         }
         
         private int ReadSize()
