@@ -60,7 +60,7 @@ namespace ELFSharp.ELF
 
         IEnumerable<ISegment> IELF.Segments
         {
-            get { return Segments; }
+            get { return Segments.Cast<ISegment>(); }
         }
 
         public IStringTable SectionsStringTable { get; private set; }
@@ -87,7 +87,7 @@ namespace ELFSharp.ELF
         {
             get
             {
-                return Sections;
+                return Sections.Cast<ISection>();
             }
         }
 

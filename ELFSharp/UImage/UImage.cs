@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.IO.Compression;
+using MiscUtil.IO;
 
 namespace ELFSharp.UImage
 {

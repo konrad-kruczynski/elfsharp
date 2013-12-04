@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6169D4ED-92C8-469C-ABF4-FF0FA29D557C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ELFSharp</RootNamespace>
+    <AssemblyName>ELFSharp</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <BaseIntermediateOutputPath>obj\LinqBridge\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\LinqBridge\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\LinqBridge\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LinqBridge, Version=1.3.0.0, Culture=neutral, PublicKeyToken=c2b14eb747628076, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LinqBridge.1.3.0\lib\net20\LinqBridge.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MiscUtil\BigEndianBitConverter.cs" />
+    <Compile Include="MiscUtil\EndianBinaryReader.cs" />
+    <Compile Include="MiscUtil\EndianBinaryWriter.cs" />
+    <Compile Include="MiscUtil\EndianBitConverter.cs" />
+    <Compile Include="MiscUtil\Endianness.cs" />
+    <Compile Include="MiscUtil\LittleEndianBitConverter.cs" />
+    <Compile Include="MiscUtil\NonClosingStreamWrapper.cs" />
+    <Compile Include="MiscUtil\Streams.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ELF\Consts.cs" />
+    <Compile Include="ELF\Class.cs" />
+    <Compile Include="ELF\ELF.cs" />
+    <Compile Include="ELF\ELFReader.cs" />
+    <Compile Include="ELF\Endianess.cs" />
+    <Compile Include="ELF\FileType.cs" />
+    <Compile Include="ELF\IELF.cs" />
+    <Compile Include="ELF\Machine.cs" />
+    <Compile Include="ELF\Utilities.cs" />
+    <Compile Include="ELF\Sections\INoteSection.cs" />
+    <Compile Include="ELF\Sections\IProgBitsSection.cs" />
+    <Compile Include="ELF\Sections\ISection.cs" />
+    <Compile Include="ELF\Sections\IStringTable.cs" />
+    <Compile Include="ELF\Sections\ISymbolEntry.cs" />
+    <Compile Include="ELF\Sections\ISymbolTable.cs" />
+    <Compile Include="ELF\Sections\NoteData.cs" />
+    <Compile Include="ELF\Sections\NoteSection.cs" />
+    <Compile Include="ELF\Sections\ProgBitsSection.cs" />
+    <Compile Include="ELF\Sections\Section.cs" />
+    <Compile Include="ELF\Sections\SectionFlags.cs" />
+    <Compile Include="ELF\Sections\SectionHeader.cs" />
+    <Compile Include="ELF\Sections\SectionType.cs" />
+    <Compile Include="ELF\Sections\SpecialSectionIndex.cs" />
+    <Compile Include="ELF\Sections\SpecialSectionType.cs" />
+    <Compile Include="ELF\Sections\StringTable.cs" />
+    <Compile Include="ELF\Sections\SymbolBinding.cs" />
+    <Compile Include="ELF\Sections\SymbolEntry.cs" />
+    <Compile Include="ELF\Sections\SymbolTable.cs" />
+    <Compile Include="ELF\Sections\SymbolType.cs" />
+    <Compile Include="ELF\Segments\ISegment.cs" />
+    <Compile Include="ELF\Segments\Segment.cs" />
+    <Compile Include="ELF\Segments\SegmentFlags.cs" />
+    <Compile Include="ELF\Segments\SegmentType.cs" />
+    <Compile Include="UImage\UImage.cs" />
+    <Compile Include="UImage\CompressionType.cs" />
+    <Compile Include="UImage\UImageReader.cs" />
+    <Compile Include="UImage\UImageResult.cs" />
+    <Compile Include="UImage\ImageType.cs" />
+    <Compile Include="UImage\ImageDataResult.cs" />
+    <Compile Include="UImage\OS.cs" />
+    <Compile Include="UImage\Architecture.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileName" />
+          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" EolMarker="Unix" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
+          <CSharpFormattingPolicy AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" StatementBraceStyle="NextLine" ElseNewLinePlacement="NewLine" CatchNewLinePlacement="NewLine" FinallyNewLinePlacement="NewLine" WhileNewLinePlacement="NewLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeIndexerDeclarationBracket="False" BeforeDelegateDeclarationParentheses="False" AfterDelegateDeclarationParameterComma="True" NewParentheses="False" IfParentheses="False" WhileParentheses="False" ForParentheses="False" ForeachParentheses="False" CatchParentheses="False" SwitchParentheses="False" LockParentheses="False" UsingParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" EolMarker="Unix" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
