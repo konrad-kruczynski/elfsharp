@@ -18,7 +18,9 @@ namespace ELFSharp.ELF
         IStringTable SectionsStringTable { get; }
         IEnumerable<ISection> Sections { get; }
         IEnumerable<T> GetSections<T>() where T : ISection;
+        bool TryGetSection(string name, out ISection section);
         ISection GetSection(string name);
+        bool TryGetSection(int index, out ISection section);
         ISection GetSection(int index);
     }
 }
