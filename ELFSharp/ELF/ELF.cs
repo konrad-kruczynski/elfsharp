@@ -78,9 +78,9 @@ namespace ELFSharp.ELF
             return Sections.Where(x => x is TSectionType).Cast<TSectionType>();
         }
 
-        public IEnumerable<S> GetSections<S>() where S : Section<T>
+        public IEnumerable<TSection> GetSections<TSection>() where TSection : Section<T>
         {
-            return Sections.Where(x => x is S).Cast<S>();
+            return Sections.Where(x => x is TSection).Cast<TSection>();
         }
 
         IEnumerable<ISection> IELF.Sections
@@ -91,19 +91,36 @@ namespace ELFSharp.ELF
             }
         }
 
+        public bool TryGetSection(string name, out Section<T> section)
+        {
+            return TryGetSectionInner(name, out section) == GetSectionResult.Success;
+        }
+
         public Section<T> GetSection(string name)
         {
-            if(!HasSectionsStringTable)
+            Section<T> section;
+            var result = TryGetSectionInner(name);
+
+            switch(result)
             {
+            case GetSectionResult.Success:
+                return section;
+            case GetSectionResult.SymbolNameNotUnique:
+                throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
+            case GetSectionResult.NoSectionsStringTable:
                 throw new InvalidOperationException(
                     "Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
+            default:
+                throw new InvalidOperationException("Unhandled error.");
             }
-            var index = sectionIndicesByName[name];
-            if(index != -1)
-            {
-                return GetSection(index);
-            }
-            throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
+        }
+
+        bool IELF.TryGetSection(string name, out ISection section)
+        {
+            Section<T> sectionConcrete;
+            var result = TryGetSection(name, out sectionConcrete);
+            section = sectionConcrete;
+            return result;
         }
 
         ISection IELF.GetSection(string name)
@@ -111,19 +128,25 @@ namespace ELFSharp.ELF
             return GetSection(name);
         }
 
+        bool TryGetSection(int index, out Section<T> section)
+        {
+            return TryGetSectionInner(index, out section) == GetSectionResult.Success;
+        }
+
         public Section<T> GetSection(int index)
         {
-            if(sections[index] != null)
+            Section<T> section;
+            GetSectionResult result = TryGetSectionInner(index);
+            switch(result)
             {
-                return sections[index];
-            }
-            if(currentStage != Stage.Initalizing)
-            {
+            case GetSectionResult.Success:
+                return section;
+            case GetSectionResult.WrongStage:
                 throw new InvalidOperationException(
                     "Assert not met: null section by proper index in not initializing stage.");
+            default:
+                throw new ArgumentOutOfRangeException();
             }
-            TouchSection(index);
-            return sections[index];
         }
 
 		public override string ToString()
@@ -131,6 +154,14 @@ namespace ELFSharp.ELF
 			return string.Format("[ELF: Endianess={0}, Class={1}, Type={2}, Machine={3}, EntryPoint=0x{4:X}, " +
 			                     "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine, EntryPoint, sections.Count, segments.Count);
 		}
+
+        bool IELF.TryGetSection(int index, out ISection section)
+        {
+            Section<T> sectionConcrete;
+            var result = TryGetSection(index, out sectionConcrete);
+            section = sectionConcrete;
+            return result;
+        }
 
         ISection IELF.GetSection(int index)
         {
@@ -226,7 +257,7 @@ namespace ELFSharp.ELF
                         sectionIndicesByName.Add(name, i);
                     } else
                     {
-                        sectionIndicesByName[name] = -1;
+                        sectionIndicesByName[name] = SymbolNameNotUniqueMarker;
                     }
                 }
             }
@@ -382,6 +413,38 @@ namespace ELFSharp.ELF
             reader.ReadBytes(10); // padding bytes of section e_ident
         }
 
+        private GetSectionResult TryGetSectionInner(string name, out Section<T> section)
+        {
+            section = default(Section<T>);
+            if(!HasSectionsStringTable)
+            {
+                return GetSectionResult.NoSectionsStringTable;
+            }
+            var index = sectionIndicesByName[name];
+            if(index != SymbolNameNotUniqueMarker)
+            {
+                return GetSectionResult.SymbolNameNotUnique;
+            }
+            return TryGetSectionInner(index);
+        }
+
+        private GetSectionResult TryGetSectionInner(int index, out Section<T> section)
+        {
+            section = default(Section<T>);
+            if(sections[index] != null)
+            {
+                section = sections[index];
+                return GetSectionResult.Success;
+            }
+            TouchSection(index);
+            if(currentStage != Stage.Initalizing)
+            {
+                return GetSectionResult.WrongStage;
+            }
+            section = sections[index];
+            return GetSectionResult.Success;
+        }
+
         private readonly FileStream stream;
         private Int64 segmentHeaderOffset;
         private Int64 sectionHeaderOffset;
@@ -400,10 +463,19 @@ namespace ELFSharp.ELF
         private Stage currentStage;
         private readonly string fileName;
 
+        private const int SymbolNameNotUniqueMarker = -1;
+
         private enum Stage
         {
             Initalizing,
             AfterSectionsAreRead
+        }
+
+        private enum GetSectionResult {
+            Success,
+            SymbolNameNotUnique,
+            NoSectionsStringTable,
+            WrongStage
         }
     }
 }
