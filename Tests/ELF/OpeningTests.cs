@@ -79,6 +79,12 @@ namespace Tests.ELF
 			IELF elf;
 			Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinaryLocation("notelf"), out elf));
 		}
+
+        [Test]
+        public void GithubIssueNo9()
+        {
+            ELFReader.Load(Utilities.GetBinaryLocation("stripped-all-binary"));
+        }
     }
 }
 
