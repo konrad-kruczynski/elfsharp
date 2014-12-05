@@ -184,12 +184,7 @@ namespace ELFSharp.ELF
                     returned = new ProgBitsSection<T>(header, readerSource);
                     break;
                 case SectionType.SymbolTable:
-                    returned = new SymbolTable<T>(
-                        header,
-                        readerSource,
-                        objectsStringTable,
-                        this
-                    );
+                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
                     break;
                 case SectionType.StringTable:
                     returned = new StringTable<T>(header, readerSource);
@@ -210,7 +205,7 @@ namespace ELFSharp.ELF
                 case SectionType.Shlib:
                     goto default;
                 case SectionType.DynamicSymbolTable:
-                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
+                returned = new SymbolTable<T>(header, readerSource, dynamicStringTable, this);
                     break;
                 default:
                     returned = new Section<T>(header, readerSource);
@@ -270,7 +265,7 @@ namespace ELFSharp.ELF
                 null,
                 sectionHeaders.Count
             ));
-            FindObjectsStringTable();
+            FindStringTables();
             for(var i = 0; i < sectionHeaders.Count; i++)
             {
                 TouchSection(i);
@@ -293,15 +288,13 @@ namespace ELFSharp.ELF
             sections[index] = section;
         }
 
-        private void FindObjectsStringTable()
+        private void FindStringTables()
         {
-            // TODO: check if there is string table
-            if(!sectionIndicesByName.ContainsKey(Consts.ObjectsStringTableName))
-            {
-                return;
-            }
-            var sectionIdx = sectionIndicesByName[Consts.ObjectsStringTableName];
-            objectsStringTable = (StringTable<T>)GetSection(sectionIdx);
+            Section<T> section;
+            TryGetSection(Consts.ObjectsStringTableName, out section);
+            objectsStringTable = (StringTable<T>)section;
+            TryGetSection(Consts.DynamicStringTableName, out section);
+            dynamicStringTable = (StringTable<T>)section;
         }
 
         private void ReadStringTable()
@@ -471,6 +464,7 @@ namespace ELFSharp.ELF
         private Dictionary<string, int> sectionIndicesByName;
         private List<SectionHeader> sectionHeaders;
         private StringTable<T> objectsStringTable;
+        private StringTable<T> dynamicStringTable;
         private Func<EndianBinaryReader> readerSource;
         private Func<EndianBinaryReader> localReaderSource;
         private Stage currentStage;
