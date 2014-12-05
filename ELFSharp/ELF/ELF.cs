@@ -99,13 +99,13 @@ namespace ELFSharp.ELF
         public Section<T> GetSection(string name)
         {
             Section<T> section;
-            var result = TryGetSectionInner(name);
+            var result = TryGetSectionInner(name, out section);
 
             switch(result)
             {
             case GetSectionResult.Success:
                 return section;
-            case GetSectionResult.SymbolNameNotUnique:
+            case GetSectionResult.SectionNameNotUnique:
                 throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
             case GetSectionResult.NoSectionsStringTable:
                 throw new InvalidOperationException(
@@ -117,9 +117,9 @@ namespace ELFSharp.ELF
 
         bool IELF.TryGetSection(string name, out ISection section)
         {
-            Section<T> sectionConcrete;
-            var result = TryGetSection(name, out sectionConcrete);
-            section = sectionConcrete;
+            Section<T> concreteSection;
+            var result = TryGetSection(name, out concreteSection);
+            section = concreteSection;
             return result;
         }
 
@@ -136,7 +136,7 @@ namespace ELFSharp.ELF
         public Section<T> GetSection(int index)
         {
             Section<T> section;
-            GetSectionResult result = TryGetSectionInner(index);
+            GetSectionResult result = TryGetSectionInner(index, out section);
             switch(result)
             {
             case GetSectionResult.Success:
@@ -262,7 +262,7 @@ namespace ELFSharp.ELF
                         sectionIndicesByName.Add(name, i);
                     } else
                     {
-                        sectionIndicesByName[name] = SymbolNameNotUniqueMarker;
+                        sectionIndicesByName[name] = SectionNameNotUniqueMarker;
                     }
                 }
             }
@@ -426,11 +426,11 @@ namespace ELFSharp.ELF
                 return GetSectionResult.NoSectionsStringTable;
             }
             var index = sectionIndicesByName[name];
-            if(index != SymbolNameNotUniqueMarker)
+            if(index == SectionNameNotUniqueMarker)
             {
-                return GetSectionResult.SymbolNameNotUnique;
+                return GetSectionResult.SectionNameNotUnique;
             }
-            return TryGetSectionInner(index);
+            return TryGetSectionInner(index, out section);
         }
 
         private GetSectionResult TryGetSectionInner(int index, out Section<T> section)
@@ -468,7 +468,7 @@ namespace ELFSharp.ELF
         private Stage currentStage;
         private readonly string fileName;
 
-        private const int SymbolNameNotUniqueMarker = -1;
+        private const int SectionNameNotUniqueMarker = -1;
 
         private enum Stage
         {
@@ -476,9 +476,10 @@ namespace ELFSharp.ELF
             AfterSectionsAreRead
         }
 
-        private enum GetSectionResult {
+        private enum GetSectionResult
+        {
             Success,
-            SymbolNameNotUnique,
+            SectionNameNotUnique,
             NoSectionsStringTable,
             WrongStage
         }
