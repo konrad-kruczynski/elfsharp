@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{91374C07-064E-445D-AC01-F7BEF7F14C70}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -40,12 +40,14 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="UImage\SimpleTests.cs" />
     <Compile Include="UImage\GzipTests.cs" />
+    <Compile Include="ELF\SectionGettingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="nunit.framework">
       <HintPath>..\Lib\nunit.framework.dll</HintPath>
+      <Package>nunit</Package>
     </Reference>
   </ItemGroup>
   <ItemGroup>
