@@ -108,8 +108,9 @@ namespace ELFSharp.ELF
             case GetSectionResult.SectionNameNotUnique:
                 throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
             case GetSectionResult.NoSectionsStringTable:
-                throw new InvalidOperationException(
-                    "Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
+                throw new InvalidOperationException("Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
+            case GetSectionResult.NoSuchSection:
+                throw new KeyNotFoundException(string.Format("Given section {0} could not be found in the file.", name));
             default:
                 throw new InvalidOperationException("Unhandled error.");
             }
@@ -141,9 +142,8 @@ namespace ELFSharp.ELF
             {
             case GetSectionResult.Success:
                 return section;
-            case GetSectionResult.WrongStage:
-                throw new InvalidOperationException(
-                    "Assert not met: null section by proper index in not initializing stage.");
+            case GetSectionResult.NoSuchSection:
+                throw new IndexOutOfRangeException(string.Format("Given section index {0} is out of range.", index));
             default:
                 throw new ArgumentOutOfRangeException();
             }
@@ -425,7 +425,11 @@ namespace ELFSharp.ELF
             {
                 return GetSectionResult.NoSectionsStringTable;
             }
-            var index = sectionIndicesByName[name];
+            int index;
+            if(!sectionIndicesByName.TryGetValue(name, out index))
+            {
+                return GetSectionResult.NoSuchSection;
+            }
             if(index == SectionNameNotUniqueMarker)
             {
                 return GetSectionResult.SectionNameNotUnique;
@@ -436,16 +440,20 @@ namespace ELFSharp.ELF
         private GetSectionResult TryGetSectionInner(int index, out Section<T> section)
         {
             section = default(Section<T>);
+            if(index >= sections.Count)
+            {
+                return GetSectionResult.NoSuchSection;
+            }
             if(sections[index] != null)
             {
                 section = sections[index];
                 return GetSectionResult.Success;
             }
-            TouchSection(index);
             if(currentStage != Stage.Initalizing)
             {
-                return GetSectionResult.WrongStage;
+                throw new InvalidOperationException("Assert not met: null section by proper index in not initializing stage.");
             }
+            TouchSection(index);
             section = sections[index];
             return GetSectionResult.Success;
         }
@@ -481,7 +489,7 @@ namespace ELFSharp.ELF
             Success,
             SectionNameNotUnique,
             NoSectionsStringTable,
-            WrongStage
+            NoSuchSection
         }
     }
 }
