@@ -6,4 +6,4 @@
 [assembly: AssemblyProduct("ELFSharp")]
 [assembly: AssemblyCopyright("Copyright © Konrad Kruczyński 2011 - 2014")]
 
-[assembly: AssemblyVersion("0.0.10")]
+[assembly: AssemblyVersion("0.0.11")]
