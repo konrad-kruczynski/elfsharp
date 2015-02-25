@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
 
 namespace Tests.ELF
 {
@@ -84,6 +85,12 @@ namespace Tests.ELF
         public void GithubIssueNo9()
         {
             ELFReader.Load(Utilities.GetBinaryLocation("stripped-all-binary"));
+        }
+
+        [Test]
+        public void GithubIssueNo24()
+        {
+            ELFReader.Load(Utilities.GetBinaryLocation("issue24.elf"));
         }
     }
 }
