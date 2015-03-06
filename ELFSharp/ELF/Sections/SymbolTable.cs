@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MiscUtil.IO;
 using System.Collections.ObjectModel;
 
@@ -21,7 +22,7 @@ namespace ELFSharp.ELF.Sections
 
         IEnumerable<ISymbolEntry> ISymbolTable.Entries
         {
-            get { return Entries; }
+            get { return Entries.Cast<ISymbolEntry>(); }
         }
 
         private void ReadSymbols()
