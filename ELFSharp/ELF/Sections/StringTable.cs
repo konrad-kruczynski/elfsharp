@@ -11,18 +11,20 @@ namespace ELFSharp.ELF.Sections
         internal StringTable(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
         {
             stringCache = new Dictionary<long, string>();
-			stringCache.Add(0, string.Empty);
+            stringCache.Add(0, string.Empty);
 
-			stringBlob = ReadStringData();
+            stringBlob = ReadStringData();
         }
 
         public IEnumerable<string> Strings
         {
             get
             {
-				if (!cachePopulated)
-					PrepopulateCache();
-				return stringCache.Values;
+                if(!cachePopulated)
+                {
+                    PrepopulateCache();
+                }
+                return stringCache.Values;
             }
         }
 
@@ -30,8 +32,8 @@ namespace ELFSharp.ELF.Sections
         {
             get
             {
-				string result;
-				if (stringCache.TryGetValue(index, out result))
+                string result;
+                if(stringCache.TryGetValue(index, out result))
                 {
                     return result;
                 }
@@ -41,49 +43,49 @@ namespace ELFSharp.ELF.Sections
 
         private string HandleUnexpectedIndex(long index)
         {
-			var stringStart = (int)index;
-            for (int i = stringStart; i < stringBlob.Length; ++i)
-			{
-				if (stringBlob[i] == 0)
-				{
-					var str = Encoding.UTF8.GetString(stringBlob, stringStart, i - stringStart);
-					stringCache.Add(stringStart, str);
-					return str;
-				}
-			}
-			throw new IndexOutOfRangeException();
+            var stringStart = (int)index;
+            for(var i = stringStart; i < stringBlob.Length; ++i)
+            {
+                if(stringBlob[i] == 0)
+                {
+                    var str = Encoding.UTF8.GetString(stringBlob, stringStart, i - stringStart);
+                    stringCache.Add(stringStart, str);
+                    return str;
+                }
+            }
+            throw new IndexOutOfRangeException();
         }
 
-		private void PrepopulateCache()
-		{
-			cachePopulated = true;
+        private void PrepopulateCache()
+        {
+            cachePopulated = true;
 
-			var stringStart = 1;
-			for (int i = 1; i < stringBlob.Length; ++i)
-			{
-				if (stringBlob[i] == 0)
-				{
-					if (!stringCache.ContainsKey(stringStart))
-					{
-						stringCache.Add(stringStart, Encoding.UTF8.GetString(stringBlob, stringStart, i - stringStart));
-					}
-					stringStart = i + 1;
-				}
-			}
-		}
+            var stringStart = 1;
+            for(var i = 1; i < stringBlob.Length; ++i)
+            {
+                if(stringBlob[i] == 0)
+                {
+                    if(!stringCache.ContainsKey(stringStart))
+                    {
+                        stringCache.Add(stringStart, Encoding.UTF8.GetString(stringBlob, stringStart, i - stringStart));
+                    }
+                    stringStart = i + 1;
+                }
+            }
+        }
 
         private byte[] ReadStringData()
         {
-            using (var reader = ObtainReader())
+            using(var reader = ObtainReader())
             {
-				var blob = reader.ReadBytes((int)Header.Size);
-				Debug.Assert(blob.Length == 0 || (blob[0] == 0 && blob[blob.Length - 1] == 0), "First and last bytes must be the null character (except for empty string tables)");
-				return blob;
-			}
-		}
+                var blob = reader.ReadBytes((int)Header.Size);
+                Debug.Assert(blob.Length == 0 || (blob[0] == 0 && blob[blob.Length - 1] == 0), "First and last bytes must be the null character (except for empty string tables)");
+                return blob;
+            }
+        }
 
-		private readonly Dictionary<long, string> stringCache;
-		private readonly byte[] stringBlob;
-		private bool cachePopulated;
+        private readonly Dictionary<long, string> stringCache;
+        private readonly byte[] stringBlob;
+        private bool cachePopulated;
     }
 }
