@@ -39,7 +39,7 @@ namespace Tests.UImage
 		public void ShouldProperlyReadTimestamp()
 		{
 			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
-			Assert.AreEqual(new DateTime(2012, 4, 10, 21, 11, 06), uImage.Timestamp);
+			Assert.AreEqual(new DateTime(2012, 4, 10, 19, 11, 06, DateTimeKind.Utc).ToLocalTime(), uImage.Timestamp);
 		}
 
 		[Test]
