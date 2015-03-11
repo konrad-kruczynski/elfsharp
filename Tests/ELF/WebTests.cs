@@ -50,7 +50,7 @@ namespace Tests.ELF
 .shstrtab: StringTable, load @0x0, 264 bytes long
 .symtab: SymbolTable, load @0x0, 1536 bytes long
 .strtab: StringTable, load @0x0, 566 bytes long";
-			var expectedOutputAsLines = expectedOutput.Split(new [] { Environment.NewLine }, StringSplitOptions.None);
+			var expectedOutputAsLines = expectedOutput.Split(new [] { "\n", "\r\n" }, StringSplitOptions.None);
 			CollectionAssert.AreEqual(expectedOutputAsLines, output);
 		}
 
@@ -78,7 +78,7 @@ __libc_csu_init
 _start
 main
 _init";
-			var expectedOutputAsLines = expectedOutput.Split(new [] { Environment.NewLine }, StringSplitOptions.None);
+			var expectedOutputAsLines = expectedOutput.Split(new [] { "\n", "\r\n" }, StringSplitOptions.None);
 			CollectionAssert.AreEqual(expectedOutputAsLines, output);
 		}
 
