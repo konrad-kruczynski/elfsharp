@@ -83,11 +83,16 @@
     <Compile Include="UImage\ImageDataResult.cs" />
     <Compile Include="UImage\OS.cs" />
     <Compile Include="UImage\Architecture.cs" />
+    <Compile Include="MachO\MachO.cs" />
+    <Compile Include="MachO\MachOReader.cs" />
+    <Compile Include="MachO\MachOResult.cs" />
+    <Compile Include="MachO\Machine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="ELF\" />
     <Folder Include="UImage\" />
+    <Folder Include="MachO\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
