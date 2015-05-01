@@ -99,6 +99,14 @@ namespace ELFSharp.ELF.Sections
             }
         }
 
+        public T Offset
+        {
+            get
+            {
+                return Header.Offset.To<T>();
+            }
+        }
+
 		public override string ToString()
 		{
 			return Header.ToString();
