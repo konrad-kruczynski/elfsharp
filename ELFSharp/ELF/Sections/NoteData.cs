@@ -26,8 +26,11 @@ namespace ELFSharp.ELF.Sections
                 var fields = Math.DivRem(nameSize, FieldSize, out remainder);
                 var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
                 var name = reader.ReadBytesOrThrow(alignedNameSize);
-                Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
-                Description = reader.ReadBytesOrThrow((int)descriptionSize - 1);
+                if(nameSize > 0)
+                {
+                    Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
+                }
+                Description = descriptionSize > 0 ? reader.ReadBytesOrThrow(descriptionSize) : new byte[0];
             }
             reader = null;
         }
