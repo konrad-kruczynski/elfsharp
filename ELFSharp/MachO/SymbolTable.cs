@@ -24,7 +24,6 @@ namespace ELFSharp.MachO
 
         private void ReadSymbols()
         {
-            
             var symbolTableOffset = Reader.ReadInt32();
             var numberOfSymbols = Reader.ReadInt32();
             symbols = new Symbol[numberOfSymbols];
