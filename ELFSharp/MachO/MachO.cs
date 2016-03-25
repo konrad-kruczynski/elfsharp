@@ -50,6 +50,10 @@ namespace ELFSharp.MachO
                     var symbolTable = new SymbolTable(reader, OpenStream, is64);
                     commands[i] = symbolTable;
                     break;
+                case CommandType.Main:
+                    var entryPoint = new EntryPoint(reader, OpenStream);
+                    commands[i] = entryPoint;
+                    break;
                 default:
                     reader.ReadBytes((int)commandSize - 8); // 8 bytes is the size of the common command header
                     break;

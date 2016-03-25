@@ -92,6 +92,7 @@
     <Compile Include="MachO\Command.cs" />
     <Compile Include="MachO\SymbolTable.cs" />
     <Compile Include="MachO\Symbol.cs" />
+    <Compile Include="MachO\EntryPoint.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
