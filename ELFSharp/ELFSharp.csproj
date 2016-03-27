@@ -93,6 +93,10 @@
     <Compile Include="MachO\SymbolTable.cs" />
     <Compile Include="MachO\Symbol.cs" />
     <Compile Include="MachO\EntryPoint.cs" />
+    <Compile Include="MachO\Segment.cs" />
+    <Compile Include="MachO\Protection.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="MachO\Section.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

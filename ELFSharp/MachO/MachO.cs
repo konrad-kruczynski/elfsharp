@@ -47,12 +47,14 @@ namespace ELFSharp.MachO
                 switch((CommandType)loadCommandType)
                 {
                 case CommandType.SymbolTable:
-                    var symbolTable = new SymbolTable(reader, OpenStream, is64);
-                    commands[i] = symbolTable;
+                    commands[i] = new SymbolTable(reader, OpenStream, is64);
                     break;
                 case CommandType.Main:
-                    var entryPoint = new EntryPoint(reader, OpenStream);
-                    commands[i] = entryPoint;
+                    commands[i] = new EntryPoint(reader, OpenStream);
+                    break;
+                case CommandType.Segment:
+                case CommandType.Segment64:
+                    commands[i] = new Segment(reader, OpenStream, is64);
                     break;
                 default:
                     reader.ReadBytes((int)commandSize - 8); // 8 bytes is the size of the common command header
