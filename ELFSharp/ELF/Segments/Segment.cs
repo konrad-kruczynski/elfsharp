@@ -47,6 +47,14 @@ namespace ELFSharp.ELF.Segments
             }
         }
 
+        public byte[] GetRawHeader()
+        {
+            using(var reader = ObtainReader(headerOffset))
+            {
+                return reader.ReadBytesOrThrow(elfClass == Class.Bit32 ? 32 : 56);
+            }
+        }
+
         public override string ToString()
         {
             return string.Format("{2}: size {3}, @ 0x{0:X}", Address, PhysicalAddress, Type, Size);
