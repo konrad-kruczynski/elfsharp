@@ -32,15 +32,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="MiscUtil">
+      <HintPath>..\..\packages\JonSkeet.MiscUtil.0.1\lib\net35-Client\MiscUtil.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MiscUtil\BigEndianBitConverter.cs" />
-    <Compile Include="MiscUtil\EndianBinaryReader.cs" />
-    <Compile Include="MiscUtil\EndianBinaryWriter.cs" />
-    <Compile Include="MiscUtil\EndianBitConverter.cs" />
-    <Compile Include="MiscUtil\Endianness.cs" />
-    <Compile Include="MiscUtil\LittleEndianBitConverter.cs" />
-    <Compile Include="MiscUtil\NonClosingStreamWrapper.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ELF\Consts.cs" />
     <Compile Include="ELF\Class.cs" />
@@ -116,4 +112,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
