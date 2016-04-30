@@ -4,7 +4,7 @@ namespace ELFSharp.MachO
 {
     public struct Symbol
     {
-        public Symbol(string name, long value)
+        public Symbol(string name, long value) : this()
         {
             Name = name;
             Value = value;
