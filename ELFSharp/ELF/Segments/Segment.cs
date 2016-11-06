@@ -28,6 +28,14 @@ namespace ELFSharp.ELF.Segments
 
         public long FileSize { get; private set; }
 
+        public long Offset 
+        {
+            get 
+            {
+                return offset;
+            }
+        }
+
         /// <summary>
         /// Gets array containing complete segment image, including
         /// the zeroed section.
