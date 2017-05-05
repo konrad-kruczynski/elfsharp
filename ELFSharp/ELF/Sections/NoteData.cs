@@ -22,8 +22,8 @@ namespace ELFSharp.ELF.Sections
                 var nameSize = ReadSize();
                 var descriptionSize = ReadSize();
                 Type = ReadField();
-                int remainder;
-                var fields = Math.DivRem(nameSize, FieldSize, out remainder);
+                int remainder = nameSize % FieldSize;
+                var fields = nameSize / FieldSize;
                 var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
                 var name = reader.ReadBytesOrThrow(alignedNameSize);
                 if(nameSize > 0)

@@ -22,7 +22,7 @@ namespace ELFSharp.MachO
         public byte[] GetData()
         {
             var result = new byte[Size];
-            Array.Copy(segment.GetData(), offsetInSegment, result, 0, Size);
+            Array.Copy(segment.GetData(), (int)offsetInSegment, result, 0, (int)Size);
             return result;
         }
 
