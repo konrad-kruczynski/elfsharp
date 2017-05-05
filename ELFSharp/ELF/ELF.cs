@@ -157,7 +157,7 @@ namespace ELFSharp.ELF
 
         public void Dispose()
         {
-            stream.Close();
+            stream.Dispose();
         }
 
         bool IELF.TryGetSection(int index, out ISection section)

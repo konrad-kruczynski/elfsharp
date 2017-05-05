@@ -48,8 +48,8 @@ namespace ELFSharp.MachO
             }
             finally
             {
-                symbolReader.Close();
-                stringTableStream.Close();
+                symbolReader.Dispose();
+                stringTableStream.Dispose();
             }
         }
 

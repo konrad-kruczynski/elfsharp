@@ -1,118 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CF944E09-7C14-433C-A185-161848E989B3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ELFSharp</RootNamespace>
-    <AssemblyName>ELFSharp</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>true</DelaySign>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>ELFSharp.public.snk</AssemblyOriginatorKeyFile>
+    <PackageId>ELFSharp</PackageId>
+    <Version>1.0.5</Version>
+    <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
+    <Authors>konrad.kruczynski</Authors>
+    <PackageLicenseUrl>https://github.com/konrad-kruczynski/elfsharp/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/konrad-kruczynski/elfsharp/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/konrad-kruczynski/elfsharp/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ELF; UImage; Mach-O</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="MiscUtil">
-      <HintPath>..\packages\JonSkeet.MiscUtil.0.1\lib\net35-Client\MiscUtil.dll</HintPath>
-    </Reference>
+    <Folder Include="MiscUtil\" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ELF\Consts.cs" />
-    <Compile Include="ELF\Class.cs" />
-    <Compile Include="ELF\ELF.cs" />
-    <Compile Include="ELF\ELFReader.cs" />
-    <Compile Include="ELF\Endianess.cs" />
-    <Compile Include="ELF\FileType.cs" />
-    <Compile Include="ELF\IELF.cs" />
-    <Compile Include="ELF\Machine.cs" />
-    <Compile Include="ELF\Utilities.cs" />
-    <Compile Include="ELF\Sections\INoteSection.cs" />
-    <Compile Include="ELF\Sections\IProgBitsSection.cs" />
-    <Compile Include="ELF\Sections\ISection.cs" />
-    <Compile Include="ELF\Sections\IStringTable.cs" />
-    <Compile Include="ELF\Sections\ISymbolEntry.cs" />
-    <Compile Include="ELF\Sections\ISymbolTable.cs" />
-    <Compile Include="ELF\Sections\NoteData.cs" />
-    <Compile Include="ELF\Sections\NoteSection.cs" />
-    <Compile Include="ELF\Sections\ProgBitsSection.cs" />
-    <Compile Include="ELF\Sections\Section.cs" />
-    <Compile Include="ELF\Sections\SectionFlags.cs" />
-    <Compile Include="ELF\Sections\SectionHeader.cs" />
-    <Compile Include="ELF\Sections\SectionType.cs" />
-    <Compile Include="ELF\Sections\SpecialSectionIndex.cs" />
-    <Compile Include="ELF\Sections\SpecialSectionType.cs" />
-    <Compile Include="ELF\Sections\StringTable.cs" />
-    <Compile Include="ELF\Sections\SymbolBinding.cs" />
-    <Compile Include="ELF\Sections\SymbolEntry.cs" />
-    <Compile Include="ELF\Sections\SymbolTable.cs" />
-    <Compile Include="ELF\Sections\SymbolType.cs" />
-    <Compile Include="ELF\Segments\ISegment.cs" />
-    <Compile Include="ELF\Segments\Segment.cs" />
-    <Compile Include="ELF\Segments\SegmentFlags.cs" />
-    <Compile Include="ELF\Segments\SegmentType.cs" />
-    <Compile Include="UImage\UImage.cs" />
-    <Compile Include="UImage\CompressionType.cs" />
-    <Compile Include="UImage\UImageReader.cs" />
-    <Compile Include="UImage\UImageResult.cs" />
-    <Compile Include="UImage\ImageType.cs" />
-    <Compile Include="UImage\ImageDataResult.cs" />
-    <Compile Include="UImage\OS.cs" />
-    <Compile Include="UImage\Architecture.cs" />
-    <Compile Include="MachO\MachO.cs" />
-    <Compile Include="MachO\MachOReader.cs" />
-    <Compile Include="MachO\MachOResult.cs" />
-    <Compile Include="MachO\Machine.cs" />
-    <Compile Include="MachO\FileType.cs" />
-    <Compile Include="MachO\CommandType.cs" />
-    <Compile Include="MachO\Command.cs" />
-    <Compile Include="MachO\SymbolTable.cs" />
-    <Compile Include="MachO\Symbol.cs" />
-    <Compile Include="MachO\EntryPoint.cs" />
-    <Compile Include="MachO\Segment.cs" />
-    <Compile Include="MachO\Protection.cs" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="MachO\Section.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileName" />
-          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" EolMarker="Unix" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
-          <CSharpFormattingPolicy AnonymousMethodBraceStyle="NextLine" PropertyBraceStyle="NextLine" PropertyGetBraceStyle="NextLine" PropertySetBraceStyle="NextLine" EventBraceStyle="NextLine" EventAddBraceStyle="NextLine" StatementBraceStyle="NextLine" ElseNewLinePlacement="NewLine" CatchNewLinePlacement="NewLine" FinallyNewLinePlacement="NewLine" WhileNewLinePlacement="NewLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeIndexerDeclarationBracket="False" BeforeDelegateDeclarationParentheses="False" AfterDelegateDeclarationParameterComma="True" NewParentheses="False" IfParentheses="False" WhileParentheses="False" ForParentheses="False" ForeachParentheses="False" CatchParentheses="False" SwitchParentheses="False" LockParentheses="False" UsingParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
-          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" EolMarker="Unix" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="ELFSharp.public.snk" />
-  </ItemGroup>
+
 </Project>
