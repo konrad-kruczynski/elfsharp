@@ -13,4 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ELFSharp\ELFSharp.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Binaries\*" />
+  </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldOpenMachO()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-mach-o");
+            var fileName = Utilities.GetBinary("simple-mach-o");
             ELFSharp.MachO.MachO machO;
             Assert.AreEqual(MachOResult.OK, MachOReader.TryLoad(fileName, out machO));
         }
@@ -18,7 +18,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldFindCorrectMachine()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-mach-o");
+            var fileName = Utilities.GetBinary("simple-mach-o");
             var machO = MachOReader.Load(fileName);
             Assert.AreEqual(Machine.X86_64, machO.Machine);
         }
@@ -26,7 +26,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldOpen32BitMachO()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-32-mach-o");
+            var fileName = Utilities.GetBinary("simple-32-mach-o");
             var machO = MachOReader.Load(fileName);
             Assert.AreEqual(Machine.I386, machO.Machine);
         }

@@ -11,11 +11,11 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldExtractGzipCompressedUImage()
 		{
-			var fileName = Utilities.GetBinaryLocation("uImage-gzip");
+			var fileName = Utilities.GetBinary("uImage-gzip");
 			ELFSharp.UImage.UImage image;
 			Assert.AreEqual(UImageResult.OK, UImageReader.TryLoad(fileName, out image));
 			Assert.AreEqual(CompressionType.Gzip, image.Compression);
-			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinaryLocation("uImage-gzip-extracted")), image.GetImageData());
+			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinary("uImage-gzip-extracted")), image.GetImageData());
 		}
 	}
 }

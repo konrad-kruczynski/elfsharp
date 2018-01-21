@@ -1,16 +1,37 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using NUnit.Framework;
 
 namespace Tests
 {
-	internal static class Utilities
+    [SetUpFixture]
+	public class Utilities
 	{
-		public static string GetBinaryLocation(string name)
+		public static string GetBinary(string name)
 		{
-			return Path.Combine(BinariesDirectory, name);
+            var fileName = Path.GetTempFileName();
+            using(var fileStream = File.OpenWrite(fileName))
+            using(var resourceStream = typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+            TemporaryFiles.Add(fileName);
+            return fileName;
 		}
 
-		private static readonly string BinariesDirectory = "../../Binaries";
+        [OneTimeTearDown]
+        public static void DeleteAllTemporaries()
+        {
+            foreach(var file in TemporaryFiles)
+            {
+                File.Delete(file);
+            }
+        }
+
+        private static List<string> TemporaryFiles = new List<string>();
+
+		private const string ResourcesPrefix = "Tests.Binaries.";
 	}
 }
 

@@ -12,7 +12,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldFindSectionWithProperData32()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-32-mach-o");
+            var fileName = Utilities.GetBinary("simple-32-mach-o");
             var machO = MachOReader.Load(fileName);
             var segment = machO.GetCommandsOfType<Segment>().Single(x => x.Name == "__TEXT");
             var data = segment.Sections.Single(x => x.Name == "__cstring").GetData();
@@ -22,7 +22,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldFindSectionWithProperData64()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-mach-o");
+            var fileName = Utilities.GetBinary("simple-mach-o");
             var machO = MachOReader.Load(fileName);
             var segment = machO.GetCommandsOfType<Segment>().Single(x => x.Name == "__TEXT");
             var data = segment.Sections.Single(x => x.Name == "__cstring").GetData();

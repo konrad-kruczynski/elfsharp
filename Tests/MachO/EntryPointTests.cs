@@ -11,7 +11,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldFind32BitEntryPoint()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-32-mach-o");
+            var fileName = Utilities.GetBinary("simple-32-mach-o");
             var machO = MachOReader.Load(fileName);
             var entryPoint = machO.GetCommandsOfType<EntryPoint>().Single();
             Assert.AreEqual(0xF60, entryPoint.Value);
@@ -21,7 +21,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldFind64BitEntryPoint()
         {
-            var fileName = Utilities.GetBinaryLocation("simple-mach-o");
+            var fileName = Utilities.GetBinary("simple-mach-o");
             var machO = MachOReader.Load(fileName);
             var entryPoint = machO.GetCommandsOfType<EntryPoint>().Single();
             Assert.AreEqual(0xF6B, entryPoint.Value);

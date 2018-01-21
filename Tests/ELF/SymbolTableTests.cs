@@ -11,7 +11,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindAllSymbols32()
         {
-            var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello32le"));
+            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
             var symtab = (ISymbolTable)elf.GetSection(".symtab");
             Assert.AreEqual(64, symtab.Entries.Count());            
         }
@@ -19,7 +19,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindAllSymbols64()
         {
-			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
+			var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
 			var symtab = (ISymbolTable)elf.GetSection(".symtab");           
             Assert.AreEqual(64, symtab.Entries.Count());           
         }
@@ -27,7 +27,7 @@ namespace Tests.ELF
         [Test]
         public void GithubIssueNo24()
         {
-            var elf = ELFReader.Load(Utilities.GetBinaryLocation("issue24.elf"));
+            var elf = ELFReader.Load(Utilities.GetBinary("issue24.elf"));
             var dynamicSymbolSection = (SymbolTable<uint>)elf.GetSection(".dynsym");
             dynamicSymbolSection.Entries.Any(x => x.Name == "<corrupt>");
         }

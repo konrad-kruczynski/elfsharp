@@ -11,7 +11,7 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldOpenUImage()
 		{
-			var fileName = Utilities.GetBinaryLocation("uImage-panda");
+			var fileName = Utilities.GetBinary("uImage-panda");
 			ELFSharp.UImage.UImage image;
 			Assert.AreEqual(UImageResult.OK, UImageReader.TryLoad(fileName, out image));
 		}
@@ -19,7 +19,7 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldNotOpenNotUImageFile()
 		{
-			var fileName = Utilities.GetBinaryLocation("notelf"); // not elf, nor uImage
+			var fileName = Utilities.GetBinary("notelf"); // not elf, nor uImage
 			ELFSharp.UImage.UImage image;
 			Assert.AreEqual(UImageResult.NotUImage, UImageReader.TryLoad(fileName, out image));
 		}
@@ -27,7 +27,7 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldProperlyReadHeader()
 		{
-			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
+			var uImage = UImageReader.Load(Utilities.GetBinary("uImage-panda"));
 			Assert.AreEqual(3120712, uImage.Size);
 			Assert.AreEqual(0x80008000, uImage.EntryPoint);
 			Assert.AreEqual(0x80008000, uImage.LoadAddress);
@@ -38,7 +38,7 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldProperlyReadTimestamp()
 		{
-			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
+			var uImage = UImageReader.Load(Utilities.GetBinary("uImage-panda"));
 			Assert.AreEqual(new DateTime(2012, 4, 10, 19, 11, 06, DateTimeKind.Utc).ToLocalTime(), uImage.Timestamp);
 		}
 
@@ -46,34 +46,34 @@ namespace Tests.UImage
 		public void ShouldFailOnImageWithWrongChecksum()
 		{
 			ELFSharp.UImage.UImage image;
-			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinaryLocation("uImage-panda-wrng-cksm"), out image));
+			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinary("uImage-panda-wrng-cksm"), out image));
 		}
 
 		[Test]
 		public void ShouldFindCorrectImageType()
 		{
-			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-panda"));
+			var uImage = UImageReader.Load(Utilities.GetBinary("uImage-panda"));
 			Assert.AreEqual(ImageType.Kernel, uImage.Type);
 		}
 
 		[Test]
 		public void ShouldExtractCorrectImage()
 		{
-			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinaryLocation("vexpress-image-extracted")),
-			                UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress")).GetImageData());
+			Assert.AreEqual(File.ReadAllBytes(Utilities.GetBinary("vexpress-image-extracted")),
+			                UImageReader.Load(Utilities.GetBinary("uImage-vexpress")).GetImageData());
 		}
 
 		[Test]
 		public void ShouldGetProperOSValue()
 		{
-			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress"));
+			var uImage = UImageReader.Load(Utilities.GetBinary("uImage-vexpress"));
 			Assert.AreEqual(OS.Linux, uImage.OperatingSystem);
 		}
 
 		[Test]
 		public void ShouldGetProperArchitecture()
 		{
-			var uImage = UImageReader.Load(Utilities.GetBinaryLocation("uImage-vexpress"));
+			var uImage = UImageReader.Load(Utilities.GetBinary("uImage-vexpress"));
 			Assert.AreEqual(Architecture.ARM, uImage.Architecture);
 		}
 	}

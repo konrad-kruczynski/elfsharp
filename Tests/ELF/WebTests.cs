@@ -13,7 +13,7 @@ namespace Tests.ELF
 		[Test]
 		public void ListELFSectionHeaders()
 		{
-			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
+			var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
 			var output = new List<string>();
 
 			foreach(var header in elf.Sections)
@@ -57,7 +57,7 @@ namespace Tests.ELF
 		[Test]
 		public void GetNamesOfFunctionSymbols()
 		{
-			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
+			var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
 			var output = new List<string>();
 
 			var functions = ((ISymbolTable)elf.GetSection(".symtab")).Entries.Where(x => x.Type == SymbolType.Function);
@@ -85,7 +85,7 @@ _init";
 		[Test]
 		public void WriteAllLoadableProgBitsToArray()
 		{
-			var elf = ELFReader.Load(Utilities.GetBinaryLocation("hello64le"));
+			var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
 
 			var sectionsToLoad = elf.GetSections<ProgBitsSection<long>>()
 				.Where(x => x.LoadAddress != 0);
