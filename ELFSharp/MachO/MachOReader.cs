@@ -7,15 +7,14 @@ namespace ELFSharp.MachO
     {
         public static MachO Load(string fileName)
         {
-            MachO result;
-            switch(TryLoad(fileName, out result))
+            switch(TryLoad(fileName, out MachO result))
             {
-            case MachOResult.OK:
-                return result;
-            case MachOResult.NotMachO:
-                throw new InvalidOperationException("Given file is not a Mach-O file.");
-            default:
-                throw new ArgumentOutOfRangeException();
+                case MachOResult.OK:
+                    return result;
+                case MachOResult.NotMachO:
+                    throw new InvalidOperationException("Given file is not a Mach-O file.");
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

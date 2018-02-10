@@ -12,16 +12,14 @@ namespace Tests.UImage
 		public void ShouldOpenUImage()
 		{
 			var fileName = Utilities.GetBinary("uImage-panda");
-			ELFSharp.UImage.UImage image;
-			Assert.AreEqual(UImageResult.OK, UImageReader.TryLoad(fileName, out image));
-		}
+            Assert.AreEqual(UImageResult.OK, UImageReader.TryLoad(fileName, out var image));
+        }
 
 		[Test]
 		public void ShouldNotOpenNotUImageFile()
 		{
 			var fileName = Utilities.GetBinary("notelf"); // not elf, nor uImage
-			ELFSharp.UImage.UImage image;
-			Assert.AreEqual(UImageResult.NotUImage, UImageReader.TryLoad(fileName, out image));
+			Assert.AreEqual(UImageResult.NotUImage, UImageReader.TryLoad(fileName, out var image));
 		}
 
 		[Test]
@@ -45,8 +43,7 @@ namespace Tests.UImage
 		[Test]
 		public void ShouldFailOnImageWithWrongChecksum()
 		{
-			ELFSharp.UImage.UImage image;
-			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinary("uImage-panda-wrng-cksm"), out image));
+			Assert.AreEqual(UImageResult.BadChecksum, UImageReader.TryLoad(Utilities.GetBinary("uImage-panda-wrng-cksm"), out var image));
 		}
 
 		[Test]

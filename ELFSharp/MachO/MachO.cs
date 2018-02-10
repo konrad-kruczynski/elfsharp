@@ -18,14 +18,14 @@ namespace ELFSharp.MachO
                 reader.ReadBytes(4); // we don't support the cpu subtype now
                 FileType = (FileType)reader.ReadUInt32();
                 var noOfCommands = reader.ReadInt32();
-                var sizeOfCommands = reader.ReadInt32();
+                reader.ReadInt32(); // size of commands
                 reader.ReadBytes(4); // we don't support flags now
                 if(is64)
                 {
                     reader.ReadBytes(4); // reserved
                 }
                 commands = new Command[noOfCommands];
-                ReadCommands(noOfCommands, sizeOfCommands, reader);
+                ReadCommands(noOfCommands, reader);
             }
         }
 
@@ -38,7 +38,7 @@ namespace ELFSharp.MachO
 
         public FileType FileType { get; private set; }
 
-        private void ReadCommands(int noOfCommands, int sizeOfCommands, BinaryReader reader)
+        private void ReadCommands(int noOfCommands, BinaryReader reader)
         {
             for(var i = 0; i < noOfCommands; i++)
             {

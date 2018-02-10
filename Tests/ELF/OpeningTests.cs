@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using ELFSharp.ELF;
-using ELFSharp.ELF.Sections;
 
 namespace Tests.ELF
 {
@@ -77,9 +76,8 @@ namespace Tests.ELF
 		[Test]
 		public void ShouldNotOpenNonELFFile()
 		{
-			IELF elf;
-			Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinary("notelf"), out elf));
-		}
+            Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinary("notelf"), out var _));
+        }
 
         [Test]
         public void GithubIssueNo9()

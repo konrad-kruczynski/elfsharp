@@ -10,9 +10,10 @@ namespace ELFSharp.ELF.Sections
     {
         internal StringTable(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
         {
-            stringCache = new Dictionary<long, string>();
-            stringCache.Add(0, string.Empty);
-
+            stringCache = new Dictionary<long, string>
+            {
+                { 0, string.Empty }
+            };
             stringBlob = ReadStringData();
         }
 
@@ -32,8 +33,7 @@ namespace ELFSharp.ELF.Sections
         {
             get
             {
-                string result;
-                if(stringCache.TryGetValue(index, out result))
+                if(stringCache.TryGetValue(index, out string result))
                 {
                     return result;
                 }

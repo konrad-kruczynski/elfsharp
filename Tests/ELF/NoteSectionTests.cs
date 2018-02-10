@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using ELFSharp.ELF.Sections;
-using System.IO;
 using ELFSharp.ELF;
 
 namespace Tests.ELF

@@ -7,12 +7,11 @@ namespace ELFSharp.ELF
 	{
 		public static IELF Load(string fileName)
 		{
-			IELF elf;
-			if(!TryLoad(fileName, out elf))
-			{
-				throw new ArgumentException("Given file is not proper ELF file.");
-			}
-			return elf;
+            if(!TryLoad(fileName, out IELF elf))
+            {
+                throw new ArgumentException("Given file is not proper ELF file.");
+            }
+            return elf;
 		}
 
 		public static bool TryLoad(string fileName, out IELF elf)
@@ -72,7 +71,7 @@ namespace ELFSharp.ELF
 			}
 		}
 
-		private static readonly byte[] Magic = new byte[] {
+		private static readonly byte[] Magic = {
 			0x7F,
 			0x45,
 			0x4C,

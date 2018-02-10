@@ -97,8 +97,7 @@ namespace ELFSharp.ELF
 
         public Section<T> GetSection(string name)
         {
-            Section<T> section;
-            var result = TryGetSectionInner(name, out section);
+            var result = TryGetSectionInner(name, out Section<T> section);
 
             switch(result)
             {
@@ -117,8 +116,7 @@ namespace ELFSharp.ELF
 
         bool IELF.TryGetSection(string name, out ISection section)
         {
-            Section<T> concreteSection;
-            var result = TryGetSection(name, out concreteSection);
+            var result = TryGetSection(name, out Section<T> concreteSection);
             section = concreteSection;
             return result;
         }
@@ -135,8 +133,7 @@ namespace ELFSharp.ELF
 
         public Section<T> GetSection(int index)
         {
-            Section<T> section;
-            GetSectionResult result = TryGetSectionInner(index, out section);
+            GetSectionResult result = TryGetSectionInner(index, out Section<T> section);
             switch(result)
             {
             case GetSectionResult.Success:
@@ -161,8 +158,7 @@ namespace ELFSharp.ELF
 
         bool IELF.TryGetSection(int index, out ISection section)
         {
-            Section<T> sectionConcrete;
-            var result = TryGetSection(index, out sectionConcrete);
+            var result = TryGetSection(index, out Section<T> sectionConcrete);
             section = sectionConcrete;
             return result;
         }
@@ -289,8 +285,7 @@ namespace ELFSharp.ELF
 
         private void FindStringTables()
         {
-            Section<T> section;
-            TryGetSection(Consts.ObjectsStringTableName, out section);
+            TryGetSection(Consts.ObjectsStringTableName, out Section<T> section);
             objectsStringTable = (StringTable<T>)section;
             TryGetSection(Consts.DynamicStringTableName, out section);
             dynamicStringTable = (StringTable<T>)section;
@@ -314,7 +309,7 @@ namespace ELFSharp.ELF
         {
             if(index < 0 || index >= sectionHeaderEntryCount)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
             stream.Seek(
                 sectionHeaderOffset + index*sectionHeaderEntrySize,
@@ -406,8 +401,7 @@ namespace ELFSharp.ELF
             {
                 return GetSectionResult.NoSectionsStringTable;
             }
-            int index;
-            if(!sectionIndicesByName.TryGetValue(name, out index))
+            if(!sectionIndicesByName.TryGetValue(name, out int index))
             {
                 return GetSectionResult.NoSuchSection;
             }
