@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {

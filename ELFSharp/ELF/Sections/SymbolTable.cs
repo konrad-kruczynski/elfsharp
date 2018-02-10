@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MiscUtil.IO;
 using System.Collections.ObjectModel;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
     public sealed class SymbolTable<T> : Section<T>, ISymbolTable where T : struct
     {
-        internal SymbolTable(SectionHeader header, Func<EndianBinaryReader> readerSource, IStringTable table, ELF<T> elf) : base(header, readerSource)
+        internal SymbolTable(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource, IStringTable table, ELF<T> elf) : base(header, readerSource)
         {
             this.table = table;
             this.elf = elf;

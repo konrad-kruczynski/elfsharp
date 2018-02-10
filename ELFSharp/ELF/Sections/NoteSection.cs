@@ -1,6 +1,6 @@
 using System;
-using MiscUtil.IO;
 using ELFSharp;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
@@ -35,7 +35,7 @@ namespace ELFSharp.ELF.Sections
             }
         }
          
-        internal NoteSection(SectionHeader header, Class elfClass, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
+        internal NoteSection(SectionHeader header, Class elfClass, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
         {
             data = new NoteData(elfClass, header.Offset, readerSource);
         }

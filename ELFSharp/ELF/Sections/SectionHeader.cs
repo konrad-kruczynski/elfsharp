@@ -1,11 +1,11 @@
-﻿using MiscUtil.IO;
+﻿using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
     internal sealed class SectionHeader
     {
         // TODO: make elf consts file with things like SHT_LOUSER
-        internal SectionHeader(EndianBinaryReader reader, Class elfClass, IStringTable table = null)
+        internal SectionHeader(SimpleEndianessAwareReader reader, Class elfClass, IStringTable table = null)
         {
             this.reader = reader;
             this.table = table;
@@ -60,7 +60,7 @@ namespace ELFSharp.ELF.Sections
             return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
         }
 
-        private readonly EndianBinaryReader reader;
+        private readonly SimpleEndianessAwareReader reader;
         private IStringTable table;
 		private readonly Class elfClass;
     }

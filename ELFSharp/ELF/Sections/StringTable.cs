@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using MiscUtil.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
     public sealed class StringTable<T> : Section<T>, IStringTable where T : struct
     {
-        internal StringTable(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
+        internal StringTable(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
         {
             stringCache = new Dictionary<long, string>();
             stringCache.Add(0, string.Empty);

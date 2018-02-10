@@ -1,15 +1,15 @@
 using System;
 using System.IO;
-using MiscUtil.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
     public class Section<T> : ISection where T : struct
     {
-        internal Section(SectionHeader header, Func<EndianBinaryReader> readerSourceSourceSource)
+        internal Section(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource)
         {
             Header = header;
-            this.readerSourceSourceSource = readerSourceSourceSource;
+            this.readerSource = readerSource;
         }
 
         public virtual byte[] GetContents()
@@ -20,9 +20,9 @@ namespace ELFSharp.ELF.Sections
             }
         }
 
-        protected EndianBinaryReader ObtainReader()
+        protected SimpleEndianessAwareReader ObtainReader()
         {
-            var reader = readerSourceSourceSource();
+            var reader = readerSource();
             reader.BaseStream.Seek(Header.Offset, SeekOrigin.Begin);
             return reader;
         }
@@ -114,7 +114,7 @@ namespace ELFSharp.ELF.Sections
 
         internal SectionHeader Header { get; private set; }
 
-        private readonly Func<EndianBinaryReader> readerSourceSourceSource;
+        private readonly Func<SimpleEndianessAwareReader> readerSource;
     }
 }
 

@@ -10,10 +10,6 @@ Other contributors (in the order of the first contribution)
 * Frederik Carlier
 * Everett Maus
 
-This product includes software developed by Jon Skeet
-and Marc Gravell. Contact skeet@pobox.com, or see 
-http://www.pobox.com/~skeet/
-
 You can find license in the LICENSE file.
 
 This software uses ELF machine constants from the LLVM projects, whose license

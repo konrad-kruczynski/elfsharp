@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MiscUtil.IO;
-using MiscUtil.Conversion;
 using System.Collections.ObjectModel;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF
 {
@@ -330,19 +329,8 @@ namespace ELFSharp.ELF
         private void ReadHeader()
         {
             ReadIdentificator();
-            EndianBitConverter converter;
-            if(Endianess == Endianess.LittleEndian)
-            {
-                converter = new LittleEndianBitConverter();
-            } else
-            {
-                converter = new BigEndianBitConverter();
-            }
-            readerSource = () => new EndianBinaryReader(
-                converter,
-                GetNewStream()
-            );
-            localReaderSource = () => new EndianBinaryReader(converter, new NonClosingStreamWrapper(stream));
+            readerSource = () => new SimpleEndianessAwareReader(GetNewStream(), Endianess);
+            localReaderSource = () => new SimpleEndianessAwareReader(stream, Endianess, true);
             ReadFields();
         }
 
@@ -465,8 +453,8 @@ namespace ELFSharp.ELF
         private List<SectionHeader> sectionHeaders;
         private StringTable<T> objectsStringTable;
         private StringTable<T> dynamicStringTable;
-        private Func<EndianBinaryReader> readerSource;
-        private Func<EndianBinaryReader> localReaderSource;
+        private Func<SimpleEndianessAwareReader> readerSource;
+        private Func<SimpleEndianessAwareReader> localReaderSource;
         private Stage currentStage;
         private readonly string fileName;
 

@@ -1,11 +1,11 @@
 using System;
-using MiscUtil.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
     public sealed class ProgBitsSection<T> : Section<T>, IProgBitsSection where T : struct
     {
-        internal ProgBitsSection(SectionHeader header, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
+        internal ProgBitsSection(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
         {
         }
         

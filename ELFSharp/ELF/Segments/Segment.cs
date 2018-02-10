@@ -1,12 +1,12 @@
 using System;
-using MiscUtil.IO;
 using System.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Segments
 {
     public sealed class Segment<T> : ISegment
     {
-        internal Segment(long headerOffset, Class elfClass, Func<EndianBinaryReader> readerSource)
+        internal Segment(long headerOffset, Class elfClass, Func<SimpleEndianessAwareReader> readerSource)
         {            
             this.readerSource = readerSource;			
             this.headerOffset = headerOffset;
@@ -49,7 +49,7 @@ namespace ELFSharp.ELF.Segments
             using(var reader = ObtainReader(offset))
             {
                 var result = new byte[Size.To<int>()];
-                var fileImage = reader.ReadBytesOrThrow(checked((int)FileSize));
+                var fileImage = reader.ReadBytes(checked((int)FileSize));
                 fileImage.CopyTo(result, 0);
                 return result;
             }
@@ -59,7 +59,7 @@ namespace ELFSharp.ELF.Segments
         {
             using(var reader = ObtainReader(headerOffset))
             {
-                return reader.ReadBytesOrThrow(elfClass == Class.Bit32 ? 32 : 56);
+                return reader.ReadBytes(elfClass == Class.Bit32 ? 32 : 56);
             }
         }
 
@@ -91,7 +91,7 @@ namespace ELFSharp.ELF.Segments
             }
         }
 
-        private EndianBinaryReader ObtainReader(long givenOffset)
+        private SimpleEndianessAwareReader ObtainReader(long givenOffset)
         {
             var reader = readerSource();
             reader.BaseStream.Seek(givenOffset, SeekOrigin.Begin);
@@ -101,7 +101,7 @@ namespace ELFSharp.ELF.Segments
         private long headerOffset;
         private Class elfClass;
         private long offset;
-        private Func<EndianBinaryReader> readerSource;
+        private Func<SimpleEndianessAwareReader> readerSource;
     }
 }
 

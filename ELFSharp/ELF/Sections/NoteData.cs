@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MiscUtil.IO;
 using ELFSharp;
 using System.Text;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
@@ -14,7 +14,7 @@ namespace ELFSharp.ELF.Sections
 
         internal ulong Type { get; private set; }
         
-        internal NoteData(Class elfClass, long sectionOffset, Func<EndianBinaryReader> readerSource)
+        internal NoteData(Class elfClass, long sectionOffset, Func<SimpleEndianessAwareReader> readerSource)
         {
             using(reader = readerSource())
             {
@@ -25,12 +25,12 @@ namespace ELFSharp.ELF.Sections
                 int remainder;
                 var fields = Math.DivRem(nameSize, FieldSize, out remainder);
                 var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
-                var name = reader.ReadBytesOrThrow(alignedNameSize);
+                var name = reader.ReadBytes(alignedNameSize);
                 if(nameSize > 0)
                 {
                     Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
                 }
-                Description = descriptionSize > 0 ? reader.ReadBytesOrThrow(descriptionSize) : new byte[0];
+                Description = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
             }
             reader = null;
         }
@@ -65,6 +65,6 @@ namespace ELFSharp.ELF.Sections
             }
         }
 
-        private readonly EndianBinaryReader reader;
+        private readonly SimpleEndianessAwareReader reader;
     }
 }
