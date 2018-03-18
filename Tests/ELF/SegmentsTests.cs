@@ -58,6 +58,22 @@ namespace Tests.ELF
             Assert.AreEqual(8, header.Alignment);
         }
 
+        [Test]
+        public void ShouldGetFileContents()
+        {
+            var elf = ELFReader.Load<int>(Utilities.GetBinary("hello32le"));
+            var segment = elf.Segments.Single(x => x.Address == 0x8049F14 && x.Type == SegmentType.Load);
+            Assert.AreEqual(256, segment.GetFileContents().Length);
+        }
+
+        [Test]
+        public void ShouldGetMemoryContents()
+        {
+            var elf = ELFReader.Load<int>(Utilities.GetBinary("hello32le"));
+            var segment = elf.Segments.Single(x => x.Address == 0x8049F14 && x.Type == SegmentType.Load);
+            Assert.AreEqual(264, segment.GetMemoryContents().Length);
+        }
+
     }
 }
 

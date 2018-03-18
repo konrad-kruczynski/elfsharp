@@ -36,20 +36,48 @@ namespace ELFSharp.ELF.Segments
             }
         }
 
-        /// <summary>
-        /// Gets array containing complete segment image, including
-        /// the zeroed section.
-        /// </summary>
-        /// <returns>
-        /// Segment image as array.
-        /// </returns>
+        [Obsolete("Please use either GetFileContents or GetMemoryContents")]
         public byte[] GetContents()
         {
-            // TODO: large segments
+            return GetMemoryContents();
+        }
+
+        /// <summary>
+        /// Returns content of the section as it is given in the file.
+        /// Note that it may be an array of length 0.
+        /// </summary>
+        /// <returns>Segment contents as byte array.</returns>
+        public byte[] GetFileContents()
+        {
+            if(FileSize == 0)
+            {
+                return new byte[0];
+            }
             using(var reader = ObtainReader(offset))
             {
-                var result = new byte[Size.To<int>()];
-                var fileImage = reader.ReadBytes(checked((int)FileSize));
+                var result = new byte[checked((int)FileSize)];
+                var fileImage = reader.ReadBytes(result.Length);
+                fileImage.CopyTo(result, 0);
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Returns content of the section, possibly padded or truncated to the memory size.
+        /// Note that it may be an array of length 0.
+        /// </summary>
+        /// <returns>Segment image as a byte array.</returns>
+        public byte[] GetMemoryContents()
+        {
+            var sizeAsInt = Size.To<int>();
+            if(sizeAsInt == 0)
+            {
+                return new byte[0];
+            }
+            using(var reader = ObtainReader(offset))
+            {
+                var result = new byte[sizeAsInt];
+                var fileImage = reader.ReadBytes(result.Length);
                 fileImage.CopyTo(result, 0);
                 return result;
             }
