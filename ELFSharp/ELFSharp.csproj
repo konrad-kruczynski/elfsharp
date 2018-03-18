@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>1.2.1</PackageVersion>
+    <PackageVersion>1.3</PackageVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.hellsgate.pl/</PackageProjectUrl>
-    <PackageReleaseNotes>Added icon for the package.</PackageReleaseNotes>
+    <PackageReleaseNotes>Now there are two functions for getting segment contents, to differentiate between file and memory contents. Old function is still there and working, but obsolete now.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
