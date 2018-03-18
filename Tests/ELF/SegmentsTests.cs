@@ -26,36 +26,36 @@ namespace Tests.ELF
         public void ShouldFindProperFlags32()
         {
             var elf = ELFReader.Load<uint>(Utilities.GetBinary("hello32le"));
-            var header = elf.Segments.First(x => x.Address == 0x08048034);
-            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Execute));
-            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Read));
-            Assert.IsFalse(header.Flags.HasFlag(SegmentFlags.Write));
+            var segment = elf.Segments.First(x => x.Address == 0x08048034);
+            Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Execute));
+            Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Read));
+            Assert.IsFalse(segment.Flags.HasFlag(SegmentFlags.Write));
         }
 
         [Test]
         public void ShouldFindProperFlags64()
         {
             var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
-            var header = elf.Segments.First(x => x.Address == 0x400000);
-            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Execute));
-            Assert.IsTrue(header.Flags.HasFlag(SegmentFlags.Read));
-            Assert.IsFalse(header.Flags.HasFlag(SegmentFlags.Write));
+            var segment = elf.Segments.First(x => x.Address == 0x400000);
+            Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Execute));
+            Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Read));
+            Assert.IsFalse(segment.Flags.HasFlag(SegmentFlags.Write));
         }
 
         [Test]
         public void ShouldFindProperAlignment32()
         {
             var elf = ELFReader.Load<uint>(Utilities.GetBinary("hello32le"));
-            var header = elf.Segments.First(x => x.Address == 0x08048000);
-            Assert.AreEqual(0x1000, header.Alignment);
+            var segment = elf.Segments.First(x => x.Address == 0x08048000);
+            Assert.AreEqual(0x1000, segment.Alignment);
         }
 
         [Test]
         public void ShouldFindProperAlignment64()
         {
             var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
-			var header = elf.Segments.First(x => x.Address == 0x6006c8);
-            Assert.AreEqual(8, header.Alignment);
+            var segment = elf.Segments.First(x => x.Address == 0x6006c8);
+            Assert.AreEqual(8, segment.Alignment);
         }
 
         [Test]

@@ -224,12 +224,12 @@ namespace ELFSharp.ELF
             segments = new List<Segment<T>>(segmentHeaderEntryCount);
             for(var i = 0u; i < segmentHeaderEntryCount; i++)
             {
-                var header = new Segment<T>(
+                var segment = new Segment<T>(
                     segmentHeaderOffset + i*segmentHeaderEntrySize,
                     Class,
                     readerSource
                 );
-                segments.Add(header);
+                segments.Add(segment);
             }
         }
 
