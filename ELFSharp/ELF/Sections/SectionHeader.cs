@@ -57,7 +57,7 @@ namespace ELFSharp.ELF.Sections
 
         private long ReadOffset()
         {
-            return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+            return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
         }
 
         private readonly SimpleEndianessAwareReader reader;
