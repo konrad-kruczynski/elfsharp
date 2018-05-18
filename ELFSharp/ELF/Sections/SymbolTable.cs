@@ -30,8 +30,8 @@ namespace ELFSharp.ELF.Sections
             using(var reader = ObtainReader())
             {
                 entries = new List<SymbolEntry<T>>();
-                var adder = elf.Class == Class.Bit32 ? Consts.SymbolEntrySize32 : Consts.SymbolEntrySize64;
-                for(var i = 0; i < Header.Size; i += adder)
+                var adder = (ulong)(elf.Class == Class.Bit32 ? Consts.SymbolEntrySize32 : Consts.SymbolEntrySize64);
+                for(var i = 0UL; i < Header.Size; i += adder)
                 {
                     var value = 0UL;
                     var size = 0UL;

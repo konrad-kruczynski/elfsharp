@@ -23,7 +23,7 @@ namespace ELFSharp.ELF.Sections
         protected SimpleEndianessAwareReader ObtainReader()
         {
             var reader = readerSource();
-            reader.BaseStream.Seek(Header.Offset, SeekOrigin.Begin);
+            reader.BaseStream.Seek((long)Header.Offset, SeekOrigin.Begin);
             return reader;
         }
 

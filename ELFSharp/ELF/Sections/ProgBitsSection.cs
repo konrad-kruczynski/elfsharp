@@ -14,7 +14,7 @@ namespace ELFSharp.ELF.Sections
         {
             using (var reader = ObtainReader())
             {
-                if (length == 0 || length > Header.Size)
+                if (length == 0 || (ulong)length > Header.Size)
                 {
                     length = Convert.ToInt32(Header.Size);
                 }

@@ -21,8 +21,8 @@ namespace ELFSharp.ELF.Sections
         internal ulong LoadAddress { get; private set; }
         internal ulong Alignment { get; private set; }
         internal ulong EntrySize { get; private set; }
-        internal long Size { get; private set; }
-		internal long Offset { get; private set; }
+        internal ulong Size { get; private set; }
+		internal ulong Offset { get; private set; }
         internal uint Link { get; private set; }
         internal uint Info { get; private set; }
 		
@@ -55,7 +55,7 @@ namespace ELFSharp.ELF.Sections
             return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
         }
 
-        private long ReadOffset()
+        private ulong ReadOffset()
         {
             return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
         }

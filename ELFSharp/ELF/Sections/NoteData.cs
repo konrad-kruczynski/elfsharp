@@ -14,11 +14,11 @@ namespace ELFSharp.ELF.Sections
 
         internal ulong Type { get; private set; }
         
-        internal NoteData(Class elfClass, long sectionOffset, Func<SimpleEndianessAwareReader> readerSource)
+        internal NoteData(Class elfClass, ulong sectionOffset, Func<SimpleEndianessAwareReader> readerSource)
         {
             using(reader = readerSource())
             {
-                reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
+                reader.BaseStream.Seek((long)sectionOffset, SeekOrigin.Begin);
                 var nameSize = ReadSize();
                 var descriptionSize = ReadSize();
                 Type = ReadField();
