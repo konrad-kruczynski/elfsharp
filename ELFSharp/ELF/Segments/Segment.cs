@@ -36,12 +36,6 @@ namespace ELFSharp.ELF.Segments
             }
         }
 
-        [Obsolete("Please use either GetFileContents or GetMemoryContents")]
-        public byte[] GetContents()
-        {
-            return GetMemoryContents();
-        }
-
         /// <summary>
         /// Returns content of the section as it is given in the file.
         /// Note that it may be an array of length 0.
