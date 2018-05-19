@@ -35,7 +35,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindProperFlags64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             var segment = elf.Segments.First(x => x.Address == 0x400000);
             Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Execute));
             Assert.IsTrue(segment.Flags.HasFlag(SegmentFlags.Read));
@@ -53,7 +53,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindProperAlignment64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             var segment = elf.Segments.First(x => x.Address == 0x6006c8);
             Assert.AreEqual(8, segment.Alignment);
         }

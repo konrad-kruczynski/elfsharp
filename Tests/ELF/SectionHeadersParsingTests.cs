@@ -33,7 +33,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindProperAlignment64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             var header = elf.Sections.First(x => x.Name == ".text");
             Assert.AreEqual(16, header.Alignment);
         }
@@ -49,7 +49,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindProperEntrySize64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             var header = elf.Sections.First(x => x.Name == ".dynsym");
             Assert.AreEqual(0x18, header.EntrySize);
         }
@@ -73,7 +73,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindProperOffset()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             var section = elf.Sections.First(x => x.Name == ".strtab");
             Assert.AreEqual(0x17A0, section.Offset);
         }

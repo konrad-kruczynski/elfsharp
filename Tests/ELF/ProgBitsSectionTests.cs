@@ -19,8 +19,8 @@ namespace Tests.ELF
         [Test]
         public void ShouldGetLoadAddress64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
-            var sectionsToLoad = elf.GetSections<ProgBitsSection<long>>().Where(x => x.LoadAddress != 0);
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
+            var sectionsToLoad = elf.GetSections<ProgBitsSection<ulong>>().Where(x => x.LoadAddress != 0);
             Assert.AreEqual(12, sectionsToLoad.Count());
         }
     }

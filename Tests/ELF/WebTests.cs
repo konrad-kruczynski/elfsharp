@@ -87,7 +87,7 @@ _init";
 		{
 			var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
 
-			var sectionsToLoad = elf.GetSections<ProgBitsSection<long>>()
+			var sectionsToLoad = elf.GetSections<ProgBitsSection<ulong>>()
 				.Where(x => x.LoadAddress != 0);
 			foreach (var s in sectionsToLoad)
 			{

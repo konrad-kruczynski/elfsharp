@@ -42,7 +42,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldProperlyParseClass64()
         {           
-            var elf64 = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
+            var elf64 = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
             Assert.AreEqual(Class.Bit64, elf64.Class);
         }
         

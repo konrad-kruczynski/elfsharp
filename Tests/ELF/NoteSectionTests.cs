@@ -34,8 +34,8 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadNoteType64()
         {
-            var elf = ELFReader.Load<long>(Utilities.GetBinary("hello64le"));
-            var noteSection = (NoteSection<long>)elf.GetSection(".note.ABI-tag");
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
+            var noteSection = (NoteSection<ulong>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
     }
