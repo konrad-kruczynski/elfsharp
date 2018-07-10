@@ -16,11 +16,4 @@
     <FileVersion>1.2.1.0</FileVersion>
     <PackageIconUrl>http://elfsharp.hellsgate.pl/favicon.ico</PackageIconUrl>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
 </Project>
