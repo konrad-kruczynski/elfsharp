@@ -14,8 +14,8 @@
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
-    <Version>1.0</Version>
-    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.1</Version>
+    <FileVersion>1.1.0.0</FileVersion>
     <PackageIconUrl>http://elfsharp.hellsgate.pl/favicon.ico</PackageIconUrl>
   </PropertyGroup>
 </Project>
