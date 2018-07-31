@@ -4,7 +4,7 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <PackageVersion>2.0</PackageVersion>
+    <PackageVersion>2.1</PackageVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.hellsgate.pl/</PackageProjectUrl>
@@ -14,8 +14,8 @@
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
-    <Version>1.1</Version>
-    <FileVersion>1.1.0.0</FileVersion>
+    <Version>2.0</Version>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageIconUrl>http://elfsharp.hellsgate.pl/favicon.ico</PackageIconUrl>
   </PropertyGroup>
 </Project>
