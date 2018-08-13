@@ -10,7 +10,10 @@ namespace ELFSharp.MachO
 {
     public sealed class Segment : Command
     {
-        public Segment(BinaryReader reader, Func<FileStream> streamProvider, bool is64) : base(reader, streamProvider)
+        public const string UNEXPECTED_SEGMENT_NAME = "Unexpected name of the section's segment.";
+        public const string UNEXPECTED_SECTION_OFFSET = "Unexpected section offset lower than segment offset.";
+
+        public Segment(BinaryReader reader, Func<FileStream> streamProvider, bool is64, Dictionary<String, long> exceptionsToQueue = null) : base(reader, streamProvider)
         {
             this.is64 = is64;
             Name = ReadSectionOrSegmentName();
@@ -25,35 +28,60 @@ namespace ELFSharp.MachO
             if(fileSize > 0)
             {
                 data = new byte[Size];
-                using(var stream = streamProvider())
-                {
-                    stream.Seek(fileOffset, SeekOrigin.Begin);
-                    var buffer = stream.ReadBytesOrThrow(checked((int)fileSize));
-                    Array.Copy(buffer, data, buffer.Length);
-                }
+                var stream = streamProvider();
+                var previousPosition = stream.Position;
+                stream.Seek(fileOffset, SeekOrigin.Begin);
+                var buffer = stream.ReadBytesOrThrow(checked((int)fileSize), exceptionsToQueue);
+                Array.Copy(buffer, data, buffer.Length);
+                stream.Position = previousPosition;
+
             }
             var sections = new List<Section>();
-            for(var i = 0; i < numberOfSections; i++)
+            try
             {
-                var sectionName = ReadSectionOrSegmentName();
-                var segmentName = ReadSectionOrSegmentName();
-                if(segmentName != Name)
+                for(var i = 0; i < numberOfSections; i++)
                 {
-                    throw new InvalidOperationException("Unexpected name of the section's segment.");
+                    var sectionName = ReadSectionOrSegmentName();
+                    var segmentName = ReadSectionOrSegmentName();
+                    // set name to segment name in edge case where name is empty string
+                    if(string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(segmentName)) {
+                        Name = segmentName;
+                    }
+                    if(segmentName != Name)
+                    {
+                        if(exceptionsToQueue == null)
+                        {
+                            throw new InvalidOperationException(UNEXPECTED_SEGMENT_NAME);
+                        }
+                        else
+                        {
+                            MachOReader.AddException(exceptionsToQueue, UNEXPECTED_SEGMENT_NAME);
+                        }
+                    }
+                    var sectionAddress = ReadInt32OrInt64();
+                    var sectionSize = ReadInt32OrInt64();
+                    var offsetInSegment = ReadInt32OrInt64() - fileOffset;
+                    if(offsetInSegment < 0)
+                    {
+                        if(exceptionsToQueue == null)
+                        {
+                            throw new InvalidOperationException(UNEXPECTED_SECTION_OFFSET);
+                        }
+                        else
+                        {
+                            MachOReader.AddException(exceptionsToQueue, UNEXPECTED_SECTION_OFFSET);
+                        }
+                    }
+                    var alignExponent = Reader.ReadInt32();
+                    Reader.ReadBytes(20);
+                    var section = new Section(sectionName, sectionAddress, sectionSize, offsetInSegment, alignExponent, this);
+                    sections.Add(section);
                 }
-                var sectionAddress = ReadInt32OrInt64();
-                var sectionSize = ReadInt32OrInt64();
-                var offsetInSegment = ReadInt32OrInt64() - fileOffset;
-                if(offsetInSegment < 0)
-                {
-                    throw new InvalidOperationException("Unexpected section offset lower than segment offset.");
-                }
-                var alignExponent = Reader.ReadInt32();
-                Reader.ReadBytes(20);
-                var section = new Section(sectionName, sectionAddress, sectionSize, offsetInSegment, alignExponent, this);
-                sections.Add(section);
             }
-            Sections = new ReadOnlyCollection<Section>(sections);
+            finally
+            {
+                Sections = new ReadOnlyCollection<Section>(sections);
+            }
         }
 
         public string Name { get; private set; }
