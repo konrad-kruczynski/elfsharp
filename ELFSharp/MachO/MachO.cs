@@ -12,11 +12,11 @@ namespace ELFSharp.MachO
         {
         }
 
-        internal MachO(FileStream stream, bool is64, bool throwExceptions = true) : this(null, stream, is64, throwExceptions)
+        internal MachO(Stream stream, bool is64, bool throwExceptions = true) : this(null, stream, is64, throwExceptions)
         {
         }
 
-        MachO(string fileName, FileStream stream, bool is64, bool throwExceptions)
+        MachO(string fileName, Stream stream, bool is64, bool throwExceptions)
         {
             this.fileName = fileName;
             this.stream = stream;
@@ -90,7 +90,7 @@ namespace ELFSharp.MachO
             }
         }
 
-        private FileStream OpenStream()
+        private Stream OpenStream()
         {
             if(stream == null)
             {
@@ -108,7 +108,7 @@ namespace ELFSharp.MachO
         private readonly bool throwExceptions;
         private readonly string fileName;
         private readonly Command[] commands;
-        private FileStream stream;
+        private Stream stream;
 
         internal const int Architecture64 = 0x1000000;
     }

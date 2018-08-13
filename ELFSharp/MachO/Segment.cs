@@ -13,7 +13,7 @@ namespace ELFSharp.MachO
         public const string UNEXPECTED_SEGMENT_NAME = "Unexpected name of the section's segment.";
         public const string UNEXPECTED_SECTION_OFFSET = "Unexpected section offset lower than segment offset.";
 
-        public Segment(BinaryReader reader, Func<FileStream> streamProvider, bool is64, Dictionary<String, long> exceptionsToQueue = null) : base(reader, streamProvider)
+        public Segment(BinaryReader reader, Func<Stream> streamProvider, bool is64, Dictionary<String, long> exceptionsToQueue = null) : base(reader, streamProvider)
         {
             this.is64 = is64;
             Name = ReadSectionOrSegmentName();

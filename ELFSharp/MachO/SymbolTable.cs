@@ -8,7 +8,7 @@ namespace ELFSharp.MachO
 {
     public class SymbolTable : Command
     {
-        public SymbolTable(BinaryReader reader, Func<FileStream> streamProvider, bool is64, Dictionary<string, long> exceptions) : base(reader, streamProvider)
+        public SymbolTable(BinaryReader reader, Func<Stream> streamProvider, bool is64, Dictionary<string, long> exceptions) : base(reader, streamProvider)
         {
             this.is64 = is64;
             ReadSymbols(exceptions);

@@ -20,7 +20,7 @@ namespace ELFSharp.MachO
             }
         }
 
-        public static MachO Load(FileStream stream, bool throwExceptions = true)
+        public static MachO Load(Stream stream, bool throwExceptions = true)
         {
             switch(TryLoad(stream, out MachO result, throwExceptions))
             {
@@ -49,7 +49,7 @@ namespace ELFSharp.MachO
             return MachOResult.OK;
         }
 
-        public static MachOResult TryLoad(FileStream stream, out MachO machO, bool throwExceptions = true)
+        public static MachOResult TryLoad(Stream stream, out MachO machO, bool throwExceptions = true)
         {
             uint magic;
             using(var reader = new BinaryReader(stream, Encoding.UTF8, true))
