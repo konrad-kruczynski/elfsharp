@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using MiscUtil.IO;
 using ELFSharp;
+using ELFSharp.Utilities;
 using System.Text;
 
 namespace ELFSharp.ELF.Sections
@@ -18,8 +18,7 @@ namespace ELFSharp.ELF.Sections
         /// An array of the entries in the .dynamic section.
         /// </summary>
         public ELF_Dyn[] entries;
-
-
+        
         /// <summary>
         /// Dynamic data constructor.  Parses the contents of the .dynamic section.
         /// </summary>
@@ -27,7 +26,7 @@ namespace ELFSharp.ELF.Sections
         /// <param name="sectionOffset">Offset that the section starts at.</param>
         /// <param name="size">Size of the section (defined by section header)</param>
         /// <param name="readerSource">Binary data reader.</param>
-        public DynamicData(Class elf, long sectionOffset, long size, Func<EndianBinaryReader> readerSource)
+        public DynamicData(Class elf, ulong sectionOffset, ulong size, Func<SimpleEndianessAwareReader> readerSource)
         {
             elfClass = elf;
             ulong entryCount = elfClass == Class.Bit32 ? (ulong) size / 8 : (ulong) size / 16;
@@ -41,7 +40,7 @@ namespace ELFSharp.ELF.Sections
             /// 
             using(reader = readerSource())
             {
-                reader.BaseStream.Seek(sectionOffset, SeekOrigin.Begin);
+                reader.BaseStream.Seek((long)sectionOffset, SeekOrigin.Begin);
                 for(ulong i = 0; i < entryCount; i++){
                     entries[i] = new ELF_Dyn(ReadEntry(), ReadEntry());
                 }
@@ -72,7 +71,7 @@ namespace ELFSharp.ELF.Sections
             return elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64();
         }
 
-        private readonly EndianBinaryReader reader;
+        private readonly SimpleEndianessAwareReader reader;
         private Class elfClass;
     }
 }

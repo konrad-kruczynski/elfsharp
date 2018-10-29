@@ -189,7 +189,8 @@ namespace ELFSharp.ELF
                 case SectionType.HashTable:
                     goto default;
                 case SectionType.Dynamic:
-                    goto default;                    
+                    returned = new DynamicSection<T>(header, Class, readerSource);
+                    break;
                 case SectionType.Note:
                     returned = new NoteSection<T>(header, Class, readerSource);
                     break;

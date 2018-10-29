@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using MiscUtil.IO;
 using ELFSharp;
+using ELFSharp.Utilities;
 using System.Text;
 
 namespace ELFSharp.ELF.Sections
@@ -11,9 +11,9 @@ namespace ELFSharp.ELF.Sections
     /// <summary>
     /// Dynamic Section class
     /// </summary>
-    internal class DynamicSection<T> : Section<T>, IDynamicSection where T : struct
+    internal sealed class DynamicSection<T> : Section<T>, IDynamicSection where T : struct
     {
-        public DynamicSection(SectionHeader header, Class elfClass, Func<EndianBinaryReader> readerSource) : base(header, readerSource)
+        public DynamicSection(SectionHeader header, Class elfClass, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
         {
             data = new DynamicData(elfClass, header.Offset, header.Size ,readerSource);
         }
