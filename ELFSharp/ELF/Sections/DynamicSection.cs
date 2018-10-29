@@ -28,7 +28,7 @@ namespace ELFSharp.ELF.Sections
 
         public override string ToString()
         {
-            return data.ToString();
+            return string.Format("{0}: {2}, load @0x{4:X}, {5} entries", Name, NameIndex, Type, RawFlags, LoadAddress, data.entries.Count());
         }
 
         private DynamicData data;

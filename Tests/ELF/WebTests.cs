@@ -41,7 +41,7 @@ namespace Tests.ELF
 .init_array: 14, load @0x6006B0, 8 bytes long
 .fini_array: 15, load @0x6006B8, 8 bytes long
 .jcr: ProgBits, load @0x6006C0, 8 bytes long
-.dynamic: Dynamic, load @0x6006C8, 464 bytes long
+.dynamic: Dynamic, load @0x6006C8, 29 entries
 .got: ProgBits, load @0x600898, 8 bytes long
 .got.plt: ProgBits, load @0x6008A0, 48 bytes long
 .data: ProgBits, load @0x6008D0, 16 bytes long
