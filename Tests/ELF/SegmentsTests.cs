@@ -74,6 +74,17 @@ namespace Tests.ELF
             Assert.AreEqual(264, segment.GetMemoryContents().Length);
         }
 
+        [Test]
+        public void GithubIssueNo45()
+        {
+            var elf = ELFReader.Load<int>(Utilities.GetBinary("hello32le"));
+            var segment = elf.Segments.Single(x => x.Address == 0x8049F14 && x.Type == SegmentType.Load);
+
+            byte[] memoryContents = segment.GetMemoryContents();
+            var endingZeroes = memoryContents.Skip((int)segment.FileSize);
+            Assert.IsTrue(endingZeroes.All(x => x == 0), "Not all additional bytes were zero.");
+        }
+
     }
 }
 

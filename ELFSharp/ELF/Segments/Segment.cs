@@ -71,7 +71,7 @@ namespace ELFSharp.ELF.Segments
             using(var reader = ObtainReader(offset))
             {
                 var result = new byte[sizeAsInt];
-                var fileImage = reader.ReadBytes(result.Length);
+                var fileImage = reader.ReadBytes(Math.Min(result.Length, checked((int)FileSize)));
                 fileImage.CopyTo(result, 0);
                 return result;
             }
