@@ -4,19 +4,19 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <InformationalVersion>2.1.1</InformationalVersion>
-    <PackageVersion>2.1.1</PackageVersion>
-    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox</Authors>
+    <InformationalVersion>2.2.0</InformationalVersion>
+    <PackageVersion>2.2.0</PackageVersion>
+    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.hellsgate.pl/</PackageProjectUrl>
-    <PackageReleaseNotes>Fixed returned content of segment when memory size is greater than file size. Should return zeroes at the end of the array.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated parsing of note sections to silently ignore sections that do not match the expected format.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
     <Version>2.0</Version>
-    <FileVersion>2.1.1.0</FileVersion>
+    <FileVersion>2.2.0.0</FileVersion>
     <PackageIconUrl>http://elfsharp.hellsgate.pl/favicon.ico</PackageIconUrl>
   </PropertyGroup>
 </Project>
