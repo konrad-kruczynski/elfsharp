@@ -1,6 +1,6 @@
 This is ELFSharp, a C# library created by Konrad Kruczyński for reading binary
 files in ELF, UImage or Mach-O format. This is open source software, for more
-informations please visit http://elfsharp.hellsgate.pl
+informations please visit http://elfsharp.turtleware.eu
 
 Other contributors (in the order of the first contribution)
 * Piotr Zierhoffer <pzierhoffer (at) antmicro.com>
