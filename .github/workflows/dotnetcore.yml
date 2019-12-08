@@ -14,4 +14,4 @@ jobs:
       with:
         dotnet-version: 2.2.108
     - name: Unit tests
-      run: dotnet test Tests/Tests.csproj
+      run: dotnet test -f netcoreapp2.0 Tests/Tests.csproj
