@@ -13,7 +13,5 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.108
-    - name: Build with dotnet
-      run: dotnet build -f netcoreapp2.0 --configuration Release ELFSharpWithTests.sln
     - name: Unit tests
       run: dotnet test Tests/Tests.csproj
