@@ -4,3 +4,4 @@ obj/
 test-results/
 /packages/*/
 /.vs
+.idea/
