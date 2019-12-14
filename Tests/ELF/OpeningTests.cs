@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
 
 namespace Tests.ELF
 {
@@ -89,6 +90,15 @@ namespace Tests.ELF
         public void GithubIssueNo24()
         {
             ELFReader.Load(Utilities.GetBinary("issue24.elf"));
+        }
+
+        // Github issue no 49
+        [Test]
+        public void ShouldOpenEmptyStringTableElf()
+        {
+            var elf = ELFReader.Load(Utilities.GetBinary("libcoreclr"));
+            var section = elf.GetSection(".dynstr");
+            Assert.AreEqual(SectionType.NoBits, section.Type);
         }
     }
 }
