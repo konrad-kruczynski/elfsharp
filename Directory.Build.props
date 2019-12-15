@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <LangVersion>8.0</LangVersion>
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">True</TreatWarningsAsErrors>
         <Deterministic>True</Deterministic>
     </PropertyGroup>
     <ItemGroup>
