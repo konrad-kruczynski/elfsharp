@@ -201,7 +201,7 @@ namespace ELFSharp.ELF
                 case SectionType.Shlib:
                     goto default;
                 case SectionType.DynamicSymbolTable:
-                returned = new SymbolTable<T>(header, readerSource, dynamicStringTable, this);
+                    returned = new SymbolTable<T>(header, readerSource, dynamicStringTable, this);
                     break;
                 default:
                     returned = new Section<T>(header, readerSource);
@@ -289,7 +289,9 @@ namespace ELFSharp.ELF
             TryGetSection(Consts.ObjectsStringTableName, out Section<T> section);
             objectsStringTable = (StringTable<T>)section;
             TryGetSection(Consts.DynamicStringTableName, out section);
-            dynamicStringTable = (StringTable<T>)section;
+
+            // It might happen that the section is not really available, represented as a NoBits one.
+            dynamicStringTable = section as StringTable<T>;
         }
 
         private void ReadStringTable()

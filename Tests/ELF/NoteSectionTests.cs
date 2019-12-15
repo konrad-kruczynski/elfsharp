@@ -38,6 +38,19 @@ namespace Tests.ELF
             var noteSection = (NoteSection<ulong>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
+
+        [Test]
+        public void ShouldNotThrowOnCustomNote()
+        {
+            // Not all notes conform to the expected format that the NoteSection
+            // class uses; this test validates that we can successfully parse a
+            // binary containing such a section and retrieve the note, all without
+            // throwing an exception.
+            const string sectionName = ".note.custom";
+            var elf = ELFReader.Load<uint>(Utilities.GetBinary("custom-note"));
+            var noteSection = (NoteSection<uint>)elf.GetSection(sectionName);
+            Assert.AreEqual(sectionName, noteSection.Name);
+        }
     }
 }
 
