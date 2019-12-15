@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using ELFSharp;
 using ELFSharp.Utilities;
 using System.Text;
 
@@ -14,11 +11,8 @@ namespace ELFSharp.ELF.Sections
     /// </summary>
     internal class DynamicData
     {
-        /// <summary>
-        /// An array of the entries in the .dynamic section.
-        /// </summary>
-        public ELF_Dyn[] entries;
-        
+        internal DynamicEntry[] Entries { get; private set; }
+
         /// <summary>
         /// Dynamic data constructor.  Parses the contents of the .dynamic section.
         /// </summary>
@@ -29,8 +23,9 @@ namespace ELFSharp.ELF.Sections
         public DynamicData(Class elf, ulong sectionOffset, ulong size, Func<SimpleEndianessAwareReader> readerSource)
         {
             elfClass = elf;
-            ulong entryCount = elfClass == Class.Bit32 ? (ulong) size / 8 : (ulong) size / 16;
-            entries = new ELF_Dyn[entryCount];
+            ulong entryCount = elfClass == Class.Bit32 ? size / 8 : size / 16;
+            Entries = new DynamicEntry[entryCount];
+
             /// "Kind-of" Bug:
             /// So, this winds up with "extra" DT_NULL entries for some executables.  The issue
             /// is basically that sometimes the .dynamic section's size (and # of entries) per the 
@@ -38,11 +33,12 @@ namespace ELFSharp.ELF.Sections
             /// entries in all of the ELF files I tested, so we shouldn't end up with any 'incorrect' entries 
             /// here unless someone is messing with the ELF structure.
             /// 
-            using(reader = readerSource())
+            using (reader = readerSource())
             {
                 reader.BaseStream.Seek((long)sectionOffset, SeekOrigin.Begin);
-                for(ulong i = 0; i < entryCount; i++){
-                    entries[i] = new ELF_Dyn(ReadEntry(), ReadEntry());
+                for (ulong i = 0; i < entryCount; i++)
+                {
+                    Entries[i] = new DynamicEntry(ReadEntry(), ReadEntry());
                 }
             }
         }
@@ -53,13 +49,15 @@ namespace ELFSharp.ELF.Sections
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder b = new StringBuilder();
-            b.Append("Tag \t Value\n");
-            foreach(ELF_Dyn e in entries)
+            var builder = new StringBuilder();
+            builder.Append("Tag \t Value\n");
+
+            foreach (var e in Entries)
             {
-                b.Append($"{e.ToString()}\n");
+                builder.Append($"{e.ToString()}\n");
             }
-            return b.ToString();
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -72,6 +70,6 @@ namespace ELFSharp.ELF.Sections
         }
 
         private readonly SimpleEndianessAwareReader reader;
-        private Class elfClass;
+        private readonly Class elfClass;
     }
 }

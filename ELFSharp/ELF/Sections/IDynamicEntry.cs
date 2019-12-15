@@ -7,7 +7,7 @@ namespace ELFSharp.ELF.Sections
     /// Interface--because this is a union type in C, if we want more detail at some point on the values in the Union type, 
     /// we can have separate classes.
     /// </summary>
-    public interface IELF_Dyn
+    public interface IDynamicEntry
     {
         DynamicTag Tag
         {
