@@ -25,8 +25,6 @@ namespace ELFSharp.ELF
             ReadSegmentHeaders();
         }
 
-        public Type DataType => typeof(T);
-
         public Endianess Endianess { get; private set; }
 
         public Class Class { get; private set; }
