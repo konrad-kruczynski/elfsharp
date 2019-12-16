@@ -25,6 +25,8 @@ namespace ELFSharp.ELF
             ReadSegmentHeaders();
         }
 
+        public Type DataType => typeof(T);
+
         public Endianess Endianess { get; private set; }
 
         public Class Class { get; private set; }
@@ -189,7 +191,7 @@ namespace ELFSharp.ELF
                 case SectionType.HashTable:
                     goto default;
                 case SectionType.Dynamic:
-                    returned = new DynamicSection<T>(header, Class, readerSource);
+                    returned = new DynamicSection<T>(header, readerSource, this);
                     break;
                 case SectionType.Note:
                     returned = new NoteSection<T>(header, Class, readerSource);

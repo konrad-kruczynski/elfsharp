@@ -6,22 +6,21 @@ namespace ELFSharp.ELF.Sections
     /// 
     /// See LLVM elf.h file for the C/C++ version.
     /// </summary>
-    internal class DynamicEntry : IDynamicEntry
+    public class DynamicEntry<T> : IDynamicEntry
     {
-        public DynamicEntry(ulong tagValue, ulong unionValue)
+        public DynamicEntry(T tagValue, T value)
         {
-            Tag = (DynamicTag)tagValue;
-            Union = unionValue;
+            Tag = (DynamicTag)tagValue.To<ulong>();
+            Value = value;
         }
 
         public DynamicTag Tag { get; private set; }
 
-        public ulong Union { get; private set; }
+        public T Value { get; private set; }
 
         public override string ToString()
         {
-            string unionStr = Union.ToString("x16");
-            return $"{Tag} \t 0x{unionStr}";
+            return string.Format("{0} \t 0x{1:X}", Tag, Value);
         }
     }
 }

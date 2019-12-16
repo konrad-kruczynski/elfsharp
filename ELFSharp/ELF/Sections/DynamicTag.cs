@@ -12,7 +12,7 @@ namespace ELFSharp.ELF.Sections
     /// License of the original C code is LLVM license.
     /// </summary>
     public enum DynamicTag : ulong
-    {  
+    {
         Null = 0,          // Marks end of dynamic array.
         Needed = 1,        // String table offset of needed library.
         PLTRelSz = 2,      // Size of relocation entries in PLT.

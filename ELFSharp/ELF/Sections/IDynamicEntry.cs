@@ -1,5 +1,3 @@
-using System;
-
 namespace ELFSharp.ELF.Sections
 {
     /// <summary>
@@ -9,14 +7,6 @@ namespace ELFSharp.ELF.Sections
     /// </summary>
     public interface IDynamicEntry
     {
-        DynamicTag Tag
-        {
-            get;
-        }
-
-        ulong Union 
-        {
-            get;
-        }
+        DynamicTag Tag { get; }
     }
 }
