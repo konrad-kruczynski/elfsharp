@@ -1,0 +1,10 @@
+<Project>
+    <PropertyGroup>
+        <LangVersion>8.0</LangVersion>
+        <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">True</TreatWarningsAsErrors>
+        <Deterministic>True</Deterministic>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+</Project>
