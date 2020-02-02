@@ -1,0 +1,3 @@
+[submodule "Tests/Binaries"]
+	path = Tests/Binaries
+	url = https://github.com/konrad-kruczynski/elfsharp-test-binaries.git
