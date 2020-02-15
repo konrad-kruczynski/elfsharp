@@ -11,15 +11,11 @@ namespace ELFSharp.ELF
 {
     public sealed class ELF<T> : IELF where T : struct
     {
-        internal ELF(string fileName)
+        internal ELF(Stream stream, bool ownsStream)
         {
-            this.fileName = fileName;
-			if(ELFReader.CheckELFType(fileName) == Class.NotELF)
-			{
-				throw new ArgumentException("Given file is not proper ELF file.");
-			}
-            stream = GetNewStream();
-            ReadHeader();            
+            this.ownsStream = ownsStream;
+            reader = ObtainEndianessAwareReader(stream);
+            ReadFields();
             ReadStringTable();
             ReadSections();
             ReadSegmentHeaders();
@@ -126,11 +122,6 @@ namespace ELFSharp.ELF
             return GetSection(name);
         }
 
-        bool TryGetSection(int index, out Section<T> section)
-        {
-            return TryGetSectionInner(index, out section) == GetSectionResult.Success;
-        }
-
         public Section<T> GetSection(int index)
         {
             GetSectionResult result = TryGetSectionInner(index, out Section<T> section);
@@ -151,11 +142,6 @@ namespace ELFSharp.ELF
 			                     "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine, EntryPoint, sections.Count, segments.Count);
 		}
 
-        public void Dispose()
-        {
-            stream.Close();
-        }
-
         bool IELF.TryGetSection(int index, out ISection section)
         {
             var result = TryGetSection(index, out Section<T> sectionConcrete);
@@ -168,6 +154,19 @@ namespace ELFSharp.ELF
             return GetSection(index);
         }
 
+        public void Dispose()
+        {
+            if(ownsStream)
+            {
+                reader.BaseStream.Dispose();
+            }
+        }
+
+        private bool TryGetSection(int index, out Section<T> section)
+        {
+            return TryGetSectionInner(index, out section) == GetSectionResult.Success;
+        }
+
         private Section<T> GetSectionFromSectionHeader(SectionHeader header)
         {
             Section<T> returned;
@@ -176,23 +175,23 @@ namespace ELFSharp.ELF
                 case SectionType.Null:
                     goto default;
                 case SectionType.ProgBits:
-                    returned = new ProgBitsSection<T>(header, readerSource);
+                    returned = new ProgBitsSection<T>(header, reader);
                     break;
                 case SectionType.SymbolTable:
-                    returned = new SymbolTable<T>(header, readerSource, objectsStringTable, this);
+                    returned = new SymbolTable<T>(header, reader, objectsStringTable, this);
                     break;
                 case SectionType.StringTable:
-                    returned = new StringTable<T>(header, readerSource);
+                    returned = new StringTable<T>(header, reader);
                     break;
                 case SectionType.RelocationAddends:
                     goto default;
                 case SectionType.HashTable:
                     goto default;
                 case SectionType.Dynamic:
-                    returned = new DynamicSection<T>(header, readerSource, this);
+                    returned = new DynamicSection<T>(header, reader, this);
                     break;
                 case SectionType.Note:
-                    returned = new NoteSection<T>(header, Class, readerSource);
+                    returned = new NoteSection<T>(header, reader);
                     break;
                 case SectionType.NoBits:
                     goto default;
@@ -201,23 +200,13 @@ namespace ELFSharp.ELF
                 case SectionType.Shlib:
                     goto default;
                 case SectionType.DynamicSymbolTable:
-                    returned = new SymbolTable<T>(header, readerSource, dynamicStringTable, this);
+                    returned = new SymbolTable<T>(header, reader, dynamicStringTable, this);
                     break;
                 default:
-                    returned = new Section<T>(header, readerSource);
+                    returned = new Section<T>(header, reader);
                     break;
             }
             return returned;
-        }
-
-        private FileStream GetNewStream()
-        {
-            return new FileStream(
-                fileName,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read
-            );
         }
      
         private void ReadSegmentHeaders()
@@ -228,7 +217,7 @@ namespace ELFSharp.ELF
                 var segment = new Segment<T>(
                     segmentHeaderOffset + i*segmentHeaderEntrySize,
                     Class,
-                    readerSource
+                    reader
                 );
                 segments.Add(segment);
             }
@@ -300,12 +289,14 @@ namespace ELFSharp.ELF
             {                
                 return;
             }
+
             var header = ReadSectionHeader(stringTableIndex);
             if(header.Type != SectionType.StringTable)
             {
                 throw new InvalidOperationException("Given index of section header does not point at string table which was expected.");
             }
-            SectionsStringTable = new StringTable<T>(header, readerSource);
+
+            SectionsStringTable = new StringTable<T>(header, reader);
         }
 
         private SectionHeader ReadSectionHeader(int index)
@@ -314,87 +305,64 @@ namespace ELFSharp.ELF
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            stream.Seek(
+
+            reader.BaseStream.Seek(
                 sectionHeaderOffset + index*sectionHeaderEntrySize,
                 SeekOrigin.Begin
             );
-            using(var reader = localReaderSource())
-            {
-                return new SectionHeader(reader, Class, SectionsStringTable);
-            }
+
+            return new SectionHeader(reader, Class, SectionsStringTable);
         }
 
-        private void ReadHeader()
+        private SimpleEndianessAwareReader ObtainEndianessAwareReader(Stream stream)
         {
-            ReadIdentificator();
-            readerSource = () => new SimpleEndianessAwareReader(GetNewStream(), Endianess);
-            localReaderSource = () => new SimpleEndianessAwareReader(stream, Endianess, true);
-            ReadFields();
+            var reader = new BinaryReader(stream);
+            reader.ReadBytes(4); // ELF magic
+            var classByte = reader.ReadByte();
+
+            Class = classByte switch
+            {
+                1 => Class.Bit32,
+                2 => Class.Bit64,
+                _ => throw new ArgumentException($"Given ELF file is of unknown class {classByte}."),
+            };
+
+            var endianessByte = reader.ReadByte();
+
+            Endianess = endianessByte switch
+            {
+                1 => Endianess.LittleEndian,
+                2 => Endianess.BigEndian,
+                _ => throw new ArgumentException($"Given ELF file uses unknown endianess {endianessByte}."),
+            };
+
+            reader.ReadBytes(10); // padding bytes of section e_ident
+            return new SimpleEndianessAwareReader(stream, Endianess);
         }
 
         private void ReadFields()
         {
-            using(var reader = localReaderSource())
+            Type = (FileType)reader.ReadUInt16();
+            Machine = (Machine)reader.ReadUInt16();
+            var version = reader.ReadUInt32();
+            if(version != 1)
             {
-                Type = (FileType)reader.ReadUInt16();
-                Machine = (Machine)reader.ReadUInt16();
-                var version = reader.ReadUInt32();
-                if(version != 1)
-                {
-                    throw new ArgumentException(string.Format(
-                        "Given ELF file is of unknown version {0}.",
-                        version
-                    ));
-                }
-                EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
-                // TODO: assertions for (u)longs
-                segmentHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-                sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
-                MachineFlags = reader.ReadUInt32().To<T>(); // TODO: always 32bit?
-                reader.ReadUInt16(); // elf header size
-                segmentHeaderEntrySize = reader.ReadUInt16();
-                segmentHeaderEntryCount = reader.ReadUInt16();
-                sectionHeaderEntrySize = reader.ReadUInt16();
-                sectionHeaderEntryCount = reader.ReadUInt16();
-                stringTableIndex = reader.ReadUInt16();
+                throw new ArgumentException(string.Format(
+                    "Given ELF file is of unknown version {0}.",
+                    version
+                ));
             }
-        }
-
-        private void ReadIdentificator()
-        {
-            var reader = new BinaryReader(stream);
-			reader.ReadBytes(4); // ELF magic
-            var classByte = reader.ReadByte();
-            switch(classByte)
-            {
-                case 1:
-                    Class = Class.Bit32;
-                    break;
-                case 2:
-                    Class = Class.Bit64;
-                    break;
-                default:
-                    throw new ArgumentException(string.Format(
-                        "Given ELF file is of unknown class {0}.",
-                        classByte
-                    ));
-            }
-            var endianessByte = reader.ReadByte();
-            switch(endianessByte)
-            {
-                case 1:
-                    Endianess = Endianess.LittleEndian;
-                    break;
-                case 2:
-                    Endianess = Endianess.BigEndian;
-                    break;
-                default:
-                    throw new ArgumentException(string.Format(
-                        "Given ELF file uses unknown endianess {0}.",
-                        endianessByte
-                    ));
-            }            
-            reader.ReadBytes(10); // padding bytes of section e_ident
+            EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
+            // TODO: assertions for (u)longs
+            segmentHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+            sectionHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
+            MachineFlags = reader.ReadUInt32().To<T>(); // TODO: always 32bit?
+            reader.ReadUInt16(); // elf header size
+            segmentHeaderEntrySize = reader.ReadUInt16();
+            segmentHeaderEntryCount = reader.ReadUInt16();
+            sectionHeaderEntrySize = reader.ReadUInt16();
+            sectionHeaderEntryCount = reader.ReadUInt16();
+            stringTableIndex = reader.ReadUInt16();
         }
 
         private GetSectionResult TryGetSectionInner(string name, out Section<T> section)
@@ -436,24 +404,22 @@ namespace ELFSharp.ELF
             return GetSectionResult.Success;
         }
 
-        private readonly FileStream stream;
-        private Int64 segmentHeaderOffset;
-        private Int64 sectionHeaderOffset;
-        private UInt16 segmentHeaderEntrySize;
-        private UInt16 segmentHeaderEntryCount;
-        private UInt16 sectionHeaderEntrySize;
-        private UInt16 sectionHeaderEntryCount;
-        private UInt16 stringTableIndex;
+        private readonly SimpleEndianessAwareReader reader;
+        private readonly bool ownsStream;
+        private long segmentHeaderOffset;
+        private long sectionHeaderOffset;
+        private ushort segmentHeaderEntrySize;
+        private ushort segmentHeaderEntryCount;
+        private ushort sectionHeaderEntrySize;
+        private ushort sectionHeaderEntryCount;
+        private ushort stringTableIndex;
         private List<Segment<T>> segments;
         private List<Section<T>> sections;
         private Dictionary<string, int> sectionIndicesByName;
         private List<SectionHeader> sectionHeaders;
         private StringTable<T> objectsStringTable;
         private StringTable<T> dynamicStringTable;
-        private Func<SimpleEndianessAwareReader> readerSource;
-        private Func<SimpleEndianessAwareReader> localReaderSource;
         private Stage currentStage;
-        private readonly string fileName;
 
         private const int SectionNameNotUniqueMarker = -1;
 

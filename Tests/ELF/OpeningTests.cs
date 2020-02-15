@@ -10,93 +10,93 @@ namespace Tests.ELF
         [Test]
         public void ShouldChooseGoodClass32()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             Assert.AreEqual(Class.Bit32, elf.Class);
         }
         
         [Test]
         public void ShouldChooseGoodClass64()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
             Assert.AreEqual(Class.Bit64, elf.Class);
         }
         
         [Test]
         public void ShouldOpenHelloWorld32()
         {
-			ELFReader.Load(Utilities.GetBinary("hello32le"));
+			ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
         }
         
         [Test]
         public void ShouldOpenHelloWorld64()
         {           
-            ELFReader.Load(Utilities.GetBinary("hello64le"));
+            ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
         }
         
         [Test]
         public void ShouldProperlyParseClass32()
         {
-            var elf32 = ELFReader.Load<uint>(Utilities.GetBinary("hello32le"));
+            var elf32 = ELFReader.Load<uint>(Utilities.GetBinaryStream("hello32le"), true);
             Assert.AreEqual(Class.Bit32, elf32.Class);          
         }
 
         [Test]
         public void ShouldProperlyParseClass64()
         {           
-            var elf64 = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
+            var elf64 = ELFReader.Load<ulong>(Utilities.GetBinaryStream("hello64le"), true);
             Assert.AreEqual(Class.Bit64, elf64.Class);
         }
         
         [Test]
         public void ShouldProperlyParseEndianess()
         {
-			var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
-            Assert.AreEqual(Endianess.LittleEndian, elf.Endianess);
-			elf = ELFReader.Load(Utilities.GetBinary("vmlinuxOpenRisc"));
-            Assert.AreEqual(Endianess.BigEndian, elf.Endianess);
+			using var elfLittleEndian = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
+            Assert.AreEqual(Endianess.LittleEndian, elfLittleEndian.Endianess);
+			using var elfBigEndian = ELFReader.Load(Utilities.GetBinaryStream("vmlinuxOpenRisc"), true);
+            Assert.AreEqual(Endianess.BigEndian, elfBigEndian.Endianess);
         }
         
         [Test]
         public void ShouldOpenBigEndian()
         {
-            ELFReader.Load(Utilities.GetBinary("vmlinuxOpenRisc"));
+            ELFReader.Load(Utilities.GetBinaryStream("vmlinuxOpenRisc"), true);
         }
 
         [Test]
         public void GithubIssueNo2()
         {
-            ELFReader.Load(Utilities.GetBinary("mpuG890.axf"));
+            ELFReader.Load(Utilities.GetBinaryStream("mpuG890.axf"), true);
         }
 
 		[Test]
 		public void GithubIssueNo3()
 		{
-			ELFReader.Load(Utilities.GetBinary("issue3"));
+			ELFReader.Load(Utilities.GetBinaryStream("issue3"), true);
 		}
 
 		[Test]
 		public void ShouldNotOpenNonELFFile()
 		{
-            Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinary("notelf"), out var _));
+            Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinaryStream("notelf"), true, out var _));
         }
 
         [Test]
         public void GithubIssueNo9()
         {
-            ELFReader.Load(Utilities.GetBinary("stripped-all-binary"));
+            ELFReader.Load(Utilities.GetBinaryStream("stripped-all-binary"), true);
         }
 
         [Test]
         public void GithubIssueNo24()
         {
-            ELFReader.Load(Utilities.GetBinary("issue24.elf"));
+            ELFReader.Load(Utilities.GetBinaryStream("issue24.elf"), true);
         }
 
         // Github issue no 49
         [Test]
         public void ShouldOpenEmptyStringTableElf()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("libcoreclr"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("libcoreclr"), true);
             var section = elf.GetSection(".dynstr");
             Assert.AreEqual(SectionType.NoBits, section.Type);
         }

@@ -35,9 +35,9 @@ namespace ELFSharp.ELF.Sections
             }
         }
          
-        internal NoteSection(SectionHeader header, Class elfClass, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
+        internal NoteSection(SectionHeader header, SimpleEndianessAwareReader reader) : base(header, reader)
         {
-            data = new NoteData(elfClass, header.Offset, header.Size, readerSource);
+            data = new NoteData(header.Offset, header.Size, reader);
         }
         
         private readonly NoteData data;

@@ -10,7 +10,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadNoteName32()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             var noteSection = (INoteSection)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual("GNU", noteSection.NoteName);
         }
@@ -18,7 +18,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadNoteName64()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
             var noteSection = (INoteSection)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual("GNU", noteSection.NoteName);
         }
@@ -26,7 +26,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadNoteType32()
         {
-            var elf = ELFReader.Load<uint>(Utilities.GetBinary("hello32le"));
+            var elf = ELFReader.Load<uint>(Utilities.GetBinaryStream("hello32le"), true);
             var noteSection = (NoteSection<uint>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
@@ -34,7 +34,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadNoteType64()
         {
-            var elf = ELFReader.Load<ulong>(Utilities.GetBinary("hello64le"));
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinaryStream("hello64le"), true);
             var noteSection = (NoteSection<ulong>)elf.GetSection(".note.ABI-tag");
             Assert.AreEqual(1, noteSection.NoteType);
         }
@@ -47,7 +47,7 @@ namespace Tests.ELF
             // binary containing such a section and retrieve the note, all without
             // throwing an exception.
             const string sectionName = ".note.custom";
-            var elf = ELFReader.Load<uint>(Utilities.GetBinary("custom-note"));
+            var elf = ELFReader.Load<uint>(Utilities.GetBinaryStream("custom-note"), true);
             var noteSection = (NoteSection<uint>)elf.GetSection(sectionName);
             Assert.AreEqual(sectionName, noteSection.Name);
         }

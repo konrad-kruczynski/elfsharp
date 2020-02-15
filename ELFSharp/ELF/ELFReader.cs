@@ -1,28 +1,35 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace ELFSharp.ELF
 {
 	public static class ELFReader
 	{
-		public static IELF Load(string fileName)
+        public static IELF Load(Stream stream, bool shouldOwnStream)
 		{
-            if(!TryLoad(fileName, out IELF elf))
+            if(!TryLoad(stream, shouldOwnStream, out IELF elf))
             {
-                throw new ArgumentException("Given file is not proper ELF file.");
+                throw new ArgumentException(NotELFMessage);
             }
+
             return elf;
 		}
 
-		public static bool TryLoad(string fileName, out IELF elf)
+        public static IELF Load(string fileName)
+        {
+			return Load(File.OpenRead(fileName), true);
+        }
+
+		public static bool TryLoad(Stream stream, bool shouldOwnStream, out IELF elf)
 		{
-			switch(CheckELFType(fileName))
+            switch(CheckELFType(stream))
 			{
 			case Class.Bit32:
-				elf = new ELF<uint>(fileName);
+				elf = new ELF<uint>(stream, shouldOwnStream);
 				return true;
 			case Class.Bit64:
-				elf = new ELF<ulong>(fileName);
+				elf = new ELF<ulong>(stream, shouldOwnStream);
 				return true;
 			default:
 				elf = null;
@@ -30,14 +37,21 @@ namespace ELFSharp.ELF
 			}
 		}
 
-		public static Class CheckELFType(string fileName)
+        public static bool TryLoad(string fileName, out IELF elf)
+        {
+			return TryLoad(File.OpenRead(fileName), true, out elf);
+        }
+
+		public static Class CheckELFType(Stream stream)
 		{
-			var size = new FileInfo(fileName).Length;
-			if(size < Consts.MinimalELFSize)
+			var currentStreamPosition = stream.Position;
+
+			if(stream.Length < Consts.MinimalELFSize)
 			{
 				return Class.NotELF;
 			}
-			using(var reader = new BinaryReader(File.OpenRead(fileName)))
+
+			using(var reader = new BinaryReader(stream, Encoding.UTF8, true))
 			{
 				var magic = reader.ReadBytes(4);
 				for(var i = 0; i < 4; i++)
@@ -48,22 +62,41 @@ namespace ELFSharp.ELF
 					}
 				}
 				var value = reader.ReadByte();
+				stream.Position = currentStreamPosition;
 				return value == 1 ? Class.Bit32 : Class.Bit64;
 			}
 		}
+
+        public static Class CheckELFType(string fileName)
+        {
+            using(var stream = File.OpenRead(fileName))
+            {
+				return CheckELFType(stream);
+            }
+        }
         
-		public static ELF<T> Load<T>(string fileName) where T : struct
+		public static ELF<T> Load<T>(Stream stream, bool shouldOwnStream) where T : struct
 		{
-			return new ELF<T>(fileName);
+			if(CheckELFType(stream) == Class.NotELF)
+			{
+				throw new ArgumentException(NotELFMessage);
+			}
+
+			return new ELF<T>(stream, shouldOwnStream);
 		}
 
-		public static bool TryLoad<T>(string fileName, out ELF<T> elf) where T : struct
+        public static ELF<T> Load<T>(string fileName) where T : struct
+        {
+			return Load<T>(File.OpenRead(fileName), true);
+        }
+
+		public static bool TryLoad<T>(Stream stream, bool shouldOwnStream, out ELF<T> elf) where T : struct
 		{
-			switch(CheckELFType(fileName))
+			switch(CheckELFType(stream))
 			{
 			case Class.Bit32:
 			case Class.Bit64:
-				elf = new ELF<T>(fileName);
+				elf = new ELF<T>(stream, shouldOwnStream);
 				return true;
 			default:
 				elf = null;
@@ -71,12 +104,19 @@ namespace ELFSharp.ELF
 			}
 		}
 
-		private static readonly byte[] Magic = {
+        public static bool TryLoad<T>(string fileName, out ELF<T> elf) where T : struct
+        {
+			return TryLoad<T>(File.OpenRead(fileName), true, out elf);
+        }
+
+		private static readonly byte[] Magic =
+        {
 			0x7F,
 			0x45,
 			0x4C,
 			0x46
 		}; // 0x7F 'E' 'L' 'F'
-        
+
+		private const string NotELFMessage = "Given stream is not a proper ELF file.";
 	}
 }

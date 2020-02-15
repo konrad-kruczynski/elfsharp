@@ -4,19 +4,19 @@
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <InformationalVersion>2.3.0</InformationalVersion>
-    <PackageVersion>2.3.0</PackageVersion>
+    <InformationalVersion>2.4.0</InformationalVersion>
+    <PackageVersion>2.4.0</PackageVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.turtleware.eu/</PackageProjectUrl>
-    <PackageReleaseNotes>Basic parsing for the .dynamic section.</PackageReleaseNotes>
+    <PackageReleaseNotes>ELFReader now offers overloads for reading streams directly, instead of files only.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
     <Version>2.0</Version>
-    <FileVersion>2.3.0.0</FileVersion>
+    <FileVersion>2.4.0.0</FileVersion>
     <PackageIconUrl>http://elfsharp.turtleware.eu/favicon.ico</PackageIconUrl>
   </PropertyGroup>
 </Project>
