@@ -8,7 +8,7 @@ namespace ELFSharp.ELF.Sections
 {
     public sealed class StringTable<T> : Section<T>, IStringTable where T : struct
     {
-        internal StringTable(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource) : base(header, readerSource)
+        internal StringTable(SectionHeader header, SimpleEndianessAwareReader reader) : base(header, reader)
         {
             stringCache = new Dictionary<long, string>
             {
@@ -76,12 +76,10 @@ namespace ELFSharp.ELF.Sections
 
         private byte[] ReadStringData()
         {
-            using(var reader = ObtainReader())
-            {
-                var blob = reader.ReadBytes((int)Header.Size);
-                Debug.Assert(blob.Length == 0 || (blob[0] == 0 && blob[blob.Length - 1] == 0), "First and last bytes must be the null character (except for empty string tables)");
-                return blob;
-            }
+            SeekToSectionBeginning();
+            var blob = Reader.ReadBytes((int)Header.Size);
+            Debug.Assert(blob.Length == 0 || (blob[0] == 0 && blob[blob.Length - 1] == 0), "First and last bytes must be the null character (except for empty string tables)");
+            return blob;
         }
 
         private readonly Dictionary<long, string> stringCache;

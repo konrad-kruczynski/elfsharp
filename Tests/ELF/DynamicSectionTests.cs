@@ -15,7 +15,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadDynamicSection32()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             var dynamicSection = (IDynamicSection)elf.GetSection(".dynamic");
             Assert.AreEqual(SectionType.Dynamic, dynamicSection.Type);
         }
@@ -23,7 +23,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldReadDynamicSection64()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
             var dynamicSection = (IDynamicSection)elf.GetSection(".dynamic");
             Assert.AreEqual(SectionType.Dynamic, dynamicSection.Type);
         }
@@ -31,7 +31,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldHaveCorrectDynamicEntryCount32()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             var dynamicSection = (IDynamicSection)elf.GetSection(".dynamic");
             Assert.AreEqual(25, dynamicSection.Entries.Count());
         }
@@ -39,7 +39,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldHaveCorrectDynamicEntryCount64()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
             var dynamicSection = (IDynamicSection)elf.GetSection(".dynamic");
             Assert.AreEqual(29, dynamicSection.Entries.Count());
         }

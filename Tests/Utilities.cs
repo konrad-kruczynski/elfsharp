@@ -8,17 +8,22 @@ namespace Tests
     [SetUpFixture]
 	public class Utilities
 	{
-		public static string GetBinary(string name)
+		public static Stream GetBinaryStream(string name)
 		{
+            return typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name);
+        }
+
+        public static string GetBinary(string name)
+        {
             var fileName = Path.GetTempFileName();
             using(var fileStream = File.OpenWrite(fileName))
-            using(var resourceStream = typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name))
+            using(var resourceStream = GetBinaryStream(name))
             {
                 resourceStream.CopyTo(fileStream);
             }
             TemporaryFiles.Add(fileName);
             return fileName;
-		}
+        }
 
         [OneTimeTearDown]
         public static void DeleteAllTemporaries()

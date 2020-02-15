@@ -8,7 +8,7 @@ namespace ELFSharp.ELF.Sections
 {
     public sealed class DynamicSection<T> : Section<T>, IDynamicSection where T : struct
     {
-        internal DynamicSection(SectionHeader header, Func<SimpleEndianessAwareReader> readerSource, ELF<T> elf) : base(header, readerSource)
+        internal DynamicSection(SectionHeader header, SimpleEndianessAwareReader reader, ELF<T> elf) : base(header, reader)
         {
             this.elf = elf;
             ReadEntries();
@@ -37,23 +37,20 @@ namespace ELFSharp.ELF.Sections
             /// header is higher than the actual # of entries.  The extra space gets filled with null
             /// entries in all of the ELF files I tested, so we shouldn't end up with any 'incorrect' entries 
             /// here unless someone is messing with the ELF structure.
-            /// 
-            using (var reader = ObtainReader())
+
+            SeekToSectionBeginning();
+            var entryCount = elf.Class == Class.Bit32 ? Header.Size / 8 : Header.Size / 16;
+            entries = new List<DynamicEntry<T>>();
+
+            for (ulong i = 0; i < entryCount; i++)
             {
-                var entryCount = elf.Class == Class.Bit32 ? Header.Size / 8 : Header.Size / 16;
-
-                entries = new List<DynamicEntry<T>>();
-
-                for (ulong i = 0; i < entryCount; i++)
+                if (elf.Class == Class.Bit32)
                 {
-                    if (elf.Class == Class.Bit32)
-                    {
-                        entries.Add(new DynamicEntry<T>(reader.ReadUInt32().To<T>(), reader.ReadUInt32().To<T>()));
-                    }
-                    else if (elf.Class == Class.Bit64)
-                    {
-                        entries.Add(new DynamicEntry<T>(reader.ReadUInt64().To<T>(), reader.ReadUInt64().To<T>()));
-                    }
+                    entries.Add(new DynamicEntry<T>(Reader.ReadUInt32().To<T>(), Reader.ReadUInt32().To<T>()));
+                }
+                else if (elf.Class == Class.Bit64)
+                {
+                    entries.Add(new DynamicEntry<T>(Reader.ReadUInt64().To<T>(), Reader.ReadUInt64().To<T>()));
                 }
             }
         }

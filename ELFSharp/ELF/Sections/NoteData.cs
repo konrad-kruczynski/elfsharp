@@ -14,37 +14,34 @@ namespace ELFSharp.ELF.Sections
 
         internal ulong Type { get; private set; }
         
-        internal NoteData(Class elfClass, ulong sectionOffset, ulong sectionSize, Func<SimpleEndianessAwareReader> readerSource)
+        internal NoteData(ulong sectionOffset, ulong sectionSize, SimpleEndianessAwareReader reader)
         {
-            using(reader = readerSource())
-            {
-                var sectionEnd = (long)(sectionOffset + sectionSize);
-                reader.BaseStream.Seek((long)sectionOffset, SeekOrigin.Begin);
-                var nameSize = ReadSize();
-                var descriptionSize = ReadSize();
-                Type = ReadField();
-                int remainder;
-                var fields = Math.DivRem(nameSize, FieldSize, out remainder);
-                var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
+            this.reader = reader;
+            var sectionEnd = (long)(sectionOffset + sectionSize);
+            reader.BaseStream.Seek((long)sectionOffset, SeekOrigin.Begin);
+            var nameSize = ReadSize();
+            var descriptionSize = ReadSize();
+            Type = ReadField();
+            int remainder;
+            var fields = Math.DivRem(nameSize, FieldSize, out remainder);
+            var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
 
-                // We've encountered binaries where nameSize and descriptionSize are
-                // invalid (i.e. significantly larger than the size of the binary itself).
-                // To avoid throwing on such binaries, we only read in name and description
-                // if the sizes are within range of the containing section.
-                if (reader.BaseStream.Position + alignedNameSize <= sectionEnd)
+            // We encountered binaries where nameSize and descriptionSize are
+            // invalid (i.e. significantly larger than the size of the binary itself).
+            // To avoid throwing on such binaries, we only read in name and description
+            // if the sizes are within range of the containing section.
+            if (reader.BaseStream.Position + alignedNameSize <= sectionEnd)
+            {
+                var name = reader.ReadBytes(alignedNameSize);
+                if (nameSize > 0)
                 {
-                    var name = reader.ReadBytes(alignedNameSize);
-                    if (nameSize > 0)
-                    {
-                        Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
-                    }
-                    if (reader.BaseStream.Position + descriptionSize <= sectionEnd)
-                    {
-                        Description = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
-                    }
+                    Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
+                }
+                if (reader.BaseStream.Position + descriptionSize <= sectionEnd)
+                {
+                    Description = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
                 }
             }
-            reader = null;
         }
         
         private int ReadSize()

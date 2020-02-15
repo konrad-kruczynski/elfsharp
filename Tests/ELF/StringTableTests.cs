@@ -10,7 +10,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindAllStrings()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello32le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             Assert.IsTrue(elf.HasSectionsStringTable, 
                           "Sections string table was not found in 32 bit ELF.");
             Assert.AreEqual(29, elf.SectionsStringTable.Strings.Count());
@@ -19,7 +19,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindAllStrings64()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("hello64le"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
             Assert.IsTrue(elf.HasSectionsStringTable, 
                           "Sections string table was not found in 64 bit ELF.");
             Assert.AreEqual(30, elf.SectionsStringTable.Strings.Count());
@@ -28,7 +28,7 @@ namespace Tests.ELF
         [Test]
         public void ShouldFindAllStringsBigEndian()
         {
-            var elf = ELFReader.Load(Utilities.GetBinary("vmlinuxOpenRisc"));
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("vmlinuxOpenRisc"), true);
             Assert.IsTrue(
                 elf.HasSectionsStringTable,
                 "Sections string table was not found in 32 bit big endian ELF."
