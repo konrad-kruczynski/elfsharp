@@ -5,18 +5,18 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
     <InformationalVersion>2.4.0</InformationalVersion>
-    <PackageVersion>2.4.1</PackageVersion>
+    <PackageVersion>2.5.0</PackageVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.turtleware.eu/</PackageProjectUrl>
-    <PackageReleaseNotes>Updated package icon to use a file instead of URL.</PackageReleaseNotes>
+    <PackageReleaseNotes>Sections and segments lists are now IReadOnlyList instead of IEnumerable.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
     <Version>2.0</Version>
-    <FileVersion>2.4.1.0</FileVersion>
+    <FileVersion>2.5.0.0</FileVersion>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>

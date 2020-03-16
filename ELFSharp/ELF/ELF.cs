@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.ObjectModel;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
 using ELFSharp.Utilities;
@@ -48,25 +47,19 @@ namespace ELFSharp.ELF
             get { return stringTableIndex != 0; }
         }
      
-        public IEnumerable<Segment<T>> Segments
+        public IReadOnlyList<Segment<T>> Segments
         {
-            get { return new ReadOnlyCollection<Segment<T>>(segments); }
+            get => segments.AsReadOnly();
         }
 
-        IEnumerable<ISegment> IELF.Segments
+        IReadOnlyList<ISegment> IELF.Segments
         {
-            get { return Segments.Cast<ISegment>(); }
+            get => Segments;
         }
 
         public IStringTable SectionsStringTable { get; private set; }
 
-        public IEnumerable<Section<T>> Sections
-        {
-            get
-            {
-                return new ReadOnlyCollection<Section<T>>(sections);
-            }
-        }
+        public IReadOnlyList<Section<T>> Sections => sections.AsReadOnly();
 
         IEnumerable<TSectionType> IELF.GetSections<TSectionType>()
         {
@@ -78,13 +71,7 @@ namespace ELFSharp.ELF
             return Sections.Where(x => x is TSection).Cast<TSection>();
         }
 
-        IEnumerable<ISection> IELF.Sections
-        {
-            get
-            {
-                return Sections.Cast<ISection>();
-            }
-        }
+        IReadOnlyList<ISection> IELF.Sections => Sections;
 
         public bool TryGetSection(string name, out Section<T> section)
         {

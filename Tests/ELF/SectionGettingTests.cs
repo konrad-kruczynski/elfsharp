@@ -29,6 +29,13 @@ namespace Tests.ELF
             Assert.IsFalse(ELFReader.Load(Utilities.GetBinaryStream("issue3"), true).TryGetSection(28, out section));
         }
 
+        // Github issue no 60.
+        [Test]
+        public void SectionCountShouldBeAvailable()
+        {
+            var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
+            Assert.AreEqual(29, elf.Sections.Count);
+        }
     }
 }
 

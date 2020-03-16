@@ -85,6 +85,13 @@ namespace Tests.ELF
             Assert.IsTrue(endingZeroes.All(x => x == 0), "Not all additional bytes were zero.");
         }
 
+        // Github issue no 60.
+        [Test]
+        public void SegmentsCountShouldBeAvailable()
+        {
+            var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
+            Assert.AreEqual(8, elf.Segments.Count);
+        }
     }
 }
 
