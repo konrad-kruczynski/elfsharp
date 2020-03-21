@@ -9,7 +9,7 @@
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.turtleware.eu/</PackageProjectUrl>
-    <PackageReleaseNotes>Sections and segments lists are now IReadOnlyList instead of IEnumerable.</PackageReleaseNotes>
+    <PackageReleaseNotes>ELFSharp library now targets only .NET Standard 2.0.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
