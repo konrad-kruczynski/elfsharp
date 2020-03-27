@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using NUnit.Framework;
 using ELFSharp.MachO;
 
@@ -11,8 +11,15 @@ namespace Tests.MachO
         public void ShouldOpenMachO()
         {
             var fileName = Utilities.GetBinary("simple-mach-o");
-            ELFSharp.MachO.MachO machO;
-            Assert.AreEqual(MachOResult.OK, MachOReader.TryLoad(fileName, out machO));
+            Assert.AreEqual(MachOResult.OK, MachOReader.IsMachO(fileName));
+        }
+
+        [Test]
+        public void ShouldHaveZeroExceptions()
+        {
+            var fileName = Utilities.GetBinary("simple-mach-o");
+            var machO = MachOReader.Load(fileName, false);
+            Assert.AreEqual(0, machO.Exceptions.Count);
         }
 
         [Test]
@@ -28,6 +35,14 @@ namespace Tests.MachO
         {
             var fileName = Utilities.GetBinary("simple-32-mach-o");
             var machO = MachOReader.Load(fileName);
+            Assert.AreEqual(Machine.I386, machO.Machine);
+        }
+
+        [Test]
+        public void ShouldOpen32BitMachOAsStream()
+        {
+            var fileName = Utilities.GetBinary("simple-32-mach-o");
+            var machO = MachOReader.Load(File.OpenRead(fileName));
             Assert.AreEqual(Machine.I386, machO.Machine);
         }
     }
