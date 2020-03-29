@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Force.Crc32;
 using NUnit.Framework;
 
 namespace Tests
@@ -23,6 +24,13 @@ namespace Tests
             }
             TemporaryFiles.Add(fileName);
             return fileName;
+        }
+
+        public static uint ComputeCrc32(byte[] data)
+        {
+            var algorithm = new Crc32Algorithm();
+            var crc32AsBytes = algorithm.ComputeHash(data);
+            return BitConverter.ToUInt32(crc32AsBytes, 0);
         }
 
         [OneTimeTearDown]
