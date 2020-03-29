@@ -14,6 +14,7 @@ namespace ELFSharp.ELF.Sections
 
         public virtual byte[] GetContents()
         {
+            Reader.BaseStream.Seek((long)Header.Offset, SeekOrigin.Begin);
             return Reader.ReadBytes(Convert.ToInt32(Header.Size));
         }
 

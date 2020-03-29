@@ -1,25 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <InformationalVersion>2.6.0</InformationalVersion>
-    <PackageVersion>2.6.0</PackageVersion>
-    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie</Authors>
+    <InformationalVersion>2.6.1</InformationalVersion>
+    <PackageVersion>2.6.1</PackageVersion>
+    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.turtleware.eu/</PackageProjectUrl>
-    <PackageReleaseNotes>ELFSharp library now targets only .NET Standard 2.0.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed a bug where the Socket.GetContents method could not fetch content normally.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
     <Description>C# library for reading binary ELF, UImage, Mach-O files</Description>
     <PackageId>ELFSharp</PackageId>
     <Version>2.0</Version>
-    <FileVersion>2.6.0.0</FileVersion>
+    <FileVersion>2.6.1.0</FileVersion>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath=""/>
+    <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
