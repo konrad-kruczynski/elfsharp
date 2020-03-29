@@ -74,8 +74,9 @@ namespace Tests.ELF
             Assert.AreEqual(264, segment.GetMemoryContents().Length);
         }
 
+        // Github issue no 45
         [Test]
-        public void GithubIssueNo45()
+        public void ShouldHaveNullAdditionalBytes()
         {
             var elf = ELFReader.Load<int>(Utilities.GetBinaryStream("hello32le"), true);
             var segment = elf.Segments.Single(x => x.Address == 0x8049F14 && x.Type == SegmentType.Load);

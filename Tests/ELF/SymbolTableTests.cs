@@ -24,8 +24,9 @@ namespace Tests.ELF
             Assert.AreEqual(64, symtab.Entries.Count());           
         }
 
+        // Github issue no 24
         [Test]
-        public void GithubIssueNo24()
+        public void ShouldHandleCorruptedNamesInDynSym()
         {
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("issue24.elf"), true);
             var dynamicSymbolSection = (SymbolTable<uint>)elf.GetSection(".dynsym");

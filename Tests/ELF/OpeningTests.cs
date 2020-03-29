@@ -62,14 +62,16 @@ namespace Tests.ELF
             ELFReader.Load(Utilities.GetBinaryStream("vmlinuxOpenRisc"), true);
         }
 
+        // Github issue no 2
         [Test]
-        public void GithubIssueNo2()
+        public void ShouldOpenElfWithNonUniqueSectionNames()
         {
             ELFReader.Load(Utilities.GetBinaryStream("mpuG890.axf"), true);
         }
 
+        // Github issue no 3
 		[Test]
-		public void GithubIssueNo3()
+		public void ShouldLoadSharedObjectElfWithProgramHeaders()
 		{
 			ELFReader.Load(Utilities.GetBinaryStream("issue3"), true);
 		}
@@ -80,14 +82,16 @@ namespace Tests.ELF
             Assert.IsFalse(ELFReader.TryLoad(Utilities.GetBinaryStream("notelf"), true, out var _));
         }
 
+        // Github issue no 9
         [Test]
-        public void GithubIssueNo9()
+        public void ShouldOpenElfWithStripAll()
         {
             ELFReader.Load(Utilities.GetBinaryStream("stripped-all-binary"), true);
         }
 
+        // Github issue no 24
         [Test]
-        public void GithubIssueNo24()
+        public void ShouldHandleCorruptedNamesInDynSym()
         {
             ELFReader.Load(Utilities.GetBinaryStream("issue24.elf"), true);
         }
