@@ -11,8 +11,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldListSymbols()
         {
-            var fileName = Utilities.GetBinary("shared-32-mach-o");
-            var machO = MachOReader.Load(fileName);
+            var machO = MachOReader.Load(Utilities.GetBinaryStream("shared-32-mach-o"), true);
             var symbolTable = machO.GetCommandsOfType<SymbolTable>().Single();
             CollectionAssert.IsSubsetOf(new [] { "_funkcja", "_inna_funkcja", "_jeszcze_inna_funkcja" }, symbolTable.Symbols.Select(x => x.Name).ToArray());
         }

@@ -5,19 +5,14 @@ namespace ELFSharp.MachO
 {
     public class Command
     {
-        internal Command(BinaryReader reader, Func<FileStream> streamProvider)
+        internal Command(BinaryReader reader, Stream stream)
         {
-            this.streamProvider = streamProvider;
+            Stream = stream;
             Reader = reader;
         }
-
-        protected FileStream ProvideStream()
-        {
-            return streamProvider();
-        }
-
+        
         protected readonly BinaryReader Reader;
-        private readonly Func<FileStream> streamProvider;
+        protected readonly Stream Stream;
     }
 }
 

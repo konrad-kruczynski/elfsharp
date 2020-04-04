@@ -10,7 +10,7 @@ namespace ELFSharp.MachO
 {
     public sealed class Segment : Command
     {
-        public Segment(BinaryReader reader, Func<FileStream> streamProvider, bool is64) : base(reader, streamProvider)
+        public Segment(BinaryReader reader, Stream stream, bool is64) : base(reader, stream)
         {
             this.is64 = is64;
             Name = ReadSectionOrSegmentName();
@@ -22,16 +22,17 @@ namespace ELFSharp.MachO
             InitialProtection = ReadProtection();
             var numberOfSections = Reader.ReadInt32();
             Reader.ReadInt32(); // we ignore flags for now
+
             if(fileSize > 0)
             {
-                data = new byte[Size];
-                using(var stream = streamProvider())
-                {
-                    stream.Seek(fileOffset, SeekOrigin.Begin);
-                    var buffer = stream.ReadBytesOrThrow(checked((int)fileSize));
-                    Array.Copy(buffer, data, buffer.Length);
-                }
+                var streamPosition = Stream.Position;
+                Stream.Seek(fileOffset, SeekOrigin.Begin);
+                data = new byte[Size];                
+                var buffer = stream.ReadBytesOrThrow(checked((int)fileSize));
+                Array.Copy(buffer, data, buffer.Length);
+                Stream.Position = streamPosition;
             }
+
             var sections = new List<Section>();
             for(var i = 0; i < numberOfSections; i++)
             {
@@ -53,6 +54,7 @@ namespace ELFSharp.MachO
                 var section = new Section(sectionName, sectionAddress, sectionSize, offsetInSegment, alignExponent, this);
                 sections.Add(section);
             }
+
             Sections = new ReadOnlyCollection<Section>(sections);
         }
 

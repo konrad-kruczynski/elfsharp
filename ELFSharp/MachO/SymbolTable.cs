@@ -8,7 +8,7 @@ namespace ELFSharp.MachO
 {
     public class SymbolTable : Command
     {
-        public SymbolTable(BinaryReader reader, Func<FileStream> streamProvider, bool is64) : base(reader, streamProvider)
+        public SymbolTable(BinaryReader reader, Stream stream, bool is64) : base(reader, stream)
         {
             this.is64 = is64;
             ReadSymbols();
@@ -30,16 +30,15 @@ namespace ELFSharp.MachO
             var stringTableOffset = Reader.ReadInt32();
             Reader.ReadInt32(); // string table size
 
-            var symbolStream = ProvideStream();
-            symbolStream.Seek(symbolTableOffset, SeekOrigin.Begin);
-            var symbolReader = new BinaryReader(symbolStream);
-            var stringTableStream = ProvideStream();
+            var streamPosition = Stream.Position;
+            Stream.Seek(symbolTableOffset, SeekOrigin.Begin);
+            var symbolReader = new BinaryReader(Stream, Encoding.UTF8, true);
             try
             {
                 for(var i = 0; i < numberOfSymbols; i++)
                 {
                     var nameOffset = symbolReader.ReadInt32();
-                    var name = ReadStringFromOffset(stringTableStream, stringTableOffset + nameOffset);
+                    var name = ReadStringFromOffset(stringTableOffset + nameOffset);
                     symbolReader.ReadBytes(4); // ignoring for now
                     long value = is64 ? symbolReader.ReadInt64() : symbolReader.ReadInt32();
                     var symbol = new Symbol(name, value);
@@ -49,24 +48,32 @@ namespace ELFSharp.MachO
             finally
             {
                 symbolReader.Close();
-                stringTableStream.Close();
+                Stream.Position = streamPosition;
             }
         }
 
-        private static string ReadStringFromOffset(Stream stream, int offset)
+        private string ReadStringFromOffset(int offset)
         {
-            stream.Seek(offset, SeekOrigin.Begin);
-            var asBytes = new List<byte>();
-            int readByte;
-            while((readByte = stream.ReadByte()) != 0)
+            var streamPosition = Stream.Position;
+            Stream.Seek(offset, SeekOrigin.Begin);
+            try
             {
-                if(readByte == -1)
+                var asBytes = new List<byte>();
+                int readByte;
+                while((readByte = Stream.ReadByte()) != 0)
                 {
-                    throw new EndOfStreamException("Premature end of the stream while reading string.");
+                    if(readByte == -1)
+                    {
+                        throw new EndOfStreamException("Premature end of the stream while reading string.");
+                    }
+                    asBytes.Add((byte)readByte);
                 }
-                asBytes.Add((byte)readByte);
+                return Encoding.UTF8.GetString(asBytes.ToArray());
             }
-            return Encoding.UTF8.GetString(asBytes.ToArray());
+            finally
+            {
+                Stream.Position = streamPosition;
+            }
         }
 
         private Symbol[] symbols;
