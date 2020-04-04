@@ -8,25 +8,26 @@ namespace ELFSharp.UImage
 {
 	public sealed class UImage
 	{
-		internal UImage(string fileName)
+		internal UImage(Stream stream, bool ownsStream)
 		{
-			using(var reader = new BinaryReader(File.OpenRead(fileName)))
-			{
-				reader.ReadBytes(8); // magic and CRC, already checked
-				Timestamp = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(reader.ReadInt32BigEndian())).ToLocalTime();
-				Size = reader.ReadUInt32BigEndian();
-				LoadAddress = reader.ReadUInt32BigEndian();
-				EntryPoint = reader.ReadUInt32BigEndian();
-				CRC = reader.ReadUInt32BigEndian();
-				OperatingSystem = (OS)reader.ReadByte();
-				Architecture = (Architecture)reader.ReadByte();
-				Type = (ImageType)reader.ReadByte();
-				Compression = (CompressionType)reader.ReadByte();
-				var nameAsBytes = reader.ReadBytes(32);
-				Name = Encoding.UTF8.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
-				image = reader.ReadBytes((int)Size);
-			}
-		}
+			this.shouldOwnStream = ownsStream;
+
+            using var reader = new BinaryReader(stream, Encoding.UTF8, !ownsStream);
+
+            reader.ReadBytes(8); // magic and CRC, already checked
+            Timestamp = (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(reader.ReadInt32BigEndian())).ToLocalTime();
+            Size = reader.ReadUInt32BigEndian();
+            LoadAddress = reader.ReadUInt32BigEndian();
+            EntryPoint = reader.ReadUInt32BigEndian();
+            CRC = reader.ReadUInt32BigEndian();
+            OperatingSystem = (OS)reader.ReadByte();
+            Architecture = (Architecture)reader.ReadByte();
+            Type = (ImageType)reader.ReadByte();
+            Compression = (CompressionType)reader.ReadByte();
+            var nameAsBytes = reader.ReadBytes(32);
+            Name = Encoding.UTF8.GetString(nameAsBytes.Reverse().SkipWhile(x => x == 0).Reverse().ToArray());
+            image = reader.ReadBytes((int)Size);
+        }
 
 		public uint CRC { get; private set; }
 		public bool IsChecksumOK { get; private set; }
@@ -92,6 +93,7 @@ namespace ELFSharp.UImage
 
 		private const int MaximumNameLength = 32;
 		private readonly byte[] image;
+		private readonly bool shouldOwnStream;
 	}
 }
 

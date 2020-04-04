@@ -1,69 +1,80 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace ELFSharp.UImage
 {
 	public static class UImageReader
 	{
-		public static UImage Load(string fileName)
-		{
-			UImage result;
-			switch(TryLoad(fileName, out result))
-			{
-			case UImageResult.OK:
-				return result;
-			case UImageResult.NotUImage:
-				throw new InvalidOperationException("Given file is not an UBoot image.");
-			case UImageResult.BadChecksum:
-				throw new InvalidOperationException("Wrong header checksum of the given UImage file.");
-			case UImageResult.NotSupportedImageType:
-				throw new InvalidOperationException("Given image type is not supported.");
-			default:
-				throw new ArgumentOutOfRangeException();
-			}
-		}
+        public static UImage Load(string fileName)
+        {
+			return Load(File.OpenRead(fileName), true);
+        }
 
-		public static UImageResult TryLoad(string fileName, out UImage uImage)
+		public static UImage Load(Stream stream, bool shouldOwnStream)
 		{
+            return (TryLoad(stream, shouldOwnStream, out UImage result)) switch
+            {
+                UImageResult.OK => result,
+                UImageResult.NotUImage => throw new InvalidOperationException("Given file is not an UBoot image."),
+                UImageResult.BadChecksum => throw new InvalidOperationException("Wrong header checksum of the given UImage file."),
+                UImageResult.NotSupportedImageType => throw new InvalidOperationException("Given image type is not supported."),
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        }
+
+        public static UImageResult TryLoad(string fileName, out UImage uImage)
+        {
+			return TryLoad(File.OpenRead(fileName), true, out uImage);
+        }
+
+		public static UImageResult TryLoad(Stream stream, bool shouldOwnStream, out UImage uImage)
+		{
+			var startingStreamPosition = stream.Position;
+
 			uImage = null;
-			if(new FileInfo(fileName).Length < 64)
+			if(stream.Length < 64)
 			{
 				return UImageResult.NotUImage;
 			}
-			byte[] headerForCrc;
-			using(var reader = new BinaryReader(File.OpenRead(fileName)))
-			{
-				headerForCrc = reader.ReadBytes(64);
-				// we need to zero crc part
-				for(var i = 4; i < 8; i++)
-				{
-					headerForCrc[i] = 0;
-				}
-			}
-			using(var reader = new BinaryReader(File.OpenRead(fileName)))
-			{
-				var magic = reader.ReadUInt32BigEndian();
-				if(magic != Magic)
-				{
-					return UImageResult.NotUImage;
-				}
-				var crc = reader.ReadUInt32BigEndian();
-				if(crc != GzipCrc32(headerForCrc))
-				{
-					return UImageResult.BadChecksum;
-				}
-				reader.ReadBytes(22);
-				var imageType = (ImageType)reader.ReadByte();
-				if(!Enum.IsDefined(typeof(ImageType), imageType))
-				{
-					return UImageResult.NotSupportedImageType;
-				}
-				// TODO: check CRC of the header
-				uImage = new UImage(fileName);
-				return UImageResult.OK;
-			}
-		}
+			
+            using var reader = new BinaryReader(stream, Encoding.UTF8, true);
+
+            var headerForCrc = reader.ReadBytes(64);
+            // we need to zero crc part
+            for(var i = 4; i < 8; i++)
+            {
+                headerForCrc[i] = 0;
+            }
+
+            stream.Position = startingStreamPosition;
+
+            var magic = reader.ReadUInt32BigEndian();
+            if(magic != Magic)
+            {
+                return UImageResult.NotUImage;
+            }
+
+            var crc = reader.ReadUInt32BigEndian();
+            if(crc != GzipCrc32(headerForCrc))
+            {
+                return UImageResult.BadChecksum;
+            }
+
+            reader.ReadBytes(22);
+            var imageType = (ImageType)reader.ReadByte();
+            if(!Enum.IsDefined(typeof(ImageType), imageType))
+            {
+                return UImageResult.NotSupportedImageType;
+            }
+
+            // TODO: check CRC of the header
+
+            stream.Position = startingStreamPosition;
+            uImage = new UImage(stream, shouldOwnStream);
+            return UImageResult.OK;
+        }
 
 		internal static uint GzipCrc32(byte[] data)
 		{

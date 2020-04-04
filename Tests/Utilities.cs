@@ -33,6 +33,13 @@ namespace Tests
             return BitConverter.ToUInt32(crc32AsBytes, 0);
         }
 
+        public static byte[] ReadWholeStream(Stream stream)
+        {
+            var memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
+        }
+
         [OneTimeTearDown]
         public static void DeleteAllTemporaries()
         {
