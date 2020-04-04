@@ -11,19 +11,13 @@ namespace Tests
 	{
 		public static Stream GetBinaryStream(string name)
 		{
-            return typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name);
-        }
-
-        public static string GetBinary(string name)
-        {
-            var fileName = Path.GetTempFileName();
-            using(var fileStream = File.OpenWrite(fileName))
-            using(var resourceStream = GetBinaryStream(name))
+            var result = typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name);
+            if(result == null)
             {
-                resourceStream.CopyTo(fileStream);
+                throw new FileNotFoundException($"Could not find resource '{name}'.");
             }
-            TemporaryFiles.Add(fileName);
-            return fileName;
+
+            return result;
         }
 
         public static uint ComputeCrc32(byte[] data)
@@ -39,17 +33,6 @@ namespace Tests
             stream.CopyTo(memoryStream);
             return memoryStream.ToArray();
         }
-
-        [OneTimeTearDown]
-        public static void DeleteAllTemporaries()
-        {
-            foreach(var file in TemporaryFiles)
-            {
-                File.Delete(file);
-            }
-        }
-
-        private static List<string> TemporaryFiles = new List<string>();
 
 		private const string ResourcesPrefix = "Tests.Binaries.";
 	}
