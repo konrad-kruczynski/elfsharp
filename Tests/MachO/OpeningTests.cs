@@ -10,24 +10,21 @@ namespace Tests.MachO
         [Test]
         public void ShouldOpenMachO()
         {
-            var fileName = Utilities.GetBinary("simple-mach-o");
-            ELFSharp.MachO.MachO machO;
-            Assert.AreEqual(MachOResult.OK, MachOReader.TryLoad(fileName, out machO));
+            Assert.AreEqual(MachOResult.OK,
+                MachOReader.TryLoad(Utilities.GetBinaryStream("simple-mach-o"), true, out _));
         }
 
         [Test]
         public void ShouldFindCorrectMachine()
         {
-            var fileName = Utilities.GetBinary("simple-mach-o");
-            var machO = MachOReader.Load(fileName);
+            var machO = MachOReader.Load(Utilities.GetBinaryStream("simple-mach-o"), true);
             Assert.AreEqual(Machine.X86_64, machO.Machine);
         }
 
         [Test]
         public void ShouldOpen32BitMachO()
         {
-            var fileName = Utilities.GetBinary("simple-32-mach-o");
-            var machO = MachOReader.Load(fileName);
+            var machO = MachOReader.Load(Utilities.GetBinaryStream("simple-32-mach-o"), true);
             Assert.AreEqual(Machine.I386, machO.Machine);
         }
     }

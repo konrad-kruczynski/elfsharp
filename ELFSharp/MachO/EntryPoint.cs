@@ -5,7 +5,7 @@ namespace ELFSharp.MachO
 {
     public class EntryPoint : Command
     {
-        public EntryPoint(BinaryReader reader, Func<FileStream> streamProvider) : base(reader, streamProvider)
+        public EntryPoint(BinaryReader reader, Stream stream) : base(reader, stream)
         {
             Value = Reader.ReadInt64();
             StackSize = Reader.ReadInt64();
