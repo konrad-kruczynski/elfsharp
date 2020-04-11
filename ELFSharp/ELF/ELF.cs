@@ -198,14 +198,24 @@ namespace ELFSharp.ELF
      
         private void ReadSegmentHeaders()
         {
-            segments = new List<Segment<T>>(segmentHeaderEntryCount);
+            segments = new List<Segment<T>>(segmentHeaderEntryCount);           
+
             for(var i = 0u; i < segmentHeaderEntryCount; i++)
             {
-                var segment = new Segment<T>(
-                    segmentHeaderOffset + i*segmentHeaderEntrySize,
-                    Class,
-                    reader
-                );
+                var seekTo = segmentHeaderOffset + i * segmentHeaderEntrySize;
+                reader.BaseStream.Seek(seekTo, SeekOrigin.Begin);
+                var segmentType = Segment<T>.ProbeType(reader);
+
+                Segment<T> segment;
+                if(segmentType == SegmentType.Note)
+                {
+                    segment = new NoteSegment<T>(segmentHeaderOffset + i * segmentHeaderEntrySize, Class, reader);
+                }
+                else
+                {
+                    segment = new Segment<T>(segmentHeaderOffset + i * segmentHeaderEntrySize, Class, reader);
+                }
+
                 segments.Add(segment);
             }
         }

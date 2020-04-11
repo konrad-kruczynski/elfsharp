@@ -93,6 +93,17 @@ namespace Tests.ELF
             var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             Assert.AreEqual(8, elf.Segments.Count);
         }
+
+        [Test]
+        public void ShouldHandleNoteSegment()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
+            var noteSegment = elf.Segments.OfType<INoteSegment>().Single();
+
+            Assert.AreEqual(SegmentType.Note, noteSegment.Type);
+            Assert.AreEqual("GNU", noteSegment.NoteName);
+            Assert.AreEqual(1, noteSegment.NoteType);
+        }
     }
 }
 

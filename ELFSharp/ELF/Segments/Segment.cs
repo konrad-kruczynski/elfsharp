@@ -4,7 +4,7 @@ using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Segments
 {
-    public sealed class Segment<T> : ISegment
+    public class Segment<T> : ISegment
     {
         internal Segment(long headerOffset, Class elfClass, SimpleEndianessAwareReader reader)
         {            
@@ -29,6 +29,11 @@ namespace ELFSharp.ELF.Segments
         public long FileSize { get; private set; }
 
         public long Offset { get; private set; }
+
+        public static SegmentType ProbeType(SimpleEndianessAwareReader reader)
+        {
+            return (SegmentType)reader.ReadUInt32();
+        }
 
         /// <summary>
         /// Returns content of the section as it is given in the file.
