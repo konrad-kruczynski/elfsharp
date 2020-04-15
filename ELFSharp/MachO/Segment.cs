@@ -44,13 +44,14 @@ namespace ELFSharp.MachO
                 }
                 var sectionAddress = ReadInt32OrInt64();
                 var sectionSize = ReadInt32OrInt64();
-                var offsetInSegment = ReadInt32OrInt64() - fileOffset;
+                var offsetInSegment = Reader.ReadInt32() - fileOffset;
                 if(offsetInSegment < 0)
                 {
                     throw new InvalidOperationException("Unexpected section offset lower than segment offset.");
                 }
                 var alignExponent = Reader.ReadInt32();
-                Reader.ReadBytes(20);
+                Reader.ReadBytes(is64 ? 24 : 20);
+
                 var section = new Section(sectionName, sectionAddress, sectionSize, offsetInSegment, alignExponent, this);
                 sections.Add(section);
             }
