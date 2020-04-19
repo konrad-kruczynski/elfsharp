@@ -19,7 +19,7 @@ namespace ELFSharp.MachO
         public string Name { get; private set; }
         public ulong Address { get; private set; }
         public ulong Size { get; private set; }
-        public ulong Offset { get; private set; }
+        public uint Offset { get; private set; }
         public uint AlignExponent { get; private set; }
 
         public byte[] GetData()
