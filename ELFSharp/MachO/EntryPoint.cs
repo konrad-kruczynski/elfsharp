@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {
     public class EntryPoint : Command
     {
-        public EntryPoint(BinaryReader reader, Stream stream) : base(reader, stream)
+        public EntryPoint(SimpleEndianessAwareReader reader, Stream stream) : base(reader, stream)
         {
             Value = Reader.ReadInt64();
             StackSize = Reader.ReadInt64();

@@ -1,20 +1,18 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {
     public sealed class MachO
     {
-        internal MachO(Stream stream, bool is64, bool ownsStream)
+        internal MachO(Stream stream, bool is64, Endianess endianess, bool ownsStream)
         {
             this.is64 = is64;
 
-            using var reader = new BinaryReader(stream, Encoding.UTF8, !ownsStream);
+            using var reader = new SimpleEndianessAwareReader(stream, endianess, ownsStream);
 
-            reader.ReadBytes(4); // header, already checked
             Machine = (Machine)reader.ReadInt32();
             reader.ReadBytes(4); // we don't support the cpu subtype now
             FileType = (FileType)reader.ReadUInt32();
@@ -38,7 +36,7 @@ namespace ELFSharp.MachO
 
         public FileType FileType { get; private set; }
 
-        private void ReadCommands(int noOfCommands, Stream stream, BinaryReader reader)
+        private void ReadCommands(int noOfCommands, Stream stream, SimpleEndianessAwareReader reader)
         {
             for(var i = 0; i < noOfCommands; i++)
             {

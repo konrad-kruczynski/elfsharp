@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {
     public class SymbolTable : Command
     {
-        public SymbolTable(BinaryReader reader, Stream stream, bool is64) : base(reader, stream)
+        public SymbolTable(SimpleEndianessAwareReader reader, Stream stream, bool is64) : base(reader, stream)
         {
             this.is64 = is64;
             ReadSymbols();
@@ -32,22 +32,21 @@ namespace ELFSharp.MachO
 
             var streamPosition = Stream.Position;
             Stream.Seek(symbolTableOffset, SeekOrigin.Begin);
-            var symbolReader = new BinaryReader(Stream, Encoding.UTF8, true);
+
             try
             {
                 for(var i = 0; i < numberOfSymbols; i++)
                 {
-                    var nameOffset = symbolReader.ReadInt32();
+                    var nameOffset = Reader.ReadInt32();
                     var name = ReadStringFromOffset(stringTableOffset + nameOffset);
-                    symbolReader.ReadBytes(4); // ignoring for now
-                    long value = is64 ? symbolReader.ReadInt64() : symbolReader.ReadInt32();
+                    Reader.ReadBytes(4); // ignoring for now
+                    long value = is64 ? Reader.ReadInt64() : Reader.ReadInt32();
                     var symbol = new Symbol(name, value);
                     symbols[i] = symbol;
                 }
             }
             finally
             {
-                symbolReader.Close();
                 Stream.Position = streamPosition;
             }
         }

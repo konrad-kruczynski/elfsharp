@@ -19,3 +19,7 @@ You can find license in the LICENSE file.
 
 This software uses ELF machine constants from the LLVM projects, whose license
 can be found in the LICENSE file as well.
+
+This project uses some test binaries from Jonathan Salwan's excellent collection
+located at https://github.com/JonathanSalwan/binary-samples These also use the
+MIT license.

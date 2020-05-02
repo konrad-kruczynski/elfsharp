@@ -12,7 +12,7 @@ namespace ELFSharp.MachO
     [DebuggerDisplay("{Type}({Name,nq})")]
     public sealed class Segment : Command
     {
-        public Segment(BinaryReader reader, Stream stream, bool is64) : base(reader, stream)
+        public Segment(SimpleEndianessAwareReader reader, Stream stream, bool is64) : base(reader, stream)
         {
             this.is64 = is64;
             Name = ReadSectionOrSegmentName();
