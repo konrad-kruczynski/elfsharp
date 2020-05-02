@@ -1,17 +1,17 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {
     public class Command
     {
-        internal Command(BinaryReader reader, Stream stream)
+        internal Command(SimpleEndianessAwareReader reader, Stream stream)
         {
             Stream = stream;
             Reader = reader;
         }
         
-        protected readonly BinaryReader Reader;
+        protected readonly SimpleEndianessAwareReader Reader;
         protected readonly Stream Stream;
     }
 }

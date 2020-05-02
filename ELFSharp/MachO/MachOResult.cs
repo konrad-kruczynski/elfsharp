@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ELFSharp.MachO
+﻿namespace ELFSharp.MachO
 {
     public enum MachOResult
     {

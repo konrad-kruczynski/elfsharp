@@ -1,4 +1,4 @@
-﻿namespace ELFSharp.ELF
+﻿namespace ELFSharp
 {
 	public enum Endianess
 	{

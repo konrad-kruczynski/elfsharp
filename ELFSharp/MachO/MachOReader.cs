@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -29,27 +30,26 @@ namespace ELFSharp.MachO
         public static MachOResult TryLoad(Stream stream, bool shouldOwnStream, out MachO machO)
         {
             machO = null;
-            uint magic;
 
-            var currentStreamPosition = stream.Position;
-            using(var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            using var reader = new BinaryReader(stream, Encoding.UTF8, true);
+            var magic = reader.ReadUInt32();
+            if(!MagicToMachOType.TryGetValue(magic, out var machOType))
             {
-                magic = reader.ReadUInt32();
-                if(magic != Magic64 && magic != Magic32)
-                {
-                    return MachOResult.NotMachO;
-                }
+                return MachOResult.NotMachO;
             }
 
-            stream.Position = currentStreamPosition;
-            machO = new MachO(stream, magic == Magic64, shouldOwnStream);
+            machO = new MachO(stream, machOType.Is64Bit, machOType.Endianess, shouldOwnStream);
             return MachOResult.OK;
         }
 
-        private const uint Magic32 = 0xFEEDFACE;
-        private const uint Magic64 = 0xFEEDFACF;
+        private static readonly IReadOnlyDictionary<uint, (bool Is64Bit, Endianess Endianess)> MagicToMachOType = new Dictionary<uint, (bool, Endianess)>
+        {
+            { 0xFEEDFACE, (false, Endianess.LittleEndian) },
+            { 0xFEEDFACF, (true, Endianess.LittleEndian) },
+            { 0xCEFAEDFE, (false, Endianess.BigEndian) },
+            { 0xCFFEEDFE, (false, Endianess.LittleEndian) }
+        };
 
-               
     }
 }
 
