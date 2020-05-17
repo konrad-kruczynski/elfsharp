@@ -35,23 +35,28 @@ namespace ELFSharp.ELF.Sections
                 var value = 0UL;
                 var size = 0UL;
                 var nameIdx = Reader.ReadUInt32();
+
                 if(elf.Class == Class.Bit32)
                 {
                     value = Reader.ReadUInt32();
                     size = Reader.ReadUInt32();
                 }
+
                 var info = Reader.ReadByte();
-                Reader.ReadByte(); // other is read, which holds zero					
+                var other = Reader.ReadByte();
+                var visibility = (SymbolVisibility)(other & 3); // Only three lowest bits are meaningful.
                 var sectionIdx = Reader.ReadUInt16();
+
                 if(elf.Class == Class.Bit64)
                 {
                     value = Reader.ReadUInt64();
                     size = Reader.ReadUInt64();
                 }
+
                 var name = table == null ? "<corrupt>" : table[nameIdx];
                 var binding = (SymbolBinding)(info >> 4);
                 var type = (SymbolType)(info & 0x0F);
-                entries.Add(new SymbolEntry<T>(name, value.To<T>(), size.To<T>(), binding, type, elf, sectionIdx));
+                entries.Add(new SymbolEntry<T>(name, value.To<T>(), size.To<T>(), visibility, binding, type, elf, sectionIdx));
             }
         }
 

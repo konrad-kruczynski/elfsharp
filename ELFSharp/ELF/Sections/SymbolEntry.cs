@@ -2,68 +2,59 @@
 
 namespace ELFSharp.ELF.Sections
 {
-	public class SymbolEntry<T> : ISymbolEntry where T : struct
-	{
-		public string Name { get; private set; }
+    public class SymbolEntry<T> : ISymbolEntry where T : struct
+    {
+        public string Name { get; }
 
-		public SymbolBinding Binding { get; private set; }
+        public SymbolBinding Binding { get; }
 
-		public SymbolType Type { get; private set; }
+        public SymbolType Type { get; }
 
-		public T Value { get; private set; }
+        public T Value { get; }
 
-		public T Size { get; private set; }
+        public T Size { get; }
 
-		public bool IsPointedIndexSpecial
-		{
-			get { return Enum.IsDefined(typeof(SpecialSectionIndex), sectionIdx); }
-		}
+        public SymbolVisibility Visibility { get; }
 
-		public Section<T> PointedSection
-		{
-			get { return IsPointedIndexSpecial ? null : elf.GetSection(sectionIdx); }
-		}
+        public bool IsPointedIndexSpecial => Enum.IsDefined(typeof(SpecialSectionIndex), PointedSectionIndex);
 
-		ISection ISymbolEntry.PointedSection
-		{
-			get { return PointedSection; }
-		}
+        public Section<T> PointedSection => IsPointedIndexSpecial ? null : elf.GetSection(PointedSectionIndex);
 
-		public ushort PointedSectionIndex
-		{ 
-			get { return sectionIdx; }
-		}
+        ISection ISymbolEntry.PointedSection => PointedSection;
 
-		public SpecialSectionIndex SpecialPointedSectionIndex
-		{
-			get
-			{
-				if(IsPointedIndexSpecial)
-				{
-					return (SpecialSectionIndex)sectionIdx;
-				}
-				throw new InvalidOperationException("Given pointed section index does not have special meaning.");
-			}
-		}
+        public ushort PointedSectionIndex { get; }
 
-		public override string ToString()
-		{
-			return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section idx: {5}]",
-                                 Name, Value, Size, Binding, Type, (SpecialSectionIndex)sectionIdx);
-		}
+        public SpecialSectionIndex SpecialPointedSectionIndex
+        {
+            get
+            {
+                if(IsPointedIndexSpecial)
+                {
+                    return (SpecialSectionIndex)PointedSectionIndex;
+                }
+                throw new InvalidOperationException("Given pointed section index does not have special meaning.");
+            }
+        }
 
-		public SymbolEntry(string name, T value, T size, SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
-		{
-			Name = name;
-			Value = value;
-			Size = size;
-			Binding = binding;
-			Type = type;
-			this.elf = elf;
-			this.sectionIdx = sectionIdx;
-		}
+        public override string ToString()
+        {
+            return string.Format("[{3} {4} {0}: 0x{1:X}, size: {2}, section idx: {5}]",
+                                 Name, Value, Size, Binding, Type, (SpecialSectionIndex)PointedSectionIndex);
+        }
 
-		private readonly ELF<T> elf;
-		private readonly ushort sectionIdx;
-	}
+        public SymbolEntry(string name, T value, T size, SymbolVisibility visibility,
+            SymbolBinding binding, SymbolType type, ELF<T> elf, ushort sectionIdx)
+        {
+            Name = name;
+            Value = value;
+            Size = size;
+            Binding = binding;
+            Type = type;
+            Visibility = visibility;
+            this.elf = elf;
+            PointedSectionIndex = sectionIdx;
+        }
+
+        private readonly ELF<T> elf;
+    }
 }

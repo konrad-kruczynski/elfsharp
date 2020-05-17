@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <Version>2.9.0.0</Version>
+    <Version>2.10.0.0</Version>
     <AssemblyVersion>2.0</AssemblyVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat, Ulysses Wu</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.turtleware.eu/</PackageProjectUrl>
-    <PackageReleaseNotes>Added support for big endian Mach-O.</PackageReleaseNotes>
+    <PackageReleaseNotes>ELF: symbol visibility is now available.</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
