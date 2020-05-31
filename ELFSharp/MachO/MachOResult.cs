@@ -2,8 +2,9 @@
 {
     public enum MachOResult
     {
-        OK,
-        NotMachO
+        OK,        
+        NotMachO,
+        FatMachO
     }
 }
 
