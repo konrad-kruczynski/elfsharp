@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using ELFSharp.Utilities;
@@ -46,6 +46,18 @@ namespace ELFSharp.MachO
                 {
                 case CommandType.SymbolTable:
                     commands[i] = new SymbolTable(reader, stream, is64);
+                    break;
+                case CommandType.IdDylib:
+                    commands[i] = new IdDylib(reader, stream, commandSize);
+                    break;
+                case CommandType.LoadDylib:
+                    commands[i] = new LoadDylib(reader, stream, commandSize);
+                    break;
+                case CommandType.LoadWeakDylib:
+                    commands[i] = new LoadWeakDylib(reader, stream, commandSize);
+                    break;
+                case CommandType.ReexportDylib:
+                    commands[i] = new ReexportDylib(reader, stream, commandSize);
                     break;
                 case CommandType.Main:
                     commands[i] = new EntryPoint(reader, stream);
