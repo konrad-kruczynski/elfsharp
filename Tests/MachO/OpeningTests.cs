@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ELFSharp.MachO;
 using System;
+using System.Linq;
 
 namespace Tests.MachO
 {
@@ -63,6 +64,16 @@ namespace Tests.MachO
             var machOs = MachOReader.LoadFat(Utilities.GetBinaryStream("MachO-OSX-ppc-openssl-1.0.1h"), true);
             Assert.AreEqual(1, machOs.Count);
             Assert.AreEqual(Machine.PowerPc, machOs[0].Machine);
+        }
+
+        [Test]
+        public void ShouldOpenMachOObjectFile()
+        {
+            // intermediate object file has only 1 segement.
+            var result = MachOReader.TryLoad(Utilities.GetBinaryStream("simple-mach-o-object.o"), true, out ELFSharp.MachO.MachO machO);
+            Assert.AreEqual(MachOResult.OK, result);
+            Assert.AreEqual(machO.FileType, FileType.Object);
+            Assert.AreEqual(machO.GetCommandsOfType<Segment>().Count(), 1);
         }
     }
 }

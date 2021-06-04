@@ -6,9 +6,10 @@ namespace ELFSharp.MachO
     [DebuggerDisplay("Section({segment.Name,nq},{Name,nq})")]
     public sealed class Section
     {
-        public Section(string name, ulong address, ulong size, uint offset, uint alignExponent, Segment segment)
+        public Section(string name, string segmentName, ulong address, ulong size, uint offset, uint alignExponent, Segment segment)
         {
             Name = name;
+            SegmentName = segmentName;
             Address = address;
             Size = size;
             Offset = offset;
@@ -17,6 +18,7 @@ namespace ELFSharp.MachO
         }
 
         public string Name { get; private set; }
+        public string SegmentName { get; private set; }
         public ulong Address { get; private set; }
         public ulong Size { get; private set; }
         public uint Offset { get; private set; }

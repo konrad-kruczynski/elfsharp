@@ -36,6 +36,8 @@ namespace ELFSharp.MachO
 
         public FileType FileType { get; private set; }
 
+        public bool Is64 => is64;
+
         private void ReadCommands(int noOfCommands, Stream stream, SimpleEndianessAwareReader reader)
         {
             for(var i = 0; i < noOfCommands; i++)
@@ -64,7 +66,7 @@ namespace ELFSharp.MachO
                     break;
                 case CommandType.Segment:
                 case CommandType.Segment64:
-                    commands[i] = new Segment(reader, stream, is64);
+                    commands[i] = new Segment(reader, stream, this);
                     break;
                 default:
                     reader.ReadBytes((int)commandSize - 8); // 8 bytes is the size of the common command header
