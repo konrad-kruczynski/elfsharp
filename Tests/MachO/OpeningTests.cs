@@ -69,7 +69,7 @@ namespace Tests.MachO
         [Test]
         public void ShouldOpenMachOObjectFile()
         {
-            // intermediate object file has only 1 segement.
+            // intermediate object file has only 1 segment.
             var result = MachOReader.TryLoad(Utilities.GetBinaryStream("simple-mach-o-object.o"), true, out ELFSharp.MachO.MachO machO);
             Assert.AreEqual(MachOResult.OK, result);
             Assert.AreEqual(machO.FileType, FileType.Object);
