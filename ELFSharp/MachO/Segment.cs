@@ -52,8 +52,14 @@ namespace ELFSharp.MachO
                 var sectionSize = ReadUInt32OrUInt64();
                 var offset = Reader.ReadUInt32();
                 var alignExponent = Reader.ReadUInt32();
-                Reader.ReadBytes(is64 ? 24 : 20);
-                var section = new Section(sectionName, segmentName, sectionAddress, sectionSize, offset, alignExponent, this);
+                var relocOffset = Reader.ReadUInt32();
+                var numberOfReloc = Reader.ReadUInt32();
+                var flags = Reader.ReadUInt32();
+                _ = Reader.ReadUInt32(); // reserved1
+                _ = Reader.ReadUInt32(); // reserved2
+                _ = is64 ? Reader.ReadUInt32() : 0; // reserved3
+
+                var section = new Section(sectionName, segmentName, sectionAddress, sectionSize, offset, alignExponent, relocOffset, numberOfReloc, flags, this);
                 sections.Add(section);
             }
 
