@@ -22,6 +22,7 @@ Contributors (in the order of the first contribution)
 * Rollrat
 * Ulysses Wu
 * Cédric Luthi
+* Yong Yan
 
 ## License
 You can find license in the LICENSE file.
