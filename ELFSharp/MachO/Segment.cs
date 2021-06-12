@@ -12,9 +12,9 @@ namespace ELFSharp.MachO
     [DebuggerDisplay("{Type}({Name,nq})")]
     public sealed class Segment : Command
     {
-        public Segment(SimpleEndianessAwareReader reader, Stream stream, bool is64) : base(reader, stream)
+        public Segment(SimpleEndianessAwareReader reader, Stream stream, MachO machO) : base(reader, stream)
         {
-            this.is64 = is64;
+            this.is64 = machO.Is64;
             Name = ReadSectionOrSegmentName();
             Address = ReadUInt32OrUInt64();
             Size = ReadUInt32OrUInt64();
@@ -40,16 +40,26 @@ namespace ELFSharp.MachO
             {
                 var sectionName = ReadSectionOrSegmentName();
                 var segmentName = ReadSectionOrSegmentName();
-                if(segmentName != Name)
+
+                // An intermediate object file contains only one segment.
+                // This segment name is empty, its sections segment names are not empty.
+                if (machO.FileType != FileType.Object && segmentName != Name)
                 {
                     throw new InvalidOperationException("Unexpected name of the section's segment.");
                 }
+
                 var sectionAddress = ReadUInt32OrUInt64();
                 var sectionSize = ReadUInt32OrUInt64();
                 var offset = Reader.ReadUInt32();
                 var alignExponent = Reader.ReadUInt32();
-                Reader.ReadBytes(is64 ? 24 : 20);
-                var section = new Section(sectionName, sectionAddress, sectionSize, offset, alignExponent, this);
+                var relocOffset = Reader.ReadUInt32();
+                var numberOfReloc = Reader.ReadUInt32();
+                var flags = Reader.ReadUInt32();
+                _ = Reader.ReadUInt32(); // reserved1
+                _ = Reader.ReadUInt32(); // reserved2
+                _ = is64 ? Reader.ReadUInt32() : 0; // reserved3
+
+                var section = new Section(sectionName, segmentName, sectionAddress, sectionSize, offset, alignExponent, relocOffset, numberOfReloc, flags, this);
                 sections.Add(section);
             }
 
