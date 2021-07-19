@@ -18,7 +18,7 @@ namespace ELFSharp.MachO
             FileType = (FileType)reader.ReadUInt32();
             var noOfCommands = reader.ReadInt32();
             reader.ReadInt32(); // size of commands
-            reader.ReadBytes(4); // we don't support flags now
+            Flags = (HeaderFlags)reader.ReadUInt32();
             if(is64)
             {
                 reader.ReadBytes(4); // reserved
@@ -35,6 +35,8 @@ namespace ELFSharp.MachO
         public Machine Machine { get; private set; }
 
         public FileType FileType { get; private set; }
+
+        public HeaderFlags Flags { get; private set; }
 
         public bool Is64 => is64;
 
