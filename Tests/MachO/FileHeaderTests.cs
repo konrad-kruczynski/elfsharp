@@ -12,9 +12,9 @@ namespace Tests.MachO
         {
             var machO = MachOReader.Load(Utilities.GetBinaryStream("simple-mach-o"), true);
             var flags = machO.Flags;
-            Assert.AreEqual(flags.HasFlag(HeaderFlags.NOUNDEFS), true);
-            Assert.AreEqual(flags.HasFlag(HeaderFlags.DYLDLINK), true);
-            Assert.AreEqual(flags.HasFlag(HeaderFlags.TWOLEVEL), true);
+            Assert.AreEqual(flags.HasFlag(HeaderFlags.NoUndefs), true);
+            Assert.AreEqual(flags.HasFlag(HeaderFlags.DyldLink), true);
+            Assert.AreEqual(flags.HasFlag(HeaderFlags.TwoLevel), true);
             Assert.AreEqual(flags.HasFlag(HeaderFlags.PIE), true);
         }
 
