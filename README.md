@@ -23,6 +23,7 @@ Contributors (in the order of the first contribution)
 * Ulysses Wu
 * Cédric Luthi
 * Yong Yan
+* Filip Navara
 
 ## License
 You can find license in the LICENSE file.
