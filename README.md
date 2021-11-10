@@ -24,6 +24,7 @@ Contributors (in the order of the first contribution)
 * Cédric Luthi
 * Yong Yan
 * Filip Navara
+* Dedmen Miller
 
 ## License
 You can find license in the LICENSE file.
