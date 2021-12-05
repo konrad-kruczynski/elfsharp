@@ -14,6 +14,6 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.203
+        dotnet-version: 6.0.100
     - name: Unit tests
-      run: dotnet test -f netcoreapp2.0 Tests/Tests.csproj
+      run: dotnet test -f net6.0 Tests/Tests.csproj
