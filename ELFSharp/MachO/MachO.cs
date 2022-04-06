@@ -27,7 +27,7 @@ namespace ELFSharp.MachO
             ReadCommands(noOfCommands, stream, reader);
         }
 
-        public IEnumerable<T> GetCommandsOfType<T>()
+        public IEnumerable<T> GetCommandsOfType<T>() where T : Command
         {
             return commands.Where(x => x != null).OfType<T>();
         }
