@@ -11,7 +11,7 @@ namespace ELFSharp.MachO
         {
             this.is64 = is64;
 
-            using var reader = new SimpleEndianessAwareReader(stream, endianess, ownsStream);
+            using var reader = new SimpleEndianessAwareReader(stream, endianess, !ownsStream);
 
             Machine = (Machine)reader.ReadInt32();
             reader.ReadBytes(4); // we don't support the cpu subtype now
