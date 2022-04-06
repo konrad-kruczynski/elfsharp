@@ -49,7 +49,7 @@ namespace ELFSharp.MachO
                 switch((CommandType)loadCommandType)
                 {
                 case CommandType.SymbolTable:
-                    commands[i] = new SymbolTable(reader, stream, is64);
+                    commands[i] = new SymbolTable(reader, stream, is64, commands.OfType<Segment>().SelectMany(e => e.Sections).ToList());
                     break;
                 case CommandType.IdDylib:
                     commands[i] = new IdDylib(reader, stream, commandSize);
