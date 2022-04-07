@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using ELFSharp.MachO;
 using System.Linq;
@@ -9,8 +8,6 @@ namespace Tests.MachO
     [TestFixture]
     public class SymbolTableTests
     {
-        private IEnumerable<Symbol> symbols;
-
         [OneTimeSetUp]
         public void SetUp()
         {
@@ -39,6 +36,8 @@ namespace Tests.MachO
             var symbol = symbols.First(e => e.Name == symbolName);
             Assert.AreEqual(section, symbol.Section == null ? null : $"{symbol.Section.SegmentName},{symbol.Section.Name}");
         }
+
+        private IEnumerable<Symbol> symbols;
     }
 }
 
