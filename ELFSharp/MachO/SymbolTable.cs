@@ -8,10 +8,10 @@ namespace ELFSharp.MachO
 {
     public class SymbolTable : Command
     {
-        public SymbolTable(SimpleEndianessAwareReader reader, Stream stream, bool is64) : base(reader, stream)
+        public SymbolTable(SimpleEndianessAwareReader reader, Stream stream, bool is64, IReadOnlyList<Section> sections) : base(reader, stream)
         {
             this.is64 = is64;
-            ReadSymbols();
+            ReadSymbols(sections);
         }
 
         public IEnumerable<Symbol> Symbols
@@ -22,7 +22,7 @@ namespace ELFSharp.MachO
             }
         }
 
-        private void ReadSymbols()
+        private void ReadSymbols(IReadOnlyList<Section> sections)
         {
             var symbolTableOffset = Reader.ReadInt32();
             var numberOfSymbols = Reader.ReadInt32();
@@ -39,9 +39,11 @@ namespace ELFSharp.MachO
                 {
                     var nameOffset = Reader.ReadInt32();
                     var name = ReadStringFromOffset(stringTableOffset + nameOffset);
-                    Reader.ReadBytes(4); // ignoring for now
+                    var type = Reader.ReadByte();
+                    var sect = Reader.ReadByte();
+                    var desc = Reader.ReadInt16();
                     long value = is64 ? Reader.ReadInt64() : Reader.ReadInt32();
-                    var symbol = new Symbol(name, value);
+                    var symbol = new Symbol(name, value, sect > 0 && sect <= sections.Count ? sections[sect - 1] : null);
                     symbols[i] = symbol;
                 }
             }
