@@ -75,6 +75,24 @@ namespace Tests.MachO
             Assert.AreEqual(machO.FileType, FileType.Object);
             Assert.AreEqual(machO.GetCommandsOfType<Segment>().Count(), 1);
         }
+
+        [Test]
+        public void ShouldDisposeStream()
+        {
+            var isDisposed = false;
+            var stream = new StreamWrapper(Utilities.GetBinaryStream("simple-mach-o"), () => isDisposed = true);
+            MachOReader.Load(stream, shouldOwnStream: true);
+            Assert.True(isDisposed);
+        }
+
+        [Test]
+        public void ShouldNotDisposeStream()
+        {
+            var isDisposed = false;
+            var stream = new StreamWrapper(Utilities.GetBinaryStream("simple-mach-o"), () => isDisposed = true);
+            MachOReader.Load(stream, shouldOwnStream: false);
+            Assert.False(isDisposed);
+        }
     }
 }
 

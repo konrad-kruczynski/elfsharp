@@ -105,6 +105,24 @@ namespace Tests.ELF
             var section = elf.GetSection(".dynstr");
             Assert.AreEqual(SectionType.NoBits, section.Type);
         }
+
+        [Test]
+        public void ShouldDisposeStream()
+        {
+            var isDisposed = false;
+            var stream = new StreamWrapper(Utilities.GetBinaryStream("hello32le"), () => isDisposed = true);
+            ELFReader.Load(stream, shouldOwnStream: true).Dispose();
+            Assert.True(isDisposed);
+        }
+
+        [Test]
+        public void ShouldNotDisposeStream()
+        {
+            var isDisposed = false;
+            var stream = new StreamWrapper(Utilities.GetBinaryStream("hello32le"), () => isDisposed = true);
+            ELFReader.Load(stream, shouldOwnStream: false).Dispose();
+            Assert.False(isDisposed);
+        }
     }
 }
 
