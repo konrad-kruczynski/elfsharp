@@ -3,17 +3,29 @@ using System.IO;
 using ELFSharp;
 using System.Text;
 using ELFSharp.Utilities;
+using ELFSharp.ELF.Segments;
 
 namespace ELFSharp.ELF.Sections
 {
-    internal class NoteData
+    public class NoteData : INoteData
     {
-        internal string Name { get; private set; }
+        public const ulong NOTE_DATA_HEADER_SIZE = 12; // name size + description size + field
 
-        internal byte[] Description { get; private set; }
+        public string Name { get; private set; }
 
-        internal ulong Type { get; private set; }
-        
+        public byte[] Description { get; private set; }
+
+        public ulong Type { get; private set; }
+
+        internal ulong NoteOffset { get; private set; }
+        internal ulong NoteFileSize { get; private set; }
+        internal ulong NoteFileEnd { get { return NoteOffset + NoteFileSize; } }
+
+        public override string ToString()
+        {
+            return $"Name={Name} DataSize=0x{Description.Length.ToString("x8")}";
+        }
+
         internal NoteData(ulong sectionOffset, ulong sectionSize, SimpleEndianessAwareReader reader)
         {
             this.reader = reader;
@@ -25,6 +37,9 @@ namespace ELFSharp.ELF.Sections
             int remainder;
             var fields = Math.DivRem(nameSize, FieldSize, out remainder);
             var alignedNameSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
+
+            fields = Math.DivRem(descriptionSize, FieldSize, out remainder);
+            var alignedDescriptionSize = FieldSize * (remainder > 0 ? fields + 1 : fields);
 
             // We encountered binaries where nameSize and descriptionSize are
             // invalid (i.e. significantly larger than the size of the binary itself).
@@ -42,8 +57,18 @@ namespace ELFSharp.ELF.Sections
                     Description = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
                 }
             }
+
+            // If there are multiple notes inside one segment, keep track of the end position so we can read them
+            // all when parsing the segment
+            NoteOffset = sectionOffset;
+            NoteFileSize = (ulong)alignedNameSize + (ulong)alignedDescriptionSize + NOTE_DATA_HEADER_SIZE;
         }
-        
+
+        public Stream ToStream()
+        {
+            return new MemoryStream(Description);
+        }
+
         private int ReadSize()
         {
             /*
