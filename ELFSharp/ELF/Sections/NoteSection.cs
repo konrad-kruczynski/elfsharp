@@ -18,7 +18,7 @@ namespace ELFSharp.ELF.Sections
         {
             get
             {
-                return data.Description;
+                return data.DescriptionBytes;
             }
         }
 

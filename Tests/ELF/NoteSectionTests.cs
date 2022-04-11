@@ -2,6 +2,7 @@ using NUnit.Framework;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF;
 using System.Linq;
+using ELFSharp.ELF.Segments;
 
 namespace Tests.ELF
 {
@@ -51,6 +52,33 @@ namespace Tests.ELF
             var elf = ELFReader.Load<uint>(Utilities.GetBinaryStream("custom-note"), true);
             var noteSection = (NoteSection<uint>)elf.GetSection(sectionName);
             Assert.AreEqual(sectionName, noteSection.Name);
+        }
+
+
+        [Test]
+        public void ShouldReadMultipleNotesWithinNoteSection()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("elf32-core-adbd_3124"), true);
+            var noteSegment = elf.Segments.Where(x => x.Type == SegmentType.Note).First() as INoteSegment;
+            Assert.AreEqual(22, noteSegment.Notes.Count);
+        }
+
+        [Test]
+        public void ShouldReadMultipleNoteDataName()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("elf32-core-adbd_3124"), true);
+            var noteSegment = elf.Segments.Where(x => x.Type == SegmentType.Note).First() as INoteSegment;
+            Assert.AreEqual("CORE", noteSegment.Notes[0].Name);
+            Assert.AreEqual("LINUX", noteSegment.Notes[6].Name);
+        }
+
+        [Test]
+        public void ShouldReadMultipleNoteDataType()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("elf32-core-adbd_3124"), true);
+            var noteSegment = elf.Segments.Where(x => x.Type == SegmentType.Note).First() as INoteSegment;
+            Assert.AreEqual(1ul, noteSegment.Notes[0].Type);
+            Assert.AreEqual(1024ul, noteSegment.Notes[6].Type);
         }
     }
 }
