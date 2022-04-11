@@ -25,6 +25,7 @@ Contributors (in the order of the first contribution)
 * Yong Yan
 * Filip Navara
 * Dedmen Miller
+* Jerker Olofsson
 
 ## License
 You can find license in the LICENSE file.
