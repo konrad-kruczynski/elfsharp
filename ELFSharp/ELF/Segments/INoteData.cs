@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ELFSharp.ELF.Segments
 {
@@ -7,7 +8,7 @@ namespace ELFSharp.ELF.Segments
         /// <summary>
         /// Owner of the note. 
         /// </summary>
-        string Name { get;}
+        string Name { get; }
 
         /// <summary>
         /// Data contents of the note. The format of this depends on the combination of the Name and Type properties and often
@@ -15,7 +16,7 @@ namespace ELFSharp.ELF.Segments
         /// 
         /// For example, see elf.h in the Linux kernel source tree.
         /// </summary>
-        byte[] Description { get;}
+        ReadOnlyCollection<byte> Description { get; }
 
         /// <summary>
         /// Data type

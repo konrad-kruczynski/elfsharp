@@ -7,7 +7,6 @@ namespace ELFSharp.ELF.Segments
 {
     public sealed class NoteSegment<T> : Segment<T>, INoteSegment
     {
-        private List<NoteData> mNotes = new List<NoteData>();
 
         internal NoteSegment(long headerOffset, Class elfClass, SimpleEndianessAwareReader reader)
             : base(headerOffset, elfClass, reader)
@@ -18,7 +17,7 @@ namespace ELFSharp.ELF.Segments
 
             // Keep the first NoteData as a property for backwards compatibility
             data = new NoteData(offset, remainingSize, reader);
-            mNotes.Add(data);
+            notes.Add(data);
 
             offset += data.NoteFileSize;
 
@@ -28,19 +27,19 @@ namespace ELFSharp.ELF.Segments
             {
                 remainingSize -= data.NoteFileSize;
 
-                while (remainingSize > NoteData.NOTE_DATA_HEADER_SIZE)
+                while (remainingSize > NoteData.NoteDataHeaderSize)
                 {
                     var note = new NoteData(offset, remainingSize, reader);
-                    mNotes.Add(note);
+                    notes.Add(note);
                     offset += note.NoteFileSize;
-                    if (note.NoteFileSize < remainingSize)
+                    if (note.NoteFileSize <= remainingSize)
                     {
                         remainingSize -= note.NoteFileSize;
                     }
                     else
                     {
                         // File is damaged
-                        break;
+                        throw new IndexOutOfRangeException("NoteSegment internal note-data is out of bounds");
                     }
                 }
             }
@@ -50,9 +49,10 @@ namespace ELFSharp.ELF.Segments
 
         public ulong NoteType => data.Type;
 
-        public byte[] NoteDescription => data.Description;
+        public byte[] NoteDescription => data.DescriptionBytes;
+        public IReadOnlyList<INoteData> Notes { get => notes.AsReadOnly(); }
 
-        public IReadOnlyList<INoteData> Notes { get => mNotes.AsReadOnly(); }
+        private List<NoteData> notes = new List<NoteData>();
 
         private readonly NoteData data;
     }

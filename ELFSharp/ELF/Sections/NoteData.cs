@@ -4,16 +4,25 @@ using ELFSharp;
 using System.Text;
 using ELFSharp.Utilities;
 using ELFSharp.ELF.Segments;
+using System.Collections.ObjectModel;
 
 namespace ELFSharp.ELF.Sections
 {
     public class NoteData : INoteData
     {
-        public const ulong NOTE_DATA_HEADER_SIZE = 12; // name size + description size + field
+        public const ulong NoteDataHeaderSize = 12; // name size + description size + field
 
         public string Name { get; private set; }
 
-        public byte[] Description { get; private set; }
+        public ReadOnlyCollection<byte> Description 
+        { 
+            get
+            {
+                return new ReadOnlyCollection<byte>(DescriptionBytes);
+            }
+        }
+
+        internal byte[] DescriptionBytes { get; private set; }
 
         public ulong Type { get; private set; }
 
@@ -23,7 +32,7 @@ namespace ELFSharp.ELF.Sections
 
         public override string ToString()
         {
-            return $"Name={Name} DataSize=0x{Description.Length.ToString("x8")}";
+            return $"Name={Name} DataSize=0x{DescriptionBytes.Length.ToString("x8")}";
         }
 
         internal NoteData(ulong sectionOffset, ulong sectionSize, SimpleEndianessAwareReader reader)
@@ -54,19 +63,19 @@ namespace ELFSharp.ELF.Sections
                 }
                 if (reader.BaseStream.Position + descriptionSize <= sectionEnd)
                 {
-                    Description = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
+                    DescriptionBytes = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
                 }
             }
 
             // If there are multiple notes inside one segment, keep track of the end position so we can read them
             // all when parsing the segment
             NoteOffset = sectionOffset;
-            NoteFileSize = (ulong)alignedNameSize + (ulong)alignedDescriptionSize + NOTE_DATA_HEADER_SIZE;
+            NoteFileSize = (ulong)alignedNameSize + (ulong)alignedDescriptionSize + NoteDataHeaderSize;
         }
 
         public Stream ToStream()
         {
-            return new MemoryStream(Description);
+            return new MemoryStream(DescriptionBytes);
         }
 
         private int ReadSize()
