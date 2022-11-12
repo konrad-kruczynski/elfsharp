@@ -227,7 +227,17 @@ namespace ELFSharp.ELF
             {
                 sectionIndicesByName = new Dictionary<string, int>();
             }
-            for(var i = 0; i < sectionHeaderEntryCount; i++)
+
+            // If the number of sections is greater than or equal to SHN_LORESERVE (0xff00), this member has the
+            // value zero and the actual number of section header table entries is contained in the sh_size field
+            // of the section header at index 0. (Otherwise, the sh_size member of the initial entry contains 0.)
+            if (sectionHeaderEntryCount == 0)
+            {
+                var firstSectionHeader = ReadSectionHeader(0, true);
+                sectionHeaderEntryCount = checked((uint)firstSectionHeader.Size);
+            }
+
+            for (var i = 0; i < sectionHeaderEntryCount; i++)
             {
                 var header = ReadSectionHeader(i);
                 sectionHeaders.Add(header);
@@ -296,9 +306,9 @@ namespace ELFSharp.ELF
             SectionsStringTable = new StringTable<T>(header, reader);
         }
 
-        private SectionHeader ReadSectionHeader(int index)
+        private SectionHeader ReadSectionHeader(int index, bool ignoreUpperLimit = false)
         {
-            if(index < 0 || index >= sectionHeaderEntryCount)
+            if(index < 0 || (!ignoreUpperLimit && index >= sectionHeaderEntryCount))
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -408,7 +418,7 @@ namespace ELFSharp.ELF
         private ushort segmentHeaderEntrySize;
         private ushort segmentHeaderEntryCount;
         private ushort sectionHeaderEntrySize;
-        private ushort sectionHeaderEntryCount;
+        private uint sectionHeaderEntryCount;
         private ushort stringTableIndex;
         private List<Segment<T>> segments;
         private List<Section<T>> sections;
