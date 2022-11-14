@@ -228,15 +228,6 @@ namespace ELFSharp.ELF
                 sectionIndicesByName = new Dictionary<string, int>();
             }
 
-            // If the number of sections is greater than or equal to SHN_LORESERVE (0xff00), this member has the
-            // value zero and the actual number of section header table entries is contained in the sh_size field
-            // of the section header at index 0. (Otherwise, the sh_size member of the initial entry contains 0.)
-            if (sectionHeaderEntryCount == 0)
-            {
-                var firstSectionHeader = ReadSectionHeader(0, true);
-                sectionHeaderEntryCount = checked((uint)firstSectionHeader.Size);
-            }
-
             for (var i = 0; i < sectionHeaderEntryCount; i++)
             {
                 var header = ReadSectionHeader(i);
@@ -370,6 +361,15 @@ namespace ELFSharp.ELF
             sectionHeaderEntrySize = reader.ReadUInt16();
             sectionHeaderEntryCount = reader.ReadUInt16();
             stringTableIndex = reader.ReadUInt16();
+
+            // If the number of sections is greater than or equal to SHN_LORESERVE (0xff00), this member has the
+            // value zero and the actual number of section header table entries is contained in the sh_size field
+            // of the section header at index 0. (Otherwise, the sh_size member of the initial entry contains 0.)
+            if (sectionHeaderEntryCount == 0)
+            {
+                var firstSectionHeader = ReadSectionHeader(0, true);
+                sectionHeaderEntryCount = checked((uint)firstSectionHeader.Size);
+            }
         }
 
         private GetSectionResult TryGetSectionInner(string name, out Section<T> section)
