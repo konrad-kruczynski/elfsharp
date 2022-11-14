@@ -26,6 +26,7 @@ Contributors (in the order of the first contribution)
 * Filip Navara
 * Dedmen Miller
 * Jerker Olofsson
+* Murat Ocaktürk
 
 ## License
 You can find license in the LICENSE file.
