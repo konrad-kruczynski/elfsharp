@@ -69,10 +69,9 @@ namespace ELFSharp.UImage
                 return UImageResult.NotSupportedImageType;
             }
 
-            // TODO: check CRC of the header
-
+			var multiFileImage = imageType == ImageType.MultiFileImage;
             stream.Position = startingStreamPosition;
-            uImage = new UImage(stream, shouldOwnStream);
+            uImage = new UImage(stream, multiFileImage, shouldOwnStream);
             return UImageResult.OK;
         }
 

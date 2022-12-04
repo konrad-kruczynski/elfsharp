@@ -6,7 +6,8 @@ namespace ELFSharp.UImage
 	{
 		OK,
 		BadChecksum,
-		UnsupportedCompressionFormat
+		UnsupportedCompressionFormat,
+		InvalidIndex
 	}
 }
 

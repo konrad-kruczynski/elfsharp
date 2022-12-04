@@ -7,6 +7,7 @@ namespace ELFSharp.UImage
 	{
 		Standalone = 1,
 		Kernel = 2,
+		MultiFileImage = 4
 	}
 }
 
