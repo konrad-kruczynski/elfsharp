@@ -33,6 +33,7 @@ namespace ELFSharp.ELF
 				return true;
 			default:
 				elf = null;
+				stream.Close();
 				return false;
 			}
 		}

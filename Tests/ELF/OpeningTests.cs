@@ -106,6 +106,15 @@ namespace Tests.ELF
             Assert.AreEqual(SectionType.NoBits, section.Type);
         }
 
+        // Github issue no 91
+        [Test]
+        public void ShouldCloseOwnedStreamOnNonElf()
+        {
+            var stream = new System.IO.MemoryStream(new byte[] { 0, 1, 2, 3 });
+            Assert.IsFalse(ELFReader.TryLoad(stream, true, out _));
+            Assert.IsFalse(stream.CanRead);
+        }
+
         [Test]
         public void ShouldDisposeStream()
         {
