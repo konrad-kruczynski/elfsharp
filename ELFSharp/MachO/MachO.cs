@@ -70,6 +70,9 @@ namespace ELFSharp.MachO
                 case CommandType.Segment64:
                     commands[i] = new Segment(reader, stream, this);
                     break;
+                case CommandType.UUID:
+                    commands[i] = new UUID(reader, stream);
+                    break;
                 default:
                     reader.ReadBytes((int)commandSize - 8); // 8 bytes is the size of the common command header
                     break;
