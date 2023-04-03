@@ -27,6 +27,7 @@ Contributors (in the order of the first contribution)
 * Dedmen Miller
 * Jerker Olofsson
 * Murat Ocaktürk
+* Grivus
 
 ## License
 You can find license in the LICENSE file.
