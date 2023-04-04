@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.17] - 2023-04-03
 ### Added
-- MachO: Added a command to parse LC_UUID and ability to get the UUID
+- MachO: Added a command to parse LC_UUID and ability to get the UUID.
 
 ## [2.16.1] - 2023-01-11
 ### Fixed

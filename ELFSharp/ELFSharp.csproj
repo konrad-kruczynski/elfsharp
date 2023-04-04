@@ -9,7 +9,7 @@
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat, Ulysses Wu, Cédric Luthi, Yong Yan, Filip Navara, Dedmen Miller, Murat Ocaktürk, Grivus</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.it/</PackageProjectUrl>
-    <PackageReleaseNotes>Fixed not closing underlying ELF stream on load fail. Detailed changelog available at: https://github.com/konrad-kruczynski/elfsharp/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Added a command to parse LC_UUID and ability to get the UUID. Detailed changelog available at: https://github.com/konrad-kruczynski/elfsharp/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>
