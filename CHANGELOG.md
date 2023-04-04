@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17] - 2023-04-03
+### Added
+- MachO: Added a command to parse LC_UUID and ability to get the UUID
+
 ## [2.16.1] - 2023-01-11
 ### Fixed
 - ELF: `ELFReader.TryLoad` now closes the underlying stream if it owns it and loading fails.

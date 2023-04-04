@@ -9,7 +9,8 @@
         LoadWeakDylib = 0x80000018u,
         Segment64 = 0x19,
         ReexportDylib = 0x8000001fu,
-        Main = 0x80000028u
+        Main = 0x80000028u,
+        UUID = 0x1b,
     }
 }
 
