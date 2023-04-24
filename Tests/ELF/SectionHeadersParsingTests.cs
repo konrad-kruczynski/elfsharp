@@ -77,6 +77,14 @@ namespace Tests.ELF
             var section = elf.Sections.First(x => x.Name == ".strtab");
             Assert.AreEqual(0x17A0, section.Offset);
         }
+
+        [Test]
+        public void ShouldFindSizeInFirstEntry()
+        {
+            var elf = ELFReader.Load<ulong>(Utilities.GetBinaryStream("large-elf.o"), true);
+            Assert.AreEqual(68302, elf.Sections.Count());
+            Assert.AreEqual(0x10ace, elf.Sections[0].Size);
+        }
     }
 }
 
