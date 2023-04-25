@@ -288,7 +288,7 @@ namespace ELFSharp.ELF
                 return;
             }
 
-            var header = ReadSectionHeader(stringTableIndex);
+            var header = ReadSectionHeader(checked((int)stringTableIndex));
             if(header.Type != SectionType.StringTable)
             {
                 throw new InvalidOperationException("Given index of section header does not point at string table which was expected.");
@@ -369,6 +369,14 @@ namespace ELFSharp.ELF
             {
                 var firstSectionHeader = ReadSectionHeader(0, true);
                 sectionHeaderEntryCount = checked((uint)firstSectionHeader.Size);
+
+                // If the index of the string table is larger than or equal to SHN_LORESERVE (0xff00), this member holds SHN_XINDEX (0xffff)
+                // and the real index of the section name string table section is held in the sh_link member of the initial entry in section 
+                // header table. Otherwise, the sh_link member of the initial entry in section header table contains the value zero.
+                if (stringTableIndex == 0xffff)
+                {
+                    stringTableIndex = checked((uint)firstSectionHeader.Link);
+                }
             }
         }
 
@@ -419,7 +427,7 @@ namespace ELFSharp.ELF
         private ushort segmentHeaderEntryCount;
         private ushort sectionHeaderEntrySize;
         private uint sectionHeaderEntryCount;
-        private ushort stringTableIndex;
+        private uint stringTableIndex;
         private List<Segment<T>> segments;
         private List<Section<T>> sections;
         private Dictionary<string, int> sectionIndicesByName;
