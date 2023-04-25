@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <Version>2.17.0.0</Version>
+    <Version>2.17.1.0</Version>
     <AssemblyVersion>2.0</AssemblyVersion>
-    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat, Ulysses Wu, Cédric Luthi, Yong Yan, Filip Navara, Dedmen Miller, Murat Ocaktürk, Grivus</Authors>
+    <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat, Ulysses Wu, Cédric Luthi, Yong Yan, Filip Navara, Dedmen Miller, Murat Ocaktürk, Grivus, Alex E.</Authors>
     <Owners>Konrad Kruczyński</Owners>
     <PackageProjectUrl>http://elfsharp.it/</PackageProjectUrl>
-    <PackageReleaseNotes>Added a command to parse LC_UUID and ability to get the UUID. Detailed changelog available at: https://github.com/konrad-kruczynski/elfsharp/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed edge case related to SHN_LORESERVE. Detailed changelog available at: https://github.com/konrad-kruczynski/elfsharp/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <Summary>C# library for reading binary ELF, UImage, Mach-O files</Summary>
     <PackageTags>ELF UImage Mach-O</PackageTags>
     <Title>ELFSharp</Title>

@@ -28,6 +28,7 @@ Contributors (in the order of the first contribution)
 * Jerker Olofsson
 * Murat Ocaktürk
 * Grivus
+* Alex E.
 
 ## License
 You can find license in the LICENSE file.
