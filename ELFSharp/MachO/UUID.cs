@@ -19,7 +19,7 @@ namespace ELFSharp.MachO
 
         private Guid ReadUUID()
         {
-            var rawBytes = Reader.ReadBytes(16).TakeWhile(x => x != 0).ToArray();
+            var rawBytes = Reader.ReadBytes(16).ToArray();
 
             // Deal here with UUID endianess. Switch scheme is 4(r)-2(r)-2(r)-8(o)
             // where r is reverse, o is original order.

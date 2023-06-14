@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sgKey.snk</AssemblyOriginatorKeyFile>
-    <Version>2.17.1.0</Version>
+    <Version>2.17.2.0</Version>
     <AssemblyVersion>2.0</AssemblyVersion>
     <Authors>Konrad Kruczyński, Piotr Zierhoffer, Łukasz Kucharski, Bastian Eicher, Cameron, Everett Maus, Fox, Reuben Olinsky, Connor Christie, Rollrat, Ulysses Wu, Cédric Luthi, Yong Yan, Filip Navara, Dedmen Miller, Murat Ocaktürk, Grivus, Alex E.</Authors>
     <Owners>Konrad Kruczyński</Owners>
