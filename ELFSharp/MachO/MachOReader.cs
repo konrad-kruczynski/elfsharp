@@ -84,7 +84,7 @@ namespace ELFSharp.MachO
             { 0xFEEDFACE, (false, Endianess.LittleEndian) },
             { 0xFEEDFACF, (true, Endianess.LittleEndian) },
             { 0xCEFAEDFE, (false, Endianess.BigEndian) },
-            { 0xCFFEEDFE, (true, Endianess.BigEndian) }
+            { 0xCFFAEDFE, (true, Endianess.BigEndian) }
         };
 
         private const uint FatMagic = 0xBEBAFECA;
