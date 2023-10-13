@@ -29,6 +29,7 @@ Contributors (in the order of the first contribution)
 * Murat Ocaktürk
 * Grivus
 * Alex E.
+* Pavel Vorozheykin
 
 ## License
 You can find license in the LICENSE file.
