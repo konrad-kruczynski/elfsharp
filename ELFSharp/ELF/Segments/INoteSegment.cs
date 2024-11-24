@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ELFSharp.ELF.Segments
 {
@@ -10,7 +9,7 @@ namespace ELFSharp.ELF.Segments
         byte[] NoteDescription { get; }
 
         /// <summary>
-        /// Returns all notes within the segment
+        ///     Returns all notes within the segment
         /// </summary>
         IReadOnlyList<INoteData> Notes { get; }
     }

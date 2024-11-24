@@ -4,6 +4,6 @@
     {
         Bit32,
         Bit64,
-		NotELF
+        NotELF
     }
 }

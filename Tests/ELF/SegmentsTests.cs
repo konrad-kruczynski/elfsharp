@@ -1,7 +1,7 @@
 using System.Linq;
-using NUnit.Framework;
-using ELFSharp.ELF.Segments;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Segments;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -14,7 +14,7 @@ namespace Tests.ELF
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             Assert.AreEqual(8, elf.Segments.Count());
         }
-        
+
         [Test]
         public void ShouldFindAllSegmentsOR32BE()
         {
@@ -81,7 +81,7 @@ namespace Tests.ELF
             var elf = ELFReader.Load<int>(Utilities.GetBinaryStream("hello32le"), true);
             var segment = elf.Segments.Single(x => x.Address == 0x8049F14 && x.Type == SegmentType.Load);
 
-            byte[] memoryContents = segment.GetMemoryContents();
+            var memoryContents = segment.GetMemoryContents();
             var endingZeroes = memoryContents.Skip((int)segment.FileSize);
             Assert.IsTrue(endingZeroes.All(x => x == 0), "Not all additional bytes were zero.");
         }
@@ -106,4 +106,3 @@ namespace Tests.ELF
         }
     }
 }
-

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace ELFSharp.MachO
 {
@@ -14,8 +13,7 @@ namespace ELFSharp.MachO
         }
 
         public string Name { get; private set; }
-        public Int64 Value { get; private set; }
+        public long Value { get; private set; }
         public Section Section { get; private set; }
     }
 }
-

@@ -10,6 +10,25 @@ namespace ELFSharp.ELF
 {
     public sealed class ELF<T> : IELF where T : struct
     {
+        private const int SectionNameNotUniqueMarker = -1;
+        private readonly bool ownsStream;
+
+        private readonly SimpleEndianessAwareReader reader;
+        private Stage currentStage;
+        private StringTable<T> dynamicStringTable;
+        private StringTable<T> objectsStringTable;
+        private uint sectionHeaderEntryCount;
+        private ushort sectionHeaderEntrySize;
+        private long sectionHeaderOffset;
+        private List<SectionHeader> sectionHeaders;
+        private Dictionary<string, int> sectionIndicesByName;
+        private List<Section<T>> sections;
+        private ushort segmentHeaderEntryCount;
+        private ushort segmentHeaderEntrySize;
+        private long segmentHeaderOffset;
+        private List<Segment<T>> segments;
+        private uint stringTableIndex;
+
         internal ELF(Stream stream, bool ownsStream)
         {
             this.ownsStream = ownsStream;
@@ -20,6 +39,14 @@ namespace ELFSharp.ELF
             ReadSegmentHeaders();
         }
 
+        public T EntryPoint { get; private set; }
+
+        public T MachineFlags { get; private set; }
+
+        public IReadOnlyList<Segment<T>> Segments => segments.AsReadOnly();
+
+        public IReadOnlyList<Section<T>> Sections => sections.AsReadOnly();
+
         public Endianess Endianess { get; private set; }
 
         public Class Class { get; private set; }
@@ -28,78 +55,26 @@ namespace ELFSharp.ELF
 
         public Machine Machine { get; private set; }
 
-        public T EntryPoint { get; private set; }
+        public bool HasSegmentHeader => segmentHeaderOffset != 0;
 
-        public T MachineFlags { get; private set; }
-     
-        public bool HasSegmentHeader
-        {
-            get { return segmentHeaderOffset != 0; }
-        }
-     
-        public bool HasSectionHeader
-        {
-            get { return sectionHeaderOffset != 0; }
-        }
+        public bool HasSectionHeader => sectionHeaderOffset != 0;
 
-        public bool HasSectionsStringTable
-        {
-            get { return stringTableIndex != 0; }
-        }
-     
-        public IReadOnlyList<Segment<T>> Segments
-        {
-            get => segments.AsReadOnly();
-        }
+        public bool HasSectionsStringTable => stringTableIndex != 0;
 
-        IReadOnlyList<ISegment> IELF.Segments
-        {
-            get => Segments;
-        }
+        IReadOnlyList<ISegment> IELF.Segments => Segments;
 
         public IStringTable SectionsStringTable { get; private set; }
-
-        public IReadOnlyList<Section<T>> Sections => sections.AsReadOnly();
 
         IEnumerable<TSectionType> IELF.GetSections<TSectionType>()
         {
             return Sections.Where(x => x is TSectionType).Cast<TSectionType>();
         }
 
-        public IEnumerable<TSection> GetSections<TSection>() where TSection : Section<T>
-        {
-            return Sections.Where(x => x is TSection).Cast<TSection>();
-        }
-
         IReadOnlyList<ISection> IELF.Sections => Sections;
-
-        public bool TryGetSection(string name, out Section<T> section)
-        {
-            return TryGetSectionInner(name, out section) == GetSectionResult.Success;
-        }
-
-        public Section<T> GetSection(string name)
-        {
-            var result = TryGetSectionInner(name, out Section<T> section);
-
-            switch(result)
-            {
-            case GetSectionResult.Success:
-                return section;
-            case GetSectionResult.SectionNameNotUnique:
-                throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
-            case GetSectionResult.NoSectionsStringTable:
-                throw new InvalidOperationException("Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
-            case GetSectionResult.NoSuchSection:
-                throw new KeyNotFoundException(string.Format("Given section {0} could not be found in the file.", name));
-            default:
-                throw new InvalidOperationException("Unhandled error.");
-            }
-        }
 
         bool IELF.TryGetSection(string name, out ISection section)
         {
-            var result = TryGetSection(name, out Section<T> concreteSection);
+            var result = TryGetSection(name, out var concreteSection);
             section = concreteSection;
             return result;
         }
@@ -109,29 +84,9 @@ namespace ELFSharp.ELF
             return GetSection(name);
         }
 
-        public Section<T> GetSection(int index)
-        {
-            GetSectionResult result = TryGetSectionInner(index, out Section<T> section);
-            switch(result)
-            {
-            case GetSectionResult.Success:
-                return section;
-            case GetSectionResult.NoSuchSection:
-                throw new IndexOutOfRangeException(string.Format("Given section index {0} is out of range.", index));
-            default:
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-		public override string ToString()
-		{
-			return string.Format("[ELF: Endianess={0}, Class={1}, Type={2}, Machine={3}, EntryPoint=0x{4:X}, " +
-			                     "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine, EntryPoint, sections.Count, segments.Count);
-		}
-
         bool IELF.TryGetSection(int index, out ISection section)
         {
-            var result = TryGetSection(index, out Section<T> sectionConcrete);
+            var result = TryGetSection(index, out var sectionConcrete);
             section = sectionConcrete;
             return result;
         }
@@ -143,10 +98,60 @@ namespace ELFSharp.ELF
 
         public void Dispose()
         {
-            if(ownsStream)
+            if (ownsStream) reader.BaseStream.Dispose();
+        }
+
+        public IEnumerable<TSection> GetSections<TSection>() where TSection : Section<T>
+        {
+            return Sections.Where(x => x is TSection).Cast<TSection>();
+        }
+
+        public bool TryGetSection(string name, out Section<T> section)
+        {
+            return TryGetSectionInner(name, out section) == GetSectionResult.Success;
+        }
+
+        public Section<T> GetSection(string name)
+        {
+            var result = TryGetSectionInner(name, out var section);
+
+            switch (result)
             {
-                reader.BaseStream.Dispose();
+                case GetSectionResult.Success:
+                    return section;
+                case GetSectionResult.SectionNameNotUnique:
+                    throw new InvalidOperationException("Given section name is not unique, order is ambigous.");
+                case GetSectionResult.NoSectionsStringTable:
+                    throw new InvalidOperationException(
+                        "Given ELF does not contain section header string table, therefore names of sections cannot be obtained.");
+                case GetSectionResult.NoSuchSection:
+                    throw new KeyNotFoundException(string.Format("Given section {0} could not be found in the file.",
+                        name));
+                default:
+                    throw new InvalidOperationException("Unhandled error.");
             }
+        }
+
+        public Section<T> GetSection(int index)
+        {
+            var result = TryGetSectionInner(index, out var section);
+            switch (result)
+            {
+                case GetSectionResult.Success:
+                    return section;
+                case GetSectionResult.NoSuchSection:
+                    throw new IndexOutOfRangeException(string.Format("Given section index {0} is out of range.",
+                        index));
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[ELF: Endianess={0}, Class={1}, Type={2}, Machine={3}, EntryPoint=0x{4:X}, " +
+                                 "NumberOfSections={5}, NumberOfSegments={6}]", Endianess, Class, Type, Machine,
+                EntryPoint, sections.Count, segments.Count);
         }
 
         private bool TryGetSection(int index, out Section<T> section)
@@ -157,7 +162,7 @@ namespace ELFSharp.ELF
         private Section<T> GetSectionFromSectionHeader(SectionHeader header)
         {
             Section<T> returned;
-            switch(header.Type)
+            switch (header.Type)
             {
                 case SectionType.Null:
                     goto default;
@@ -193,28 +198,25 @@ namespace ELFSharp.ELF
                     returned = new Section<T>(header, reader);
                     break;
             }
+
             return returned;
         }
-     
+
         private void ReadSegmentHeaders()
         {
-            segments = new List<Segment<T>>(segmentHeaderEntryCount);           
+            segments = new List<Segment<T>>(segmentHeaderEntryCount);
 
-            for(var i = 0u; i < segmentHeaderEntryCount; i++)
+            for (var i = 0u; i < segmentHeaderEntryCount; i++)
             {
                 var seekTo = segmentHeaderOffset + i * segmentHeaderEntrySize;
                 reader.BaseStream.Seek(seekTo, SeekOrigin.Begin);
                 var segmentType = Segment<T>.ProbeType(reader);
 
                 Segment<T> segment;
-                if(segmentType == SegmentType.Note)
-                {
+                if (segmentType == SegmentType.Note)
                     segment = new NoteSegment<T>(segmentHeaderOffset + i * segmentHeaderEntrySize, Class, reader);
-                }
                 else
-                {
                     segment = new Segment<T>(segmentHeaderOffset + i * segmentHeaderEntrySize, Class, reader);
-                }
 
                 segments.Add(segment);
             }
@@ -223,57 +225,44 @@ namespace ELFSharp.ELF
         private void ReadSections()
         {
             sectionHeaders = new List<SectionHeader>();
-            if(HasSectionsStringTable)
-            {
-                sectionIndicesByName = new Dictionary<string, int>();
-            }
+            if (HasSectionsStringTable) sectionIndicesByName = new Dictionary<string, int>();
 
             for (var i = 0; i < sectionHeaderEntryCount; i++)
             {
                 var header = ReadSectionHeader(i);
                 sectionHeaders.Add(header);
-                if(HasSectionsStringTable)
+                if (HasSectionsStringTable)
                 {
                     var name = header.Name;
-                    if(!sectionIndicesByName.ContainsKey(name))
-                    {
+                    if (!sectionIndicesByName.ContainsKey(name))
                         sectionIndicesByName.Add(name, i);
-                    } else
-                    {
+                    else
                         sectionIndicesByName[name] = SectionNameNotUniqueMarker;
-                    }
                 }
             }
+
             sections = new List<Section<T>>(Enumerable.Repeat<Section<T>>(
                 null,
                 sectionHeaders.Count
             ));
             FindStringTables();
-            for(var i = 0; i < sectionHeaders.Count; i++)
-            {
-                TouchSection(i);
-            }
+            for (var i = 0; i < sectionHeaders.Count; i++) TouchSection(i);
             sectionHeaders = null;
             currentStage = Stage.AfterSectionsAreRead;
         }
 
         private void TouchSection(int index)
         {
-            if(currentStage != Stage.Initalizing)
-            {
+            if (currentStage != Stage.Initalizing)
                 throw new InvalidOperationException("TouchSection invoked in improper state.");
-            }
-            if(sections[index] != null)
-            {
-                return;
-            }
+            if (sections[index] != null) return;
             var section = GetSectionFromSectionHeader(sectionHeaders[index]);
             sections[index] = section;
         }
 
         private void FindStringTables()
         {
-            TryGetSection(Consts.ObjectsStringTableName, out Section<T> section);
+            TryGetSection(Consts.ObjectsStringTableName, out var section);
             objectsStringTable = (StringTable<T>)section;
             TryGetSection(Consts.DynamicStringTableName, out section);
 
@@ -283,29 +272,23 @@ namespace ELFSharp.ELF
 
         private void ReadStringTable()
         {
-            if(!HasSectionHeader || !HasSectionsStringTable)
-            {                
-                return;
-            }
+            if (!HasSectionHeader || !HasSectionsStringTable) return;
 
             var header = ReadSectionHeader(checked((int)stringTableIndex));
-            if(header.Type != SectionType.StringTable)
-            {
-                throw new InvalidOperationException("Given index of section header does not point at string table which was expected.");
-            }
+            if (header.Type != SectionType.StringTable)
+                throw new InvalidOperationException(
+                    "Given index of section header does not point at string table which was expected.");
 
             SectionsStringTable = new StringTable<T>(header, reader);
         }
 
         private SectionHeader ReadSectionHeader(int index, bool ignoreUpperLimit = false)
         {
-            if(index < 0 || (!ignoreUpperLimit && index >= sectionHeaderEntryCount))
-            {
+            if (index < 0 || (!ignoreUpperLimit && index >= sectionHeaderEntryCount))
                 throw new ArgumentOutOfRangeException(nameof(index));
-            }
 
             reader.BaseStream.Seek(
-                sectionHeaderOffset + index*sectionHeaderEntrySize,
+                sectionHeaderOffset + index * sectionHeaderEntrySize,
                 SeekOrigin.Begin
             );
 
@@ -322,7 +305,7 @@ namespace ELFSharp.ELF
             {
                 1 => Class.Bit32,
                 2 => Class.Bit64,
-                _ => throw new ArgumentException($"Given ELF file is of unknown class {classByte}."),
+                _ => throw new ArgumentException($"Given ELF file is of unknown class {classByte}.")
             };
 
             var endianessByte = reader.ReadByte();
@@ -331,7 +314,7 @@ namespace ELFSharp.ELF
             {
                 1 => Endianess.LittleEndian,
                 2 => Endianess.BigEndian,
-                _ => throw new ArgumentException($"Given ELF file uses unknown endianess {endianessByte}."),
+                _ => throw new ArgumentException($"Given ELF file uses unknown endianess {endianessByte}.")
             };
 
             reader.ReadBytes(10); // padding bytes of section e_ident
@@ -343,13 +326,11 @@ namespace ELFSharp.ELF
             Type = (FileType)reader.ReadUInt16();
             Machine = (Machine)reader.ReadUInt16();
             var version = reader.ReadUInt32();
-            if(version != 1)
-            {
+            if (version != 1)
                 throw new ArgumentException(string.Format(
                     "Given ELF file is of unknown version {0}.",
                     version
                 ));
-            }
             EntryPoint = (Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
             // TODO: assertions for (u)longs
             segmentHeaderOffset = Class == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
@@ -373,70 +354,36 @@ namespace ELFSharp.ELF
                 // If the index of the string table is larger than or equal to SHN_LORESERVE (0xff00), this member holds SHN_XINDEX (0xffff)
                 // and the real index of the section name string table section is held in the sh_link member of the initial entry in section 
                 // header table. Otherwise, the sh_link member of the initial entry in section header table contains the value zero.
-                if (stringTableIndex == 0xffff)
-                {
-                    stringTableIndex = checked((uint)firstSectionHeader.Link);
-                }
+                if (stringTableIndex == 0xffff) stringTableIndex = checked(firstSectionHeader.Link);
             }
         }
 
         private GetSectionResult TryGetSectionInner(string name, out Section<T> section)
         {
-            section = default(Section<T>);
-            if(!HasSectionsStringTable)
-            {
-                return GetSectionResult.NoSectionsStringTable;
-            }
-            if(!sectionIndicesByName.TryGetValue(name, out int index))
-            {
-                return GetSectionResult.NoSuchSection;
-            }
-            if(index == SectionNameNotUniqueMarker)
-            {
-                return GetSectionResult.SectionNameNotUnique;
-            }
+            section = default;
+            if (!HasSectionsStringTable) return GetSectionResult.NoSectionsStringTable;
+            if (!sectionIndicesByName.TryGetValue(name, out var index)) return GetSectionResult.NoSuchSection;
+            if (index == SectionNameNotUniqueMarker) return GetSectionResult.SectionNameNotUnique;
             return TryGetSectionInner(index, out section);
         }
 
         private GetSectionResult TryGetSectionInner(int index, out Section<T> section)
         {
-            section = default(Section<T>);
-            if(index >= sections.Count)
-            {
-                return GetSectionResult.NoSuchSection;
-            }
-            if(sections[index] != null)
+            section = default;
+            if (index >= sections.Count) return GetSectionResult.NoSuchSection;
+            if (sections[index] != null)
             {
                 section = sections[index];
                 return GetSectionResult.Success;
             }
-            if(currentStage != Stage.Initalizing)
-            {
-                throw new InvalidOperationException("Assert not met: null section by proper index in not initializing stage.");
-            }
+
+            if (currentStage != Stage.Initalizing)
+                throw new InvalidOperationException(
+                    "Assert not met: null section by proper index in not initializing stage.");
             TouchSection(index);
             section = sections[index];
             return GetSectionResult.Success;
         }
-
-        private readonly SimpleEndianessAwareReader reader;
-        private readonly bool ownsStream;
-        private long segmentHeaderOffset;
-        private long sectionHeaderOffset;
-        private ushort segmentHeaderEntrySize;
-        private ushort segmentHeaderEntryCount;
-        private ushort sectionHeaderEntrySize;
-        private uint sectionHeaderEntryCount;
-        private uint stringTableIndex;
-        private List<Segment<T>> segments;
-        private List<Section<T>> sections;
-        private Dictionary<string, int> sectionIndicesByName;
-        private List<SectionHeader> sectionHeaders;
-        private StringTable<T> objectsStringTable;
-        private StringTable<T> dynamicStringTable;
-        private Stage currentStage;
-
-        private const int SectionNameNotUniqueMarker = -1;
 
         private enum Stage
         {
@@ -453,4 +400,3 @@ namespace ELFSharp.ELF
         }
     }
 }
-

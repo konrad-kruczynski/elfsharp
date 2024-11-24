@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Force.Crc32;
 using NUnit.Framework;
@@ -7,15 +6,14 @@ using NUnit.Framework;
 namespace Tests
 {
     [SetUpFixture]
-	public class Utilities
-	{
-		public static Stream GetBinaryStream(string name)
-		{
+    public class Utilities
+    {
+        private const string ResourcesPrefix = "Tests.Binaries.";
+
+        public static Stream GetBinaryStream(string name)
+        {
             var result = typeof(Utilities).Assembly.GetManifestResourceStream(ResourcesPrefix + name);
-            if(result == null)
-            {
-                throw new FileNotFoundException($"Could not find resource '{name}'.");
-            }
+            if (result == null) throw new FileNotFoundException($"Could not find resource '{name}'.");
 
             return result;
         }
@@ -33,8 +31,5 @@ namespace Tests
             stream.CopyTo(memoryStream);
             return memoryStream.ToArray();
         }
-
-		private const string ResourcesPrefix = "Tests.Binaries.";
-	}
+    }
 }
-

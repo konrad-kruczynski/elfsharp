@@ -1,7 +1,7 @@
 using System.Linq;
-using NUnit.Framework;
-using ELFSharp.ELF.Sections;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -15,7 +15,7 @@ namespace Tests.ELF
             var sectionsToLoad = elf.GetSections<ProgBitsSection<uint>>().Where(x => x.LoadAddress != 0);
             Assert.AreEqual(13, sectionsToLoad.Count());
         }
-        
+
         [Test]
         public void ShouldGetLoadAddress64()
         {
@@ -25,4 +25,3 @@ namespace Tests.ELF
         }
     }
 }
-

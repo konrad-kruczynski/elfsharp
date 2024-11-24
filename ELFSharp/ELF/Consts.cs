@@ -9,4 +9,3 @@ namespace ELFSharp.ELF
         public const int MinimalELFSize = 16;
     }
 }
-

@@ -1,6 +1,6 @@
 using System.Linq;
-using NUnit.Framework;
 using ELFSharp.ELF;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -11,20 +11,20 @@ namespace Tests.ELF
         public void ShouldFindAllStrings()
         {
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
-            Assert.IsTrue(elf.HasSectionsStringTable, 
-                          "Sections string table was not found in 32 bit ELF.");
+            Assert.IsTrue(elf.HasSectionsStringTable,
+                "Sections string table was not found in 32 bit ELF.");
             Assert.AreEqual(29, elf.SectionsStringTable.Strings.Count());
         }
-        
+
         [Test]
         public void ShouldFindAllStrings64()
         {
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
-            Assert.IsTrue(elf.HasSectionsStringTable, 
-                          "Sections string table was not found in 64 bit ELF.");
+            Assert.IsTrue(elf.HasSectionsStringTable,
+                "Sections string table was not found in 64 bit ELF.");
             Assert.AreEqual(30, elf.SectionsStringTable.Strings.Count());
         }
-        
+
         [Test]
         public void ShouldFindAllStringsBigEndian()
         {
@@ -37,4 +37,3 @@ namespace Tests.ELF
         }
     }
 }
-

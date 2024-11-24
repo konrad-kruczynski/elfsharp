@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,25 +7,25 @@ namespace ELFSharp.ELF.Sections
 {
     public sealed class DynamicSection<T> : Section<T>, IDynamicSection where T : struct
     {
-        internal DynamicSection(SectionHeader header, SimpleEndianessAwareReader reader, ELF<T> elf) : base(header, reader)
+        private readonly ELF<T> elf;
+
+        private List<DynamicEntry<T>> entries;
+
+        internal DynamicSection(SectionHeader header, SimpleEndianessAwareReader reader, ELF<T> elf) : base(header,
+            reader)
         {
             this.elf = elf;
             ReadEntries();
         }
 
-        public IEnumerable<DynamicEntry<T>> Entries
-        {
-            get { return new ReadOnlyCollection<DynamicEntry<T>>(entries); }
-        }
+        public IEnumerable<DynamicEntry<T>> Entries => new ReadOnlyCollection<DynamicEntry<T>>(entries);
 
-        IEnumerable<IDynamicEntry> IDynamicSection.Entries
-        {
-            get { return entries.Cast<IDynamicEntry>(); }
-        }
+        IEnumerable<IDynamicEntry> IDynamicSection.Entries => entries;
 
         public override string ToString()
         {
-            return string.Format("{0}: {2}, load @0x{4:X}, {5} entries", Name, NameIndex, Type, RawFlags, LoadAddress, Entries.Count());
+            return string.Format("{0}: {2}, load @0x{4:X}, {5} entries", Name, NameIndex, Type, RawFlags, LoadAddress,
+                Entries.Count());
         }
 
         private void ReadEntries()
@@ -43,19 +42,10 @@ namespace ELFSharp.ELF.Sections
             entries = new List<DynamicEntry<T>>();
 
             for (ulong i = 0; i < entryCount; i++)
-            {
                 if (elf.Class == Class.Bit32)
-                {
                     entries.Add(new DynamicEntry<T>(Reader.ReadUInt32().To<T>(), Reader.ReadUInt32().To<T>()));
-                }
                 else if (elf.Class == Class.Bit64)
-                {
                     entries.Add(new DynamicEntry<T>(Reader.ReadUInt64().To<T>(), Reader.ReadUInt64().To<T>()));
-                }
-            }
         }
-
-        private List<DynamicEntry<T>> entries;
-        private readonly ELF<T> elf;
     }
 }

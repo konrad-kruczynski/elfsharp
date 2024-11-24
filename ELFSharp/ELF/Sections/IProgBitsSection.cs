@@ -5,4 +5,3 @@ namespace ELFSharp.ELF.Sections
         void WriteContents(byte[] destination, int offset, int length = 0);
     }
 }
-

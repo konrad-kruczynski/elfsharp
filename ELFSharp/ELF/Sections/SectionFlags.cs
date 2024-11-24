@@ -10,4 +10,3 @@ namespace ELFSharp.ELF.Sections
         Executable = 4
     }
 }
-

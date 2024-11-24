@@ -1,11 +1,7 @@
-﻿using ELFSharp.ELF;
+﻿using System.Linq;
+using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests.ELF
 {
@@ -43,6 +39,5 @@ namespace Tests.ELF
             var dynamicSection = (IDynamicSection)elf.GetSection(".dynamic");
             Assert.AreEqual(29, dynamicSection.Entries.Count());
         }
-
     }
 }

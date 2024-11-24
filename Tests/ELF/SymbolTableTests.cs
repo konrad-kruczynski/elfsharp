@@ -1,7 +1,7 @@
 using System.Linq;
-using NUnit.Framework;
-using ELFSharp.ELF.Sections;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -13,15 +13,15 @@ namespace Tests.ELF
         {
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             var symtab = (ISymbolTable)elf.GetSection(".symtab");
-            Assert.AreEqual(64, symtab.Entries.Count());            
+            Assert.AreEqual(64, symtab.Entries.Count());
         }
-        
+
         [Test]
         public void ShouldFindAllSymbols64()
         {
-			using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
-			var symtab = (ISymbolTable)elf.GetSection(".symtab");           
-            Assert.AreEqual(64, symtab.Entries.Count());           
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
+            var symtab = (ISymbolTable)elf.GetSection(".symtab");
+            Assert.AreEqual(64, symtab.Entries.Count());
         }
 
         // Github issue no 24
@@ -44,4 +44,3 @@ namespace Tests.ELF
         }
     }
 }
-

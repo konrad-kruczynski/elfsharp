@@ -49,9 +49,11 @@ namespace ELFSharp.MachO
         AllowStackExecution = 0x20000, /* When this bit is set, all stacks in the task will be given stack
                                         * execution privilege. Only used in MH_EXECUTE filetypes. */
 
-        RootSafe = 0x40000, /* When this bit is set, the binary declares it is safe for use in processes with uid zero */
+        RootSafe =
+            0x40000, /* When this bit is set, the binary declares it is safe for use in processes with uid zero */
 
-        SetuidSafe = 0x80000, /* When this bit is set, the binary declares it is safe for use in processes when issetugid() is true */
+        SetuidSafe =
+            0x80000, /* When this bit is set, the binary declares it is safe for use in processes when issetugid() is true */
 
         NoReexportedDylibs = 0x100000, /* When this bit is set on a dylib, the static linker does not need to
                                         * examine dependent dylibs to see if any are re-exported */

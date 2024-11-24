@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
 
@@ -24,4 +24,3 @@ namespace ELFSharp.ELF
         ISection GetSection(int index);
     }
 }
-

@@ -8,4 +8,3 @@ namespace ELFSharp.ELF.Sections
         IEnumerable<string> Strings { get; }
     }
 }
-

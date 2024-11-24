@@ -1,6 +1,5 @@
 ﻿using ELFSharp.MachO;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Tests.MachO
 {
@@ -27,4 +26,3 @@ namespace Tests.MachO
         }
     }
 }
-

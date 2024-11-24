@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
 {
-	public class UUID : Command
-	{
+    public class UUID : Command
+    {
         internal UUID(SimpleEndianessAwareReader reader, Stream stream) : base(reader, stream)
         {
             ID = ReadUUID();
@@ -32,4 +29,3 @@ namespace ELFSharp.MachO
         }
     }
 }
-

@@ -24,12 +24,15 @@ namespace ELFSharp.MachO
         public Version CurrentVersion { get; }
         public Version CompatibilityVersion { get; }
 
-        private static Version GetVersion(uint version) => new Version((int)(version >> 16), (int)((version >> 8) & 0xff), (int)(version & 0xff));
+        private static Version GetVersion(uint version)
+        {
+            return new Version((int)(version >> 16), (int)((version >> 8) & 0xff), (int)(version & 0xff));
+        }
 
         private static string GetString(byte[] bytes)
         {
             var nullTerminatorIndex = Array.FindIndex(bytes, e => e == '\0');
-            return Encoding.ASCII.GetString(bytes, index: 0, nullTerminatorIndex >= 0 ? nullTerminatorIndex : bytes.Length);
+            return Encoding.ASCII.GetString(bytes, 0, nullTerminatorIndex >= 0 ? nullTerminatorIndex : bytes.Length);
         }
     }
 }

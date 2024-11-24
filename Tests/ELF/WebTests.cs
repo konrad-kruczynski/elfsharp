@@ -1,26 +1,23 @@
 using System;
-using NUnit.Framework;
 using System.Collections.Generic;
-using ELFSharp.ELF.Sections;
 using System.Linq;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
-	[TestFixture]
-	public class WebTests
-	{
-		[Test]
-		public void ListELFSectionHeaders()
-		{
-			using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
-			var output = new List<string>();
+    [TestFixture]
+    public class WebTests
+    {
+        [Test]
+        public void ListELFSectionHeaders()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
+            var output = new List<string>();
 
-			foreach(var header in elf.Sections)
-			{
-				output.Add(header.ToString());
-			}
-			var expectedOutput = @": Null, load @0x0, 0 bytes long
+            foreach (var header in elf.Sections) output.Add(header.ToString());
+            var expectedOutput = @": Null, load @0x0, 0 bytes long
 .interp: ProgBits, load @0x400200, 28 bytes long
 .note.ABI-tag: Note, Type=1
 .note.gnu.build-id: Note, Type=3
@@ -50,23 +47,20 @@ namespace Tests.ELF
 .shstrtab: StringTable, load @0x0, 264 bytes long
 .symtab: SymbolTable, load @0x0, 1536 bytes long
 .strtab: StringTable, load @0x0, 566 bytes long";
-			var expectedOutputAsLines = expectedOutput.Split(new [] { "\n", "\r\n" }, StringSplitOptions.None);
-			CollectionAssert.AreEqual(expectedOutputAsLines, output);
-		}
+            var expectedOutputAsLines = expectedOutput.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
+            CollectionAssert.AreEqual(expectedOutputAsLines, output);
+        }
 
-		[Test]
-		public void GetNamesOfFunctionSymbols()
-		{
-			using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
-			var output = new List<string>();
+        [Test]
+        public void GetNamesOfFunctionSymbols()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
+            var output = new List<string>();
 
-			var functions = ((ISymbolTable)elf.GetSection(".symtab")).Entries.Where(x => x.Type == SymbolType.Function);
-			foreach(var f in functions)
-			{
-				output.Add(f.Name);
-			}
+            var functions = ((ISymbolTable)elf.GetSection(".symtab")).Entries.Where(x => x.Type == SymbolType.Function);
+            foreach (var f in functions) output.Add(f.Name);
 
-			var expectedOutput = @"deregister_tm_clones
+            var expectedOutput = @"deregister_tm_clones
 register_tm_clones
 __do_global_dtors_aux
 frame_dummy
@@ -78,23 +72,22 @@ __libc_csu_init
 _start
 main
 _init";
-			var expectedOutputAsLines = expectedOutput.Split(new [] { "\n", "\r\n" }, StringSplitOptions.None);
-			CollectionAssert.AreEqual(expectedOutputAsLines, output);
-		}
+            var expectedOutputAsLines = expectedOutput.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
+            CollectionAssert.AreEqual(expectedOutputAsLines, output);
+        }
 
-		[Test]
-		public void WriteAllLoadableProgBitsToArray()
-		{
-			using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
+        [Test]
+        public void WriteAllLoadableProgBitsToArray()
+        {
+            using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello64le"), true);
 
-			var sectionsToLoad = elf.GetSections<ProgBitsSection<ulong>>()
-				.Where(x => x.LoadAddress != 0);
-			foreach (var s in sectionsToLoad)
-			{
-				var array = new byte[s.Size];
-				s.GetContents().CopyTo(array, 0);
-			}
-		}
-	}
+            var sectionsToLoad = elf.GetSections<ProgBitsSection<ulong>>()
+                .Where(x => x.LoadAddress != 0);
+            foreach (var s in sectionsToLoad)
+            {
+                var array = new byte[s.Size];
+                s.GetContents().CopyTo(array, 0);
+            }
+        }
+    }
 }
-

@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using ELFSharp.MachO;
-using System;
+﻿using System;
 using System.Linq;
+using ELFSharp.MachO;
+using NUnit.Framework;
 
 namespace Tests.MachO
 {
@@ -48,7 +48,8 @@ namespace Tests.MachO
         [Test]
         public void ShouldThrowOnFatMachOWhenOpenedAsNotFat()
         {
-            Assert.Throws<InvalidOperationException>(() => MachOReader.Load(Utilities.GetBinaryStream("Undecimus"), true));
+            Assert.Throws<InvalidOperationException>(() =>
+                MachOReader.Load(Utilities.GetBinaryStream("Undecimus"), true));
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace Tests.MachO
         public void ShouldOpenMachOObjectFile()
         {
             // intermediate object file has only 1 segment.
-            var result = MachOReader.TryLoad(Utilities.GetBinaryStream("simple-mach-o-object.o"), true, out ELFSharp.MachO.MachO machO);
+            var result = MachOReader.TryLoad(Utilities.GetBinaryStream("simple-mach-o-object.o"), true, out var machO);
             Assert.AreEqual(MachOResult.OK, result);
             Assert.AreEqual(machO.FileType, FileType.Object);
             Assert.AreEqual(machO.GetCommandsOfType<Segment>().Count(), 1);
@@ -81,7 +82,7 @@ namespace Tests.MachO
         {
             var isDisposed = false;
             var stream = new StreamWrapper(Utilities.GetBinaryStream("simple-mach-o"), () => isDisposed = true);
-            MachOReader.Load(stream, shouldOwnStream: true);
+            MachOReader.Load(stream, true);
             Assert.True(isDisposed);
         }
 
@@ -90,9 +91,8 @@ namespace Tests.MachO
         {
             var isDisposed = false;
             var stream = new StreamWrapper(Utilities.GetBinaryStream("simple-mach-o"), () => isDisposed = true);
-            MachOReader.Load(stream, shouldOwnStream: false);
+            MachOReader.Load(stream, false);
             Assert.False(isDisposed);
         }
     }
 }
-

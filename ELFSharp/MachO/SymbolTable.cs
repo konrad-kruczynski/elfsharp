@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using ELFSharp.Utilities;
@@ -8,7 +8,12 @@ namespace ELFSharp.MachO
 {
     public class SymbolTable : Command
     {
-        public SymbolTable(SimpleEndianessAwareReader reader, Stream stream, bool is64, IReadOnlyList<Section> sections) : base(reader, stream)
+        private readonly bool is64;
+
+        private Symbol[] symbols;
+
+        public SymbolTable(SimpleEndianessAwareReader reader, Stream stream, bool is64, IReadOnlyList<Section> sections)
+            : base(reader, stream)
         {
             this.is64 = is64;
             ReadSymbols(sections);
@@ -16,10 +21,7 @@ namespace ELFSharp.MachO
 
         public IEnumerable<Symbol> Symbols
         {
-            get
-            {
-                return symbols.Select(x => x);
-            }
+            get { return symbols.Select(x => x); }
         }
 
         private void ReadSymbols(IReadOnlyList<Section> sections)
@@ -35,15 +37,16 @@ namespace ELFSharp.MachO
 
             try
             {
-                for(var i = 0; i < numberOfSymbols; i++)
+                for (var i = 0; i < numberOfSymbols; i++)
                 {
                     var nameOffset = Reader.ReadInt32();
                     var name = ReadStringFromOffset(stringTableOffset + nameOffset);
                     var type = Reader.ReadByte();
                     var sect = Reader.ReadByte();
                     var desc = Reader.ReadInt16();
-                    long value = is64 ? Reader.ReadInt64() : Reader.ReadInt32();
-                    var symbol = new Symbol(name, value, sect > 0 && sect <= sections.Count ? sections[sect - 1] : null);
+                    var value = is64 ? Reader.ReadInt64() : Reader.ReadInt32();
+                    var symbol = new Symbol(name, value,
+                        sect > 0 && sect <= sections.Count ? sections[sect - 1] : null);
                     symbols[i] = symbol;
                 }
             }
@@ -61,14 +64,13 @@ namespace ELFSharp.MachO
             {
                 var asBytes = new List<byte>();
                 int readByte;
-                while((readByte = Stream.ReadByte()) != 0)
+                while ((readByte = Stream.ReadByte()) != 0)
                 {
-                    if(readByte == -1)
-                    {
+                    if (readByte == -1)
                         throw new EndOfStreamException("Premature end of the stream while reading string.");
-                    }
                     asBytes.Add((byte)readByte);
                 }
+
                 return Encoding.UTF8.GetString(asBytes.ToArray());
             }
             finally
@@ -76,9 +78,5 @@ namespace ELFSharp.MachO
                 Stream.Position = streamPosition;
             }
         }
-
-        private Symbol[] symbols;
-        private readonly bool is64;
     }
 }
-

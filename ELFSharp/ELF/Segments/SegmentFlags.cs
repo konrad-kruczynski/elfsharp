@@ -10,4 +10,3 @@ namespace ELFSharp.ELF.Segments
         Read = 4
     }
 }
-

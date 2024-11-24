@@ -9,4 +9,3 @@ namespace ELFSharp.ELF.Segments
         byte[] GetMemoryContents();
     }
 }
-

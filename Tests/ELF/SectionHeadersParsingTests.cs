@@ -1,7 +1,7 @@
 using System.Linq;
-using NUnit.Framework;
-using ELFSharp.ELF.Sections;
 using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -14,7 +14,7 @@ namespace Tests.ELF
             using var elf = ELFReader.Load(Utilities.GetBinaryStream("hello32le"), true);
             Assert.AreEqual(29, elf.Sections.Count());
         }
-        
+
         [Test]
         public void ShouldFindProperNumberOfSections64()
         {
@@ -87,4 +87,3 @@ namespace Tests.ELF
         }
     }
 }
-

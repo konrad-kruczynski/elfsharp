@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 using ELFSharp.Utilities;
 
 namespace ELFSharp.MachO
@@ -12,9 +12,13 @@ namespace ELFSharp.MachO
     [DebuggerDisplay("{Type}({Name,nq})")]
     public sealed class Segment : Command
     {
+        private readonly byte[] data;
+
+        private readonly bool is64;
+
         public Segment(SimpleEndianessAwareReader reader, Stream stream, MachO machO) : base(reader, stream)
         {
-            this.is64 = machO.Is64;
+            is64 = machO.Is64;
             Name = ReadSectionOrSegmentName();
             Address = ReadUInt32OrUInt64();
             Size = ReadUInt32OrUInt64();
@@ -25,18 +29,18 @@ namespace ELFSharp.MachO
             var numberOfSections = Reader.ReadInt32();
             Reader.ReadInt32(); // we ignore flags for now
 
-            if(fileSize > 0)
+            if (fileSize > 0)
             {
                 var streamPosition = Stream.Position;
                 Stream.Seek((long)FileOffset, SeekOrigin.Begin);
-                data = new byte[Size];                
+                data = new byte[Size];
                 var buffer = stream.ReadBytesOrThrow(checked((int)fileSize));
                 Array.Copy(buffer, data, buffer.Length);
                 Stream.Position = streamPosition;
             }
 
             var sections = new List<Section>();
-            for(var i = 0; i < numberOfSections; i++)
+            for (var i = 0; i < numberOfSections; i++)
             {
                 var sectionName = ReadSectionOrSegmentName();
                 var segmentName = ReadSectionOrSegmentName();
@@ -44,9 +48,7 @@ namespace ELFSharp.MachO
                 // An intermediate object file contains only one segment.
                 // This segment name is empty, its sections segment names are not empty.
                 if (machO.FileType != FileType.Object && segmentName != Name)
-                {
                     throw new InvalidOperationException("Unexpected name of the section's segment.");
-                }
 
                 var sectionAddress = ReadUInt32OrUInt64();
                 var sectionSize = ReadUInt32OrUInt64();
@@ -59,7 +61,8 @@ namespace ELFSharp.MachO
                 _ = Reader.ReadUInt32(); // reserved2
                 _ = is64 ? Reader.ReadUInt32() : 0; // reserved3
 
-                var section = new Section(sectionName, segmentName, sectionAddress, sectionSize, offset, alignExponent, relocOffset, numberOfReloc, flags, this);
+                var section = new Section(sectionName, segmentName, sectionAddress, sectionSize, offset, alignExponent,
+                    relocOffset, numberOfReloc, flags, this);
                 sections.Add(section);
             }
 
@@ -68,8 +71,8 @@ namespace ELFSharp.MachO
 
         public string Name { get; private set; }
         public ulong Address { get; private set; }
-        public ulong Size { get; private set; }
-        public ulong FileOffset { get; private set; }
+        public ulong Size { get; }
+        public ulong FileOffset { get; }
         public Protection InitialProtection { get; private set; }
         public Protection MaximalProtection { get; private set; }
         public ReadOnlyCollection<Section> Sections { get; private set; }
@@ -77,10 +80,7 @@ namespace ELFSharp.MachO
 
         public byte[] GetData()
         {
-            if(data == null)
-            {
-                return new byte[Size];
-            }
+            if (data == null) return new byte[Size];
             return data.ToArray();
         }
 
@@ -99,9 +99,5 @@ namespace ELFSharp.MachO
             var nameAsBytes = Reader.ReadBytes(16).TakeWhile(x => x != 0).ToArray();
             return Encoding.UTF8.GetString(nameAsBytes);
         }
-
-        private readonly bool is64;
-        private readonly byte[] data;
     }
 }
-

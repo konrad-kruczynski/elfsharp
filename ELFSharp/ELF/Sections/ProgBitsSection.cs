@@ -5,18 +5,17 @@ namespace ELFSharp.ELF.Sections
 {
     public sealed class ProgBitsSection<T> : Section<T>, IProgBitsSection where T : struct
     {
+        private const int BufferSize = 10 * 1024;
+
         internal ProgBitsSection(SectionHeader header, SimpleEndianessAwareReader reader) : base(header, reader)
         {
         }
-        
+
 
         public void WriteContents(byte[] destination, int offset, int length = 0)
         {
             SeekToSectionBeginning();
-            if (length == 0 || (ulong)length > Header.Size)
-            {
-                length = Convert.ToInt32(Header.Size);
-            }
+            if (length == 0 || (ulong)length > Header.Size) length = Convert.ToInt32(Header.Size);
             var remaining = length;
             while (remaining > 0)
             {
@@ -25,7 +24,5 @@ namespace ELFSharp.ELF.Sections
                 remaining -= buffer.Length;
             }
         }
-
-        private const int BufferSize = 10 * 1024;
     }
 }

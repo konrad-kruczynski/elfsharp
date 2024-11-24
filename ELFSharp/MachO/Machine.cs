@@ -1,6 +1,6 @@
 ﻿namespace ELFSharp.MachO
 {
-    public enum Machine : int
+    public enum Machine
     {
         Any = -1,
         Vax = 1,
@@ -17,7 +17,4 @@
         PowerPc = 18,
         PowerPc64 = PowerPc | MachO.Architecture64
     }
-
-
 }
-

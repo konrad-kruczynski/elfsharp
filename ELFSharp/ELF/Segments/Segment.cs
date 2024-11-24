@@ -6,17 +6,18 @@ namespace ELFSharp.ELF.Segments
 {
     public class Segment<T> : ISegment
     {
+        private readonly Class elfClass;
+
+        private readonly long headerOffset;
+        private readonly SimpleEndianessAwareReader reader;
+
         internal Segment(long headerOffset, Class elfClass, SimpleEndianessAwareReader reader)
-        {            
-            this.reader = reader;			
+        {
+            this.reader = reader;
             this.headerOffset = headerOffset;
             this.elfClass = elfClass;
             ReadHeader();
         }
-
-        public SegmentType Type { get; private set; }
-
-        public SegmentFlags Flags { get; private set; }
 
         public T Address { get; private set; }
 
@@ -30,22 +31,18 @@ namespace ELFSharp.ELF.Segments
 
         public long Offset { get; private set; }
 
-        public static SegmentType ProbeType(SimpleEndianessAwareReader reader)
-        {
-            return (SegmentType)reader.ReadUInt32();
-        }
+        public SegmentType Type { get; private set; }
+
+        public SegmentFlags Flags { get; private set; }
 
         /// <summary>
-        /// Returns content of the section as it is given in the file.
-        /// Note that it may be an array of length 0.
+        ///     Returns content of the section as it is given in the file.
+        ///     Note that it may be an array of length 0.
         /// </summary>
         /// <returns>Segment contents as byte array.</returns>
         public byte[] GetFileContents()
         {
-            if(FileSize == 0)
-            {
-                return new byte[0];
-            }
+            if (FileSize == 0) return new byte[0];
 
             SeekTo(Offset);
             var result = new byte[checked((int)FileSize)];
@@ -55,29 +52,31 @@ namespace ELFSharp.ELF.Segments
         }
 
         /// <summary>
-        /// Returns content of the section, possibly padded or truncated to the memory size.
-        /// Note that it may be an array of length 0.
+        ///     Returns content of the section, possibly padded or truncated to the memory size.
+        ///     Note that it may be an array of length 0.
         /// </summary>
         /// <returns>Segment image as a byte array.</returns>
         public byte[] GetMemoryContents()
         {
             var sizeAsInt = Size.To<int>();
-            if(sizeAsInt == 0)
-            {
-                return new byte[0];
-            }
+            if (sizeAsInt == 0) return new byte[0];
 
             SeekTo(Offset);
             var result = new byte[sizeAsInt];
             var fileImage = reader.ReadBytes(Math.Min(result.Length, checked((int)FileSize)));
             fileImage.CopyTo(result, 0);
-            return result; 
+            return result;
         }
 
         public byte[] GetRawHeader()
         {
             SeekTo(headerOffset);
             return reader.ReadBytes(elfClass == Class.Bit32 ? 32 : 56);
+        }
+
+        public static SegmentType ProbeType(SimpleEndianessAwareReader reader)
+        {
+            return (SegmentType)reader.ReadUInt32();
         }
 
         public override string ToString()
@@ -89,20 +88,14 @@ namespace ELFSharp.ELF.Segments
         {
             SeekTo(headerOffset);
             Type = (SegmentType)reader.ReadUInt32();
-            if(elfClass == Class.Bit64)
-            {
-                Flags = (SegmentFlags)reader.ReadUInt32();
-            }
+            if (elfClass == Class.Bit64) Flags = (SegmentFlags)reader.ReadUInt32();
             // TODO: some functions?s
             Offset = elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadInt64();
             Address = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
             PhysicalAddress = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
             FileSize = elfClass == Class.Bit32 ? reader.ReadInt32() : reader.ReadInt64();
             Size = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
-            if(elfClass == Class.Bit32)
-            {
-                Flags = (SegmentFlags)reader.ReadUInt32();
-            }
+            if (elfClass == Class.Bit32) Flags = (SegmentFlags)reader.ReadUInt32();
 
             Alignment = (elfClass == Class.Bit32 ? reader.ReadUInt32() : reader.ReadUInt64()).To<T>();
         }
@@ -111,10 +104,5 @@ namespace ELFSharp.ELF.Segments
         {
             reader.BaseStream.Seek(givenOffset, SeekOrigin.Begin);
         }
-
-        private long headerOffset;
-        private Class elfClass;
-        private SimpleEndianessAwareReader reader;
     }
 }
-

@@ -5,36 +5,30 @@ namespace ELFSharp.Utilities
 {
     internal sealed class SubStream : Stream
     {
+        private const string NegativeArgumentMessage = "The argument cannot be negative.";
+        private const string OutsideStreamMessage = "The argument must be within the wrapped stream.";
+        private readonly long startingPosition;
+
+        private readonly Stream wrappedStream;
+
         public SubStream(Stream wrappedStream, long startingPosition, long length)
         {
-            if(startingPosition < 0)
-            {
-                throw new ArgumentException(nameof(startingPosition), NegativeArgumentMessage);
-            }
+            if (startingPosition < 0) throw new ArgumentException(nameof(startingPosition), NegativeArgumentMessage);
 
-            if(startingPosition > wrappedStream.Length)
-            {
+            if (startingPosition > wrappedStream.Length)
                 throw new ArgumentException(nameof(startingPosition), OutsideStreamMessage);
-            }
 
-            if(length < 0)
-            {
-                throw new ArgumentException(nameof(length), NegativeArgumentMessage);
-            }
+            if (length < 0) throw new ArgumentException(nameof(length), NegativeArgumentMessage);
 
-            if(startingPosition + length > wrappedStream.Length)
-            {
+            if (startingPosition + length > wrappedStream.Length)
                 throw new ArgumentException(nameof(startingPosition), OutsideStreamMessage);
-            }
 
-            if(!wrappedStream.CanSeek)
-            {
+            if (!wrappedStream.CanSeek)
                 throw new ArgumentException(nameof(wrappedStream), "Wrapped streem has to be seekable.");
-            }
-;
+            ;
             this.wrappedStream = wrappedStream;
             this.startingPosition = startingPosition;
-            this.length = length;
+            this.Length = length;
 
             wrappedStream.Seek(startingPosition, SeekOrigin.Begin);
         }
@@ -45,16 +39,13 @@ namespace ELFSharp.Utilities
 
         public override bool CanWrite => false;
 
-        public override long Length => length;
+        public override long Length { get; }
 
         public override long Position
         {
             get => wrappedStream.Position - startingPosition;
 
-            set
-            {
-                wrappedStream.Position = value + startingPosition;
-            }
+            set => wrappedStream.Position = value + startingPosition;
         }
 
         public override void Flush()
@@ -64,7 +55,7 @@ namespace ELFSharp.Utilities
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            count = (int)Math.Min(count, length - Position);
+            count = (int)Math.Min(count, Length - Position);
             return wrappedStream.Read(buffer, offset, count);
         }
 
@@ -81,10 +72,8 @@ namespace ELFSharp.Utilities
                 _ => throw new InvalidOperationException("Should never reach here.")
             };
 
-            if(adjustedOffset < startingPosition || adjustedOffset > startingPosition + length)
-            {
+            if (adjustedOffset < startingPosition || adjustedOffset > startingPosition + Length)
                 throw new ArgumentException(nameof(offset), "Effective offset cannot move outside of the substream.");
-            }
 
             return wrappedStream.Seek(adjustedOffset, SeekOrigin.Begin) - startingPosition;
         }
@@ -98,12 +87,5 @@ namespace ELFSharp.Utilities
         {
             throw new NotSupportedException($"Writing is not available for {nameof(SubStream)}.");
         }
-
-        private readonly Stream wrappedStream;
-        private readonly long startingPosition;
-        private readonly long length;
-
-        private const string NegativeArgumentMessage = "The argument cannot be negative.";
-        private const string OutsideStreamMessage = "The argument must be within the wrapped stream.";
     }
 }

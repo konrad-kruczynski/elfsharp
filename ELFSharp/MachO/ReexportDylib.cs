@@ -5,7 +5,8 @@ namespace ELFSharp.MachO
 {
     public class ReexportDylib : Dylib
     {
-        public ReexportDylib(SimpleEndianessAwareReader reader, Stream stream, uint commandSize) : base(reader, stream, commandSize)
+        public ReexportDylib(SimpleEndianessAwareReader reader, Stream stream, uint commandSize) : base(reader, stream,
+            commandSize)
         {
         }
     }

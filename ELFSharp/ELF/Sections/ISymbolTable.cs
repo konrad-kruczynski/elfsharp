@@ -7,4 +7,3 @@ namespace ELFSharp.ELF.Sections
         IEnumerable<ISymbolEntry> Entries { get; }
     }
 }
-

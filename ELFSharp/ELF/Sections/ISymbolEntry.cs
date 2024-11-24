@@ -11,4 +11,3 @@ namespace ELFSharp.ELF.Sections
         ushort PointedSectionIndex { get; }
     }
 }
-

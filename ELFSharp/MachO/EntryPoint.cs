@@ -14,7 +14,5 @@ namespace ELFSharp.MachO
         public long Value { get; private set; }
 
         public long StackSize { get; private set; }
-        
     }
 }
-

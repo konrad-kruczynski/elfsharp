@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using ELFSharp.Utilities;
 
@@ -17,7 +16,7 @@ namespace ELFSharp.MachO
             var alreadyRead = 0;
             var fatEntriesBegin = stream.Position;
 
-            while(alreadyRead < machOCount)
+            while (alreadyRead < machOCount)
             {
                 // We're only interested in offset and size.
                 stream.Seek(fatEntriesBegin + 20 * alreadyRead + 8, SeekOrigin.Begin);

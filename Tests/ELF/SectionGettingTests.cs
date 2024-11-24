@@ -1,8 +1,6 @@
-﻿using System;
-using NUnit.Framework;
-using ELFSharp.ELF;
+﻿using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
-using System.Linq;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -20,7 +18,8 @@ namespace Tests.ELF
         public void ShouldHandleNonExistingSection()
         {
             ISection section;
-            Assert.IsFalse(ELFReader.Load(Utilities.GetBinaryStream("issue3"), true).TryGetSection(".nonexisting", out section));
+            Assert.IsFalse(ELFReader.Load(Utilities.GetBinaryStream("issue3"), true)
+                .TryGetSection(".nonexisting", out section));
         }
 
         [Test]
@@ -49,4 +48,3 @@ namespace Tests.ELF
         }
     }
 }
-

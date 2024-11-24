@@ -7,13 +7,16 @@ namespace ELFSharp.ELF.Segments
 {
     public sealed class NoteSegment<T> : Segment<T>, INoteSegment
     {
+        private readonly NoteData data;
+
+        private readonly List<NoteData> notes = new List<NoteData>();
 
         internal NoteSegment(long headerOffset, Class elfClass, SimpleEndianessAwareReader reader)
             : base(headerOffset, elfClass, reader)
         {
-            ulong offset = (ulong)base.Offset;
-            ulong fileSize = (ulong)base.FileSize;
-            ulong remainingSize = fileSize;
+            var offset = (ulong)Offset;
+            var fileSize = (ulong)FileSize;
+            var remainingSize = fileSize;
 
             // Keep the first NoteData as a property for backwards compatibility
             data = new NoteData(offset, remainingSize, reader);
@@ -33,14 +36,10 @@ namespace ELFSharp.ELF.Segments
                     notes.Add(note);
                     offset += note.NoteFileSize;
                     if (note.NoteFileSize <= remainingSize)
-                    {
                         remainingSize -= note.NoteFileSize;
-                    }
                     else
-                    {
                         // File is damaged
                         throw new IndexOutOfRangeException("NoteSegment internal note-data is out of bounds");
-                    }
                 }
             }
         }
@@ -50,10 +49,6 @@ namespace ELFSharp.ELF.Segments
         public ulong NoteType => data.Type;
 
         public byte[] NoteDescription => data.DescriptionBytes;
-        public IReadOnlyList<INoteData> Notes { get => notes.AsReadOnly(); }
-
-        private List<NoteData> notes = new List<NoteData>();
-
-        private readonly NoteData data;
+        public IReadOnlyList<INoteData> Notes => notes.AsReadOnly();
     }
 }

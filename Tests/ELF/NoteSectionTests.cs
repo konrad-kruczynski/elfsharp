@@ -1,8 +1,8 @@
-using NUnit.Framework;
-using ELFSharp.ELF.Sections;
-using ELFSharp.ELF;
 using System.Linq;
+using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
+using NUnit.Framework;
 
 namespace Tests.ELF
 {
@@ -82,4 +82,3 @@ namespace Tests.ELF
         }
     }
 }
-

@@ -6,4 +6,3 @@ namespace ELFSharp.ELF.Sections
         byte[] Description { get; }
     }
 }
-

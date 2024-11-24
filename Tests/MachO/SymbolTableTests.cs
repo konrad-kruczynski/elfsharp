@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
-using ELFSharp.MachO;
 using System.Linq;
+using ELFSharp.MachO;
+using NUnit.Framework;
 
 namespace Tests.MachO
 {
@@ -20,7 +20,8 @@ namespace Tests.MachO
         {
             var machO = MachOReader.Load(Utilities.GetBinaryStream("shared-32-mach-o"), true);
             var symbolTable = machO.GetCommandsOfType<SymbolTable>().Single();
-            CollectionAssert.IsSubsetOf(new [] { "_funkcja", "_inna_funkcja", "_jeszcze_inna_funkcja" }, symbolTable.Symbols.Select(x => x.Name).ToArray());
+            CollectionAssert.IsSubsetOf(new[] { "_funkcja", "_inna_funkcja", "_jeszcze_inna_funkcja" },
+                symbolTable.Symbols.Select(x => x.Name).ToArray());
         }
 
         // picked a few symbols with `nm -m 3dengine_libretro_ios.dylib`
@@ -34,10 +35,10 @@ namespace Tests.MachO
         public void ShouldHaveCorrectSection(string symbolName, string section)
         {
             var symbol = symbols.First(e => e.Name == symbolName);
-            Assert.AreEqual(section, symbol.Section == null ? null : $"{symbol.Section.SegmentName},{symbol.Section.Name}");
+            Assert.AreEqual(section,
+                symbol.Section == null ? null : $"{symbol.Section.SegmentName},{symbol.Section.Name}");
         }
 
         private IEnumerable<Symbol> symbols;
     }
 }
-

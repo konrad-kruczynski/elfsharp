@@ -1,10 +1,9 @@
 using System;
-using System.IO;
-using ELFSharp;
-using System.Text;
-using ELFSharp.Utilities;
-using ELFSharp.ELF.Segments;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Text;
+using ELFSharp.ELF.Segments;
+using ELFSharp.Utilities;
 
 namespace ELFSharp.ELF.Sections
 {
@@ -12,28 +11,7 @@ namespace ELFSharp.ELF.Sections
     {
         public const ulong NoteDataHeaderSize = 12; // name size + description size + field
 
-        public string Name { get; private set; }
-
-        public ReadOnlyCollection<byte> Description 
-        { 
-            get
-            {
-                return new ReadOnlyCollection<byte>(DescriptionBytes);
-            }
-        }
-
-        internal byte[] DescriptionBytes { get; private set; }
-
-        public ulong Type { get; private set; }
-
-        internal ulong NoteOffset { get; private set; }
-        internal ulong NoteFileSize { get; private set; }
-        internal ulong NoteFileEnd { get { return NoteOffset + NoteFileSize; } }
-
-        public override string ToString()
-        {
-            return $"Name={Name} DataSize=0x{DescriptionBytes.Length.ToString("x8")}";
-        }
+        private readonly SimpleEndianessAwareReader reader;
 
         internal NoteData(ulong sectionOffset, ulong sectionSize, SimpleEndianessAwareReader reader)
         {
@@ -58,13 +36,9 @@ namespace ELFSharp.ELF.Sections
             {
                 var name = reader.ReadBytes(alignedNameSize);
                 if (nameSize > 0)
-                {
                     Name = Encoding.UTF8.GetString(name, 0, nameSize - 1); // minus one to omit terminating NUL
-                }
                 if (reader.BaseStream.Position + descriptionSize <= sectionEnd)
-                {
                     DescriptionBytes = descriptionSize > 0 ? reader.ReadBytes(descriptionSize) : new byte[0];
-                }
             }
 
             // If there are multiple notes inside one segment, keep track of the end position so we can read them
@@ -73,9 +47,28 @@ namespace ELFSharp.ELF.Sections
             NoteFileSize = (ulong)alignedNameSize + (ulong)alignedDescriptionSize + NoteDataHeaderSize;
         }
 
+        internal byte[] DescriptionBytes { get; }
+
+        internal ulong NoteOffset { get; }
+        internal ulong NoteFileSize { get; }
+        internal ulong NoteFileEnd => NoteOffset + NoteFileSize;
+
+        private int FieldSize => 4;
+
+        public string Name { get; }
+
+        public ReadOnlyCollection<byte> Description => new ReadOnlyCollection<byte>(DescriptionBytes);
+
+        public ulong Type { get; }
+
         public Stream ToStream()
         {
             return new MemoryStream(DescriptionBytes);
+        }
+
+        public override string ToString()
+        {
+            return $"Name={Name} DataSize=0x{DescriptionBytes.Length.ToString("x8")}";
         }
 
         private int ReadSize()
@@ -99,15 +92,5 @@ namespace ELFSharp.ELF.Sections
             // see comment above
             return reader.ReadUInt32();
         }
-                
-        private int FieldSize
-        {
-            get
-            {
-                return 4;
-            }
-        }
-
-        private readonly SimpleEndianessAwareReader reader;
     }
 }

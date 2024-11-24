@@ -5,7 +5,8 @@ namespace ELFSharp.MachO
 {
     public class IdDylib : Dylib
     {
-        public IdDylib(SimpleEndianessAwareReader reader, Stream stream, uint commandSize) : base(reader, stream, commandSize)
+        public IdDylib(SimpleEndianessAwareReader reader, Stream stream, uint commandSize) : base(reader, stream,
+            commandSize)
         {
         }
     }
